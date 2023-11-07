@@ -80,4 +80,16 @@ Gefahren, Bekämpfung. Deutschland/Bundesamt f ̈ur Naturschutz, 2014.
 - [4] Torsten Welle, Lukas Aschenbrenner, Kevin Kuonath, Stefan Kirmaier, and Jonas
 Franke. Mapping dominant tree species of german forests. Remote Sensing, 14(14), 2022.
 
+## Usage
 
+1. `git clone https://github.com/jakobdanel/lidar-forest-analysis` on your local machine
+2. Install R (see [R-Project](https://www.r-project.org/))
+3. Install the dependencies listed below
+4. Run the functions from the root of this project.
+
+## Dependencies
+```
+GEDIcalibratoR
+future
+lidR
+```
