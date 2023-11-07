@@ -2,6 +2,9 @@
 .Rhistory
 .Rapp.history
 
+# Data produced by processes
+data/
+
 # Session Data files
 .RData
 .RDataTmp
