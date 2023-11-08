@@ -92,4 +92,6 @@ Franke. Mapping dominant tree species of german forests. Remote Sensing, 14(14),
 GEDIcalibratoR
 future
 lidR
+sf
+dplyr
 ```
