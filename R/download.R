@@ -1,3 +1,4 @@
+source("R/tile_location.R")
 
 download <- function(species, name, location) {
   library(GEDIcalibratoR)

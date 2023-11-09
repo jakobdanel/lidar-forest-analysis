@@ -1,11 +1,10 @@
 source("./R/utils/files.R")
 source("./R/read_catalog.R")
+source("./R/tile_location.R")
 
 detection <-
   function(catalog,
-           species,
-           name,
-           tile_name,
+           tile_location,
            write_to_file = TRUE) {
     library(lidR)
     library(sf)
@@ -13,10 +12,10 @@ detection <-
     library(future)
     plan(multisession(workers = 6))
     if (is.null(catalog)) {
-      if (!is_tile_existing(species, name, tile_name)) {
+      if (!is_tile_existing(tile_location)) {
         stop("Can not find tile for that arguments")
       } else {
-        catalog <- read_catalog(species, name, tile_name)
+        catalog <- read_catalog(tile_location)
       }
     }
     detect_trees <- function(chunk) {

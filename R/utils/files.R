@@ -1,17 +1,31 @@
+source("R/tile_location.R")
 
 
 
-
-is_tile_existing <- function(species, name, tile_name) {
-  return(get_tiles_path(species, name, tile_name) |> file.exists())
+get_tiles_path <- function(tile_location) {
+  return(getwd() |> paste0(
+    "/",
+    "data" |> file.path(
+      tile_location@species,
+      tile_location@name,
+      tile_location@tile_name |> paste0(".laz")
+    )
+  ))
 }
 
-get_tiles_path <- function(species, name, tile_name) {
-  return(getwd() |> paste0("/", "data" |> file.path(
-    species, name, tile_name |> paste0(".laz")
-  )))
+
+get_retile_dir <- function(tile_location) {
+  return(getwd() |> paste0(
+    "/",
+    "data" |> file.path(
+      tile_location@species,
+      tile_location@name,
+      tile_location@tile_name |> paste0("/")
+    )
+  ))
 }
 
-get_retile_dir <- function(species, name, tile_name) {
-  return(getwd() |> paste0("/", "data" |> file.path(species, name, tile_name |> paste0("/"))))
+
+is_tile_existing <- function(tile_location) {
+  return(get_tiles_path(tile_location) |> file.exists())
 }
