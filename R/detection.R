@@ -23,11 +23,17 @@ detection <-
     results <- catalog_map(catalog, detect_trees)
     merged_results <- bind_rows(results)
     if (write_to_file) {
-      #TODO: Implement correct savings
+      save_location <-
+        paste0(
+          get_tile_dir(tile_location),
+          paste0(tile_location@tile_name, "_detection.gpkg")
+        )
+
+      st_write(merged_results,
+               save_location,
+               append = F)
+      cat("Write file to: ", save_location)
     }
     return(merged_results)
-    # st_write(merged_results,
-    #"./wienburg/tree-detections.gpkg",
-    #append = F)
-    
+
   }

@@ -3,6 +3,7 @@
 export(detection)
 export(download)
 export(get_retile_dir)
+export(get_tile_dir)
 export(get_tiles_path)
 export(is_tile_existing)
 export(read_catalog)
