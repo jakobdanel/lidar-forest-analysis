@@ -1,5 +1,5 @@
 #' @export
-lfa_get_retile_dir <- function(tile_location) {
+get_retile_dir <- function(tile_location) {
   return(getwd() |> paste0(
     "/",
     "data" |> file.path(

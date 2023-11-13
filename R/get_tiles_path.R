@@ -1,5 +1,5 @@
 #' @export
-lfa_get_tiles_path <- function(tile_location) {
+get_tiles_path <- function(tile_location) {
   return(getwd() |> paste0(
     "/",
     "data" |> file.path(
