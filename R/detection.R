@@ -1,7 +1,4 @@
-source("./R/utils/files.R")
-source("./R/read_catalog.R")
-source("./R/tile_location.R")
-
+#' @export
 detection <-
   function(catalog,
            tile_location,
