@@ -7,9 +7,9 @@
 #'
 #' @return The LASCatalog object of the downloaded file
 #' @export
-download <- function(species, name, location) {
+lfa_download <- function(species, name, location) {
   library(GEDIcalibratoR)
   mytiles = intersect_tiles2download("NRW", location) |>
-    download_tiles(dir = file.path("..", "data", species, name), what = "LAZ")
+    download_tiles(dir = file.path( "data", species, name), what = "LAZ")
   return(mytiles)
 }

@@ -1,9 +1,9 @@
 #' @export
-retile <- function(tile_location) {
-  retile_dir = get_retile_dir(tile_location)
+lfa_retile <- function(tile_location) {
+  retile_dir = lfa_get_retile_dir(tile_location)
   if (file.exists(retile_dir) && file.info(retile_dir)$isdir) {
     warning("Area is already retiled, no further computings")
-    return(tile_location |> read_catalog())
+    return(tile_location |> lfa_read_catalog())
   } else {
     if (!file.exists(file.path(
       "data",

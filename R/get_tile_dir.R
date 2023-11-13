@@ -1,5 +1,5 @@
 #' @export
-get_tile_dir <- function(tile_location) {
+lfa_get_tile_dir <- function(tile_location) {
   return(paste0(
     getwd(),
     "/data/",
