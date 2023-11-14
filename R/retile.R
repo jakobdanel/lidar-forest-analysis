@@ -14,7 +14,7 @@ retile <- function(tile_location) {
       stop("File do not exist!")
     } else {
       library(lidR)
-      # library(future)
+      library(future)
       catalog = readLAScatalog(file.path(
         "data",
         tile_location@species,
@@ -25,7 +25,7 @@ retile <- function(tile_location) {
       opt_chunk_size(catalog) <- 50
       opt_chunk_buffer(catalog) <- 0
       output_location <-
-        paste0(getwd(), "/", retile_dir, "/tile_{ID}")
+        paste0(retile_dir, "tile_{ID}")
       cat("Write files to: ", output_location)
       opt_output_files(catalog) <- output_location
       return(catalog_retile(catalog))
