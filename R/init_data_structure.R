@@ -48,6 +48,10 @@
 #' @export
 lfa_init_data_structure <- function(sf_species) {
   data_dir <- file.path(getwd(), "data")
+  if (!(file.exists(data_dir) && file.info(data_dir)$isdir)) {
+    dir.create(data_dir)
+    cat("Created dir: ", data_dir, "\n")
+  }
   for (i in 1:length(sf_species$species)) {
     path <- file.path(data_dir, sf_species$species[i])
     if (!(file.exists(path) && file.info(path)$isdir)) {
