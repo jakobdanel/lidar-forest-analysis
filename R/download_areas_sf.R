@@ -40,6 +40,6 @@
 lfa_download_areas <- function(sf_areas){
   lfa_init_data_structure(sf_areas)
   for (i in 1:length(sf_areas$id)) {
-    download(sf_areas$species[i], sf_areas$name[i], sf_areas[i, ])
+    lfa_download(sf_areas$species[i], sf_areas$name[i], sf_areas[i, ])
   }
 }
