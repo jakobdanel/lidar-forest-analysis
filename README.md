@@ -95,3 +95,22 @@ lidR
 sf
 dplyr
 ```
+
+## course progress
+
+### week 1
+- first ideas: train model to detect single tree species
+- dive into R scripts to gather LIDAR data
+
+### week 2
+- setup local working environment
+- present idea
+- look for training data (dataset with categorised tree species)
+
+### week 3
+- cancel initial plan because we didnt find any data
+- new plan: compare forest with (dominant) tree species
+- implement data gathering, retiling, detection and segmentation
+
+### week 4
+
