@@ -1,0 +1,18 @@
+Package: lfa
+Title: LiDAR Forest Analysis: Diversity of Tree Species in an oecosystem
+Version: 0.0.0.9000
+Authors@R: person("Jakob", "Danel",email ="jakob.danel@uni-muenster.com", role = c("aut", "cre"))
+Description: Access, preprocess and analyse LiDAR data from monocultural forest areas to analyze and define parameters, for differencation of tree species.
+License: `use_mit_license()`
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Imports: 
+    dplyr,
+    future,
+    GEDIcalibratoR,
+    lidR,
+    sf

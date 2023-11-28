@@ -1,0 +1,58 @@
+# Installation and Intro
+
+This chapter is used to introduce in how to install this package and how to get
+started.
+
+## Installation
+The easiest way to install the package is by using:
+```{r}
+devtools::install_github("https://github.com/jakobdanel/lidar-forest-analysis")
+```
+This controls that you always use the latest version of this package. Other
+installation options, e.g. building from source, are described inside the repos
+[README](https://github.com/jakobdanel/lidar-forest-analysis).
+
+After you have done that we can start exploring the package
+```{r}
+library(lfa)
+```
+
+
+## Getting started
+First of all we need to download the data and initialize a structure in which we
+are able to do all the processing and analysis we want to do with our data. Therefore
+a shapefile containing all the data is used. This repository uses a file called
+`research_areas.shp`, but you can use each shapefile you want. Important for these
+shapefiles is, that the file is containing a simple set of polygons, for each of these
+polygons two attributes need to be set:
+
+1. `species` - the name of the species which is dominant for the area
+2. `name` - the name of the area from where the data should be collected as an
+identifier
+
+*NOTE:* Each pair of `species`and `name` must be unique in the dataset.
+
+You also need to specify were to run all of this code, because it will use
+the relative location to the working directory for storing data. In detail the package
+will create a directory `data` as a sub directory of the working-directory and storing
+all the data inside of this directory. In this tutorial we will use as wori+king directory
+the repository directory.
+With this shapefile we can init our project:
+```{r}
+setwd("..")
+tile_locations <- lfa_init(sf_file = "research_areas.shp")
+```
+The function returning a list of something called tile_location, a type which is
+used in this project to specify the location of LAS files. We can look into the first entry of the list
+to see what happens
+```{r}
+tile_locations[[1]]
+```
+
+Each tile_location object storing information on `species` and `name` as their are
+specified with the polygons. Also their are storing information for the `tile_location`,
+this is the name of the LAS file after the naming convention of the state NRW. 
+If one polygon is inside areas of multipe of these files, we can identify the data
+with this attributes.
+With the help of this objects we can use many of the functions for preprocessing and
+analysis.
