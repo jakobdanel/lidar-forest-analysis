@@ -62,3 +62,14 @@ results/.quarto
 
 
 demos/
+
+
+# Results
+
+results/report.pdf
+results/report.markdown_strict_files
+results/report_files
+results/.quarto
+
+
+demos/
