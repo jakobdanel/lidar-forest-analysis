@@ -1,0 +1,16 @@
+{
+  "hash": "0279bbb2233bf785d66828a55e421486",
+  "result": {
+    "markdown": "---\ntitle: \"Forest Data Analysis Report\"\noutput:\n  pdf_document:\n    latex_engine: xelatex\ntoc: true\ntoc-depth: 2\ntoc-title: Contents\nnumber-sections: true\nnumber-depth: 3\ndate: today\nauthor: Jakob Danel and Frederick Bruch\nbibliography: references.bib\n---\n\n\n# Introduction\n\nThis report documents the analysis of forest data for different tree species.\n\n# Methods\n\n## Data acquisition\n\nThis file describing the data acquisition of this project.\n\nSources for gaining information about the tree species in NRW forests:\n- Waldmonitor.de [@welle2014]\n\n\n\n# Analysis\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# Load your analysis package\nlibrary(lfa)\n\nx <- rnorm(1000, sd = 1)\ny <- rnorm(1000, sd = 10)\n\nhist(x)\n```\n\n::: {.cell-output-display}\n![](report_files/figure-pdf/unnamed-chunk-1-1.pdf){fig-pos='H'}\n:::\n\n```{.r .cell-code}\nhist(y)\n```\n\n::: {.cell-output-display}\n![](report_files/figure-pdf/unnamed-chunk-1-2.pdf){fig-pos='H'}\n:::\n\n```{.r .cell-code}\nqqplot(x, y)\n```\n\n::: {.cell-output-display}\n![](report_files/figure-pdf/unnamed-chunk-1-3.pdf){fig-pos='H'}\n:::\n:::\n\n\nThis is a test\n\n### References\n\n::: {#refs}\n:::\n",
+    "supporting": [
+      "report_files/figure-pdf"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": null,
+    "postProcess": false
+  }
+}

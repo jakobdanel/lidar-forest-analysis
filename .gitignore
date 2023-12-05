@@ -51,3 +51,14 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 .Rproj.user
+
+
+# Results
+
+results/report.pdf
+results/report.markdown_strict_files
+results/report_files
+results/.quarto
+
+
+demos/

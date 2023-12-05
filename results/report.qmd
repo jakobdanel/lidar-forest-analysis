@@ -1,0 +1,44 @@
+---
+title: "Forest Data Analysis Report"
+output:
+  pdf_document:
+    latex_engine: xelatex
+toc: true
+toc-depth: 2
+toc-title: Contents
+number-sections: true
+number-depth: 3
+date: today
+author: Jakob Danel and Frederick Bruch
+bibliography: references.bib
+---
+
+# Introduction
+
+This report documents the analysis of forest data for different tree species.
+
+# Methods
+
+{{< include methods/data-aquisition.qmd >}}
+
+# Analysis
+
+```{r}
+# Load your analysis package
+library(lfa)
+
+x <- rnorm(1000, sd = 1)
+y <- rnorm(1000, sd = 10)
+
+hist(x)
+hist(y)
+
+qqplot(x, y)
+```
+
+This is a test
+
+### References
+
+::: {#refs}
+:::

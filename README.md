@@ -87,6 +87,31 @@ Franke. Mapping dominant tree species of german forests. Remote Sensing, 14(14),
 3. Install the dependencies listed below
 4. Run the functions from the root of this project.
 
+## Report
+The results of the course analysis can be found on [Github Pages](https://jakobdanel.github.io/lidar-forest-analysis/report.html)
+
+### Maintain documentation
+In the following sections the maintaining, building and deployment of the report is documented.
+
+The report is saved inside the `results` directory. The report is organized in a directory type style, means that each section becomes an own directory (e.g 
+`results/methods`). The `.qmd` files needed to be inserted into `results.report.qmd` to be displayed. This can be achieved by:
+
+```
+{{< include path/to/subsection/file.qmd >}}
+```
+
+Please make sure that only the `*.qmd` files, helper files for building and computations (e.g. the `results/_freeze` directory needs to be registered) are tracked by git.
+
+#### Add reference
+For referencing add a `.bibtex` entry into the file `results/references.bib`. You can cite by using `@citeKey` as inline reference or normal via `[@citeKey]` (More information on quarto website)
+
+#### Build and deploy
+
+```
+quarto render
+quarto publish gh-pages
+```
+
 ## Dependencies
 ```
 GEDIcalibratoR
