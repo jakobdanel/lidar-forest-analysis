@@ -1,7 +1,0 @@
----
-title: "Demos for package: lfa"
----
-
-This is a Quarto website.
-
-[Intro](section-01-intro.qmd)
