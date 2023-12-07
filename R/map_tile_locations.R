@@ -43,8 +43,20 @@
 #'
 #' @export
 lfa_map_tile_locations <-
-  function(tile_locations, map_function, ...) {
+  function(tile_locations,
+           map_function,
+           check_flag = NULL,
+           ...) {
+    if (!is.null(check_flag)) {
+      if (lfa_check_flag(check_flag)) {
+        cat("Function is already computed, no further computings here")
+        return()
+      }
+    }
     for (i in 1:length(tile_locations)) {
       map_function(tile_location = tile_locations[[i]], ...)
+    }
+    if (!is.null(check_flag)) {
+      lfa_set_flag(check_flag)
     }
   }
