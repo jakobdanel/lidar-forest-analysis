@@ -1,0 +1,16 @@
+{
+  "hash": "1e04b1679f70a31f5b1c73667b0104d5",
+  "result": {
+    "markdown": "## Preprocessing\n\nThis subsection discusses the methods used for implementing the preprocessing\nthe data which are collected with the methods above.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nsf <- sf::read_sf(here::here(\"research_areas.shp\"))\nprint(sf)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nSimple feature collection with 12 features and 3 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 7.071625 ymin: 51.08151 xmax: 8.539877 ymax: 52.25983\nGeodetic CRS:  WGS 84\n# A tibble: 12 x 4\n      id species name                                                   geometry\n   <dbl> <chr>   <chr>                                             <POLYGON [°]>\n 1     1 oak     rinkerode           ((7.678922 51.85789, 7.675446 51.85752, 7.~\n 2     2 oak     hamm                ((7.858955 51.66699, 7.866444 51.66462, 7.~\n 3     3 oak     muenster            ((7.618908 51.9154, 7.617384 51.9172, 7.61~\n 4     4 pine    greffen             ((8.168691 51.98965, 8.167178 51.99075, 8.~\n 5     5 pine    telgte              ((7.779728 52.00662, 7.781616 52.00662, 7.~\n 6     6 pine    mesum               ((7.534424 52.25499, 7.53378 52.25983, 7.5~\n 7     7 beech   bielefeld_brackwede ((8.524749 51.9921, 8.528418 51.99079, 8.5~\n 8     8 beech   wuelfenrath         ((7.071625 51.29256, 7.072311 51.29334, 7.~\n 9     9 beech   billerbeck          ((7.324729 51.99783, 7.323548 51.99923, 7.~\n10    10 spruce  marienheide         ((7.558102 51.08358, 7.558317 51.08527, 7.~\n11    11 spruce  brilon              ((8.532195 51.41029, 8.535027 51.41064, 8.~\n12    12 spruce  osterwald           ((8.369328 51.21693, 8.371238 51.21718, 8.~\n```\n:::\n:::\n",
+    "supporting": [
+      "preprocessing_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": null,
+    "postProcess": false
+  }
+}
