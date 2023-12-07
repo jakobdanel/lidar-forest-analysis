@@ -106,7 +106,7 @@ lfa_intersect_areas <- function(ctg, tile_location, areas_sf) {
     res = identify_area(las)
     file.remove(f)
     if(is.null(res)){
-      cat("No intersecting area found for ", f)
+      cat("\n No intersecting area found for ", f)
     }else {
       lidR::writeLAS(res,f)
     }
