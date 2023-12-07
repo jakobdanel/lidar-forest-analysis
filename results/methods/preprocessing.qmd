@@ -1,0 +1,25 @@
+## Preprocessing
+```{r}
+#| echo: false
+knitr::opts_knit$set(root.dir = "/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/")
+```
+
+
+In this research study, the management and processing of a large dataset are crucial considerations. The dataset's substantial size necessitates careful maintenance to ensure efficient handling. Furthermore, the data should be easily processable and editable to facilitate necessary corrections and precalculations within the context of our research objectives. To achieve our goals, we have implemented a framework that automatically derives data based on a shapefile, delineating areas of interest. The processed data and results of precalculations are stored in a straightforward manner to enhance accessibility. Additionally, we have designed functions that establish a user-friendly interface, enabling the execution of algorithms on subsets of the data, such as distinct species. These interfaces are not only directly callable by users but can also be integrated into other functions to automate processes. The overarching aim is to streamline the entire preprocessing workflow using a single script, leveraging only the shapefile as a basis. This subsection details the accomplishments of our R-package in realizing these goals, outlining the preprocessing steps undertaken and justifying their necessity in the context of our research.
+
+The data are stored in a data subdirectory of the root directory in the format `species/location-name/tile-name`. To automate the matching of areas of interest with the catalog from the Land NRW[^1], we utilize the intersecting tool developed by Heisig[^2]. This tool, allows for the automatic retrieval and placement of data downloaded from the Land NRW catalog. To enhance data accessibility, we have devised an object that incorporates species, location name, and tile name (the NRW internal identifier) for each area This object facilitates the specification of the area to be processed. Additionally, we have defined an initialization function that downloads all tiles, returning a list of tile location objects for subsequent processing. A pivotal component of the package's preprocessing functionality is the map function, which iterates over a list of tile locations (effectively the entire dataset) and accepts a processing function as an argument. The subsequent paragraph outlines the specific preprocessing steps employed, all of which are implemented within the mapping function.
+
+To facilitate memory-handling capabilities, each of the tiles, where one area can span multiple tiles, has been split into manageable chunks. We employed a 50x50m size for each tile, resulting in the division of original 1km x 1km files into 400 tiles. These tiles are stored in our directory structure, with each tile housed in a directory named after its tile name and assigned an id as the filename. Implementation-wise, the `lidr::catalog_retile` function was instrumental in achieving this segmentation. The resulting smaller chunks allow for efficient iteration during subsequent preprocessing steps.
+
+The next phase involves reducing our data to the actual size by intersecting the tiles with the defined area of interest. Using the `lidR::merge_spatial` function, we intersect the area derived from the shapefile, removing all point cloud items outside this region. Due to our tile-wise approach, empty tiles may arise, and in such cases, those tiles are simply deleted.
+
+Following the size reduction to our dataset, the next step involves correcting the `z` values. The `z` values in the data are originally relative to the ellipsoid used for referencing, but we require them to be relative to the ground. To achieve this, we utilize the `lidR::tin` function, which extrapolates a convex hull between all ground points (classified by the data provider) and calculates the z value based on this structure.
+
+Subsequently, we aim to perform segmentation for each distinct tree, marking each item of the point cloud with a tree ID. We employ the algorithm described by @li2012, using parameters `li2012(dt1 = 2, dt2 = 3, R = 2, Zu = 10, hmin = 5, speed_up = 12)`. The meanings of these parameters are elucidated in Li et al.'s work [@li2012].
+
+Finally, the last preprocessing step involves individual tree detection, seeking a single `POINT` object for each tree. The `lidR::lmf` function, an implementation of the tree data using a local maximum approach, is utilized for this purpose [@popescu2004]. The results are stored in GeoPackage files within our data structure.
+
+See @sec-appendix-preprocessing for the implementation of the preprocessing.
+
+[^1]: https://www.opengeodata.nrw.de/produkte/geobasis/hm/3dm_l_las/3dm_l_las/, last visited 7th Dec 2023
+[^2]: https://github.com/joheisig/GEDIcalibratoR, last visited 7th Dec 2023

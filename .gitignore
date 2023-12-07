@@ -70,6 +70,6 @@ results/report.pdf
 results/report.markdown_strict_files
 results/report_files
 results/.quarto
-
+results/report.rmarkdown
 
 demos/

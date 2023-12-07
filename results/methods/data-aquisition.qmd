@@ -3,4 +3,10 @@
 This file describing the data acquisition of this project.
 
 Sources for gaining information about the tree species in NRW forests:
+
 - Waldmonitor.de [@welle2014]
+- Dominant tree species by Thuenen: https://atlas.thuenen.de/layers/geonode:Dominant_Species_Class
+- Validating with Sentinel RGB imageries the shape and texture of the area:
+  - leaf color
+  - human made /natural shapes of the forest
+  - Human made objects in the direct neighboorhoud of the area.
