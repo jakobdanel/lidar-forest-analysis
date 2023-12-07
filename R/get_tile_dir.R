@@ -5,7 +5,7 @@ get_tile_dir <- function(tile_location) {
     "/data/",
     file.path(
       tile_location@species,
-      tile_location@name,
+      tile_location@name
     ) |> paste0("/")
   ))
 }
