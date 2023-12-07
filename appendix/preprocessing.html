@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -75,28 +109,84 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="preprocessing" class="level2">
-<h2 class="anchored" data-anchor-id="preprocessing">Preprocessing</h2>
-<p>In this research study, the management and processing of a large dataset are crucial considerations. The dataset’s substantial size necessitates careful maintenance to ensure efficient handling. Furthermore, the data should be easily processable and editable to facilitate necessary corrections and precalculations within the context of our research objectives. To achieve our goals, we have implemented a framework that automatically derives data based on a shapefile, delineating areas of interest. The processed data and results of precalculations are stored in a straightforward manner to enhance accessibility. Additionally, we have designed functions that establish a user-friendly interface, enabling the execution of algorithms on subsets of the data, such as distinct species. These interfaces are not only directly callable by users but can also be integrated into other functions to automate processes. The overarching aim is to streamline the entire preprocessing workflow using a single script, leveraging only the shapefile as a basis. This subsection details the accomplishments of our R-package in realizing these goals, outlining the preprocessing steps undertaken and justifying their necessity in the context of our research.</p>
-<p>The data are stored in a data subdirectory of the root directory in the format <code>species/location-name/tile-name</code>. To automate the matching of areas of interest with the catalog from the Land NRW<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, we utilize the intersecting tool developed by Heisig<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. This tool, allows for the automatic retrieval and placement of data downloaded from the Land NRW catalog. To enhance data accessibility, we have devised an object that incorporates species, location name, and tile name (the NRW internal identifier) for each area This object facilitates the specification of the area to be processed. Additionally, we have defined an initialization function that downloads all tiles, returning a list of tile location objects for subsequent processing. A pivotal component of the package’s preprocessing functionality is the map function, which iterates over a list of tile locations (effectively the entire dataset) and accepts a processing function as an argument. The subsequent paragraph outlines the specific preprocessing steps employed, all of which are implemented within the mapping function.</p>
-<p>To facilitate memory-handling capabilities, each of the tiles, where one area can span multiple tiles, has been split into manageable chunks. We employed a 50x50m size for each tile, resulting in the division of original 1km x 1km files into 400 tiles. These tiles are stored in our directory structure, with each tile housed in a directory named after its tile name and assigned an id as the filename. Implementation-wise, the <code>lidr::catalog_retile</code> function was instrumental in achieving this segmentation. The resulting smaller chunks allow for efficient iteration during subsequent preprocessing steps.</p>
-<p>The next phase involves reducing our data to the actual size by intersecting the tiles with the defined area of interest. Using the <code>lidR::merge_spatial</code> function, we intersect the area derived from the shapefile, removing all point cloud items outside this region. Due to our tile-wise approach, empty tiles may arise, and in such cases, those tiles are simply deleted.</p>
-<p>Following the size reduction to our dataset, the next step involves correcting the <code>z</code> values. The <code>z</code> values in the data are originally relative to the ellipsoid used for referencing, but we require them to be relative to the ground. To achieve this, we utilize the <code>lidR::tin</code> function, which extrapolates a convex hull between all ground points (classified by the data provider) and calculates the z value based on this structure.</p>
-<p>Subsequently, we aim to perform segmentation for each distinct tree, marking each item of the point cloud with a tree ID. We employ the algorithm described by <span class="citation" data-cites="li2012">@li2012</span>, using parameters <code>li2012(dt1 = 2, dt2 = 3, R = 2, Zu = 10, hmin = 5, speed_up = 12)</code>. The meanings of these parameters are elucidated in Li et al.’s work <span class="citation" data-cites="li2012">[@li2012]</span>.</p>
-<p>Finally, the last preprocessing step involves individual tree detection, seeking a single <code>POINT</code> object for each tree. The <code>lidR::lmf</code> function, an implementation of the tree data using a local maximum approach, is utilized for this purpose <span class="citation" data-cites="popescu2004">[@popescu2004]</span>. The results are stored in GeoPackage files within our data structure.</p>
-<p>See <strong>?@sec-appendix-preprocessing</strong> for the implementation of the preprocessing.</p>
+<section id="sec-appendix-preprocessing" class="level2">
+<h2 class="anchored" data-anchor-id="sec-appendix-preprocessing">Script which can be used to do all preprocessing</h2>
+<p>Load the file with the research areas</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sf <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"research_areas.shp"</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 12 features and 3 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 7.071625 ymin: 51.08151 xmax: 8.539877 ymax: 52.25983
+Geodetic CRS:  WGS 84
+# A tibble: 12 × 4
+      id species name                                                   geometry
+   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                                             &lt;POLYGON [°]&gt;
+ 1     1 oak     rinkerode           ((7.678922 51.85789, 7.675446 51.85752, 7.…
+ 2     2 oak     hamm                ((7.858955 51.66699, 7.866444 51.66462, 7.…
+ 3     3 oak     muenster            ((7.618908 51.9154, 7.617384 51.9172, 7.61…
+ 4     4 pine    greffen             ((8.168691 51.98965, 8.167178 51.99075, 8.…
+ 5     5 pine    telgte              ((7.779728 52.00662, 7.781616 52.00662, 7.…
+ 6     6 pine    mesum               ((7.534424 52.25499, 7.53378 52.25983, 7.5…
+ 7     7 beech   bielefeld_brackwede ((8.524749 51.9921, 8.528418 51.99079, 8.5…
+ 8     8 beech   wuelfenrath         ((7.071625 51.29256, 7.072311 51.29334, 7.…
+ 9     9 beech   billerbeck          ((7.324729 51.99783, 7.323548 51.99923, 7.…
+10    10 spruce  marienheide         ((7.558102 51.08358, 7.558317 51.08527, 7.…
+11    11 spruce  brilon              ((8.532195 51.41029, 8.535027 51.41064, 8.…
+12    12 spruce  osterwald           ((8.369328 51.21693, 8.371238 51.21718, 8.…</code></pre>
+</div>
+</div>
+<p>Init the project</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lfa)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">sf_use_s2</span>(<span class="cn">FALSE</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>locations <span class="ot">&lt;-</span> <span class="fu">lfa_init</span>(<span class="st">"research_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Do all of the prprocessing steps</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations,retile,<span class="at">check_flag =</span> <span class="st">"retile"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>No further processing: flag retile is set!Function is already computed, no further computings here</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_intersect_areas, <span class="at">ctg =</span> <span class="cn">NULL</span>, <span class="at">areas_sf =</span> sf,<span class="at">check_flag =</span> <span class="st">"intersect"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>No further processing: flag intersect is set!Function is already computed, no further computings here</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_ground_correction, <span class="at">ctg =</span> <span class="cn">NULL</span>,<span class="at">check_flag =</span> <span class="st">"z_correction"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>No further processing: flag z_correction is set!Function is already computed, no further computings here</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_segmentation, <span class="at">ctg =</span> <span class="cn">NULL</span>,<span class="at">check_flag =</span> <span class="st">"segmentation"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>No further processing: flag segmentation is set!Function is already computed, no further computings here</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_detection, <span class="at">catalog =</span> <span class="cn">NULL</span>, <span class="at">write_to_file =</span> <span class="cn">TRUE</span>,<span class="at">check_flag =</span> <span class="st">"detection"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>No further processing: flag detection is set!Function is already computed, no further computings here</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+</div>
 
 
 </section>
 
-
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>https://www.opengeodata.nrw.de/produkte/geobasis/hm/3dm_l_las/3dm_l_las/, last visited 7th Dec 2023<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>https://github.com/joheisig/GEDIcalibratoR, last visited 7th Dec 2023<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section></div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
