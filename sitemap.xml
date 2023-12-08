@@ -2,18 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://github.com/jakobdanel/lidar-forest-analysis/methods/data-aquisition.html</loc>
-    <lastmod>2023-12-07T14:15:18.945Z</lastmod>
+    <lastmod>2023-12-08T13:25:31.934Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/jakobdanel/lidar-forest-analysis/report.html</loc>
-    <lastmod>2023-12-07T14:15:17.809Z</lastmod>
+    <lastmod>2023-12-08T13:25:31.302Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/jakobdanel/lidar-forest-analysis/appendix/preprocessing.html</loc>
-    <lastmod>2023-12-07T14:15:03.633Z</lastmod>
+    <lastmod>2023-12-08T13:25:14.062Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/jakobdanel/lidar-forest-analysis/appendix/package-docs/docs.html</loc>
+    <lastmod>2023-12-08T13:25:16.210Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/jakobdanel/lidar-forest-analysis/methods/preprocessing.html</loc>
-    <lastmod>2023-12-07T14:15:18.673Z</lastmod>
+    <lastmod>2023-12-08T13:25:31.666Z</lastmod>
   </url>
 </urlset>
