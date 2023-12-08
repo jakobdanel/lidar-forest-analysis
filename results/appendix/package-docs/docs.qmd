@@ -1,26 +1,114 @@
+### `lfa_capitalize_first_char`
+
+Capitalize First Character of a String
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`input_string`     |     A single-character string to be processed.
+
+
+#### Concept
+
+String Manipulation
+
+
+#### Description
+
+This function takes a string as input and returns the same string with the
+ first character capitalized. If the first character is already capitalized,
+ the function does nothing. If the first character is not from the alphabet,
+ an error is thrown.
+
+
+#### Details
+
+This function performs the following steps:
+  
+
+*  Checks if the input is a single-character string. 
+
+*  Verifies if the first character is from the alphabet (A-Z or a-z). 
+
+*  If the first character is not already capitalized, it capitalizes it. 
+
+*  Returns the modified string.
+
+
+#### Keyword
+
+alphabet
+
+
+#### Note
+
+This function is case-sensitive and assumes ASCII characters.
+
+
+#### References
+
+None
+
+
+#### Seealso
+
+This function is related to the basic string manipulation functions in base R.
+
+
+#### Value
+
+A modified string with the first character capitalized if it is
+ not already. If the first character is already capitalized, the original
+ string is returned.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Capitalize the first character of a string
+capitalize_first_char("hello") # Returns "Hello"
+capitalize_first_char("World") # Returns "World"
+
+# Error example (non-alphabetic first character)
+capitalize_first_char("123abc") # Throws an error
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_capitalize_first_char(input_string)
+```
+
+
+
 ### `lfa_check_flag`
 
 Check if a flag is set, indicating the completion of a specific process.
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
 `flag_name`     |     A character string specifying the name of the flag file. It should be a descriptive and unique identifier for the process being checked.
 
 
-#### description
+#### Description
 
 This function checks for the existence of a hidden flag file at a specified location within the working directory. If the flag file is found, a message is printed, and the function returns `TRUE` to indicate that the associated processing step has already been completed. If the flag file is not found, the function returns `FALSE` , indicating that further processing can proceed.
 
 
-#### value
+#### Value
 
 A logical value indicating whether the flag is set ( `TRUE` ) or not ( `FALSE` ).
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -29,27 +117,12 @@ lfa_check_flag("data_processing")
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_check_flag(flag_name)
 ```
-
-
-#### alias
-
-lfa_check_flag
-
-
-#### filename
-
-lfa_check_flag.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -58,12 +131,12 @@ lfa_check_flag.qmd
 Create tile location objects
 
 
-#### author
+#### Author
 
 Jakob Danel
 
 
-#### description
+#### Description
 
 This function traverses a directory structure to find LAZ files and creates
  tile location objects for each file. The function looks into the the `data` 
@@ -73,17 +146,17 @@ This function traverses a directory structure to find LAZ files and creates
  structure based on a shape file.
 
 
-#### seealso
+#### Seealso
 
 [`tile_location`](#tilelocation)
 
 
-#### value
+#### Value
 
 A vector containing tile location objects.
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -93,27 +166,12 @@ lfa_create_tile_location_objects()
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_create_tile_location_objects()
 ```
-
-
-#### alias
-
-lfa_create_tile_location_objects
-
-
-#### filename
-
-lfa_create_tile_location_objects.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -122,7 +180,7 @@ lfa_create_tile_location_objects.qmd
 Perform tree detection on a lidar catalog and optionally save the results to a file.
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
@@ -131,17 +189,17 @@ Argument      |Description
 `write_to_file`     |     A logical value indicating whether to save the detected tree information to a file. Default is TRUE.
 
 
-#### description
+#### Description
 
 This function utilizes lidar data to detect trees within a specified catalog. The detected tree information can be optionally saved to a file in the GeoPackage format. The function uses parallel processing to enhance efficiency.
 
 
-#### value
+#### Value
 
 A sf style data frame containing information about the detected trees.
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -150,27 +208,12 @@ lfa_detection(catalog = my_catalog, tile_location = my_tile_location, write_to_f
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_detection(catalog, tile_location, write_to_file = TRUE)
 ```
-
-
-#### alias
-
-lfa_detection
-
-
-#### filename
-
-lfa_detection.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -179,24 +222,24 @@ lfa_detection.qmd
 Download areas based on spatial features
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
 `sf_areas`     |     Spatial features representing areas to be downloaded. It must include columns like "species" "name" See details for more information.
 
 
-#### author
+#### Author
 
 Jakob Danel
 
 
-#### description
+#### Description
 
 This function initiates the data structure and downloads areas based on spatial features.
 
 
-#### details
+#### Details
 
 The input data frame, `sf_areas` , must have the following columns:
   
@@ -209,12 +252,12 @@ The input data frame, `sf_areas` , must have the following columns:
  and then iterates through the rows of `sf_areas` to download each specified area.
 
 
-#### value
+#### Value
 
 None
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -233,27 +276,12 @@ lfa_download_areas(sf_areas)
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_download_areas(sf_areas)
 ```
-
-
-#### alias
-
-lfa_download_areas
-
-
-#### filename
-
-lfa_download_areas.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -262,7 +290,7 @@ lfa_download_areas.qmd
 Download an las file from the state NRW from a specific location
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
@@ -271,37 +299,22 @@ Argument      |Description
 `location`     |     An sf object, which holds the location information for the area where the tile should be downloaded from.
 
 
-#### description
+#### Description
 
 It will download the file and save it to data/ list(list("html"), list(list("<species>"))) / list(list("html"), list(list("<name>"))) with the name of the tile
 
 
-#### value
+#### Value
 
 The LASCatalog object of the downloaded file
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_download(species, name, location)
 ```
-
-
-#### alias
-
-lfa_download
-
-
-#### filename
-
-lfa_download.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -310,24 +323,24 @@ lfa_download.qmd
 Get the path to a flag file indicating the completion of a specific process.
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
 `flag_name`     |     A character string specifying the name of the flag file. It should be a descriptive and unique identifier for the process being flagged.
 
 
-#### description
+#### Description
 
 This function constructs and returns the path to a hidden flag file, which serves as an indicator that a particular processing step has been completed. The flag file is created in a designated location within the working directory.
 
 
-#### value
+#### Value
 
 A character string representing the absolute path to the hidden flag file.
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -336,27 +349,12 @@ lfa_get_flag_path("data_processing")
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_get_flag_path(flag_name)
 ```
-
-
-#### alias
-
-lfa_get_flag_path
-
-
-#### filename
-
-lfa_get_flag_path.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -365,7 +363,7 @@ lfa_get_flag_path.qmd
 Correct the point clouds for correct ground imagery
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
@@ -373,12 +371,12 @@ Argument      |Description
 `tile_location`     |     A tile_location type object holding the information about the location of the cataog. This is used to save the catalog after processing too.
 
 
-#### author
+#### Author
 
 Jakob Danel
 
 
-#### description
+#### Description
 
 This function is needed to correct the Z value of the point cloud, relative to the real
  ground height. After using this function to your catalog, the Z values can be seen as the
@@ -387,33 +385,18 @@ This function is needed to correct the Z value of the point cloud, relative to t
  of the point cloud will be deleted!
 
 
-#### value
+#### Value
 
 A catalog with the corrected z values. The catalog is always stored at tile_location and
  holding only the transformed values.
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_ground_correction(ctg, tile_location)
 ```
-
-
-#### alias
-
-lfa_ground_correction
-
-
-#### filename
-
-lfa_ground_correction.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -422,19 +405,19 @@ lfa_ground_correction.qmd
 Initialize data structure for species and areas
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
 `sf_species`     |     A data frame with information about species and associated areas.
 
 
-#### description
+#### Description
 
 This function initializes the data structure for storing species and associated areas.
 
 
-#### details
+#### Details
 
 The input data frame, `sf_species` , should have at least the following columns:
   
@@ -448,12 +431,12 @@ The input data frame, `sf_species` , should have at least the following columns:
  them if they don't.
 
 
-#### value
+#### Value
 
 None
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -477,27 +460,12 @@ lfa_init_data_structure(sf_species)
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_init_data_structure(sf_species)
 ```
-
-
-#### alias
-
-lfa_init_data_structure
-
-
-#### filename
-
-lfa_init_data_structure.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -506,21 +474,21 @@ lfa_init_data_structure.qmd
 Initialize LFA (LiDAR forest analysis) data processing
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
 `sf_file`     |     A character string specifying the path to the shapefile containing spatial features of research areas.
 
 
-#### description
+#### Description
 
 This function initializes the LFA data processing by reading a shapefile containing
  spatial features of research areas, downloading the specified areas, and creating
  tile location objects for each area.
 
 
-#### details
+#### Details
 
 This function reads a shapefile ( `sf_file` ) using the `sf` package, which should
  contain information about research areas. It then calls the `lfa_download_areas` 
@@ -538,12 +506,12 @@ This function reads a shapefile ( `sf_file` ) using the `sf` package, which shou
 *  name: A string describing the location of the area.
 
 
-#### value
+#### Value
 
 A vector containing tile location objects.
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -561,27 +529,12 @@ lfa_init("custom_areas.shp")
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_init(sf_file = "research_areas.shp")
 ```
-
-
-#### alias
-
-lfa_init
-
-
-#### filename
-
-lfa_init.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -590,7 +543,7 @@ lfa_init.qmd
 Intersect Lidar Catalog with Spatial Features
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
@@ -599,12 +552,12 @@ Argument      |Description
 `areas_sf`     |     Spatial features defining areas.
 
 
-#### description
+#### Description
 
 This function intersects a Lidar catalog with a specific area defined by spatial features.
 
 
-#### details
+#### Details
 
 The function intersects the Lidar catalog specified by `ctg` with a specific area defined by
  the `tile_location` object and `areas_sf` . It removes points outside the specified area and
@@ -627,17 +580,17 @@ The function intersects the Lidar catalog specified by `ctg` with a specific are
  issued, and NULL is returned.
 
 
-#### seealso
+#### Seealso
 
 Other functions in the Lidar forest analysis (LFA) package.
 
 
-#### value
+#### Value
 
 A modified LAScatalog object with points outside the specified area removed.
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -649,27 +602,12 @@ lfa_intersect_areas(ctg, tile_location, areas_sf)
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_intersect_areas(ctg, tile_location, areas_sf)
 ```
-
-
-#### alias
-
-lfa_intersect_areas
-
-
-#### filename
-
-lfa_intersect_areas.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -678,7 +616,7 @@ lfa_intersect_areas.qmd
 Loading the catalog if it is not present
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
@@ -686,39 +624,24 @@ Argument      |Description
 `tile_location`     |     The location to look for the catalog tiles, if their are not present
 
 
-#### description
+#### Description
 
 This function checks if the catalog is `NULL` . If it is it will load the
  catalog from the `tile_location`
 
 
-#### value
+#### Value
 
 The provided ctg object if not null, else the catalog for the tiles
  of the tile_location.
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_load_ctg_if_not_present(ctg, tile_location)
 ```
-
-
-#### alias
-
-lfa_load_ctg_if_not_present
-
-
-#### filename
-
-lfa_load_ctg_if_not_present.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -727,7 +650,7 @@ lfa_load_ctg_if_not_present.qmd
 Map Function Over Tile Locations
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
@@ -736,12 +659,12 @@ Argument      |Description
 `...`     |     Additional arguments to be passed to the mapping function.
 
 
-#### description
+#### Description
 
 This function applies a specified mapping function to each tile location in a list.
 
 
-#### details
+#### Details
 
 This function iterates over each tile location in the provided list ( `tile_locations` )
  and applies the specified mapping function ( `map_function` ) to each tile location.
@@ -752,18 +675,18 @@ This function iterates over each tile location in the provided list ( `tile_loca
  such as loading Lidar data, processing areas, or other tasks that involve tile locations.
 
 
-#### seealso
+#### Seealso
 
 The mapping function provided should be compatible with the structure and requirements
  of the tile locations and the specific task being performed.
 
 
-#### value
+#### Value
 
 None
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -775,27 +698,12 @@ lfa_map_tile_locations(tile_locations, my_mapping_function, param1 = "value")
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_map_tile_locations(tile_locations, map_function, check_flag = NULL, ...)
 ```
-
-
-#### alias
-
-lfa_map_tile_locations
-
-
-#### filename
-
-lfa_map_tile_locations.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -804,7 +712,7 @@ lfa_map_tile_locations.qmd
 Merge and Save Text Files in a Directory
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
@@ -812,7 +720,7 @@ Argument      |Description
 `output_name`     |     The name for the output file where the merged content will be saved.
 
 
-#### description
+#### Description
 
 This function takes an input directory and an output name as arguments.
  It merges the textual content of all files in the specified directory into
@@ -822,7 +730,7 @@ This function takes an input directory and an output name as arguments.
  deleted.
 
 
-#### details
+#### Details
 
 This function reads the content of each text file in the specified input directory
  and concatenates them into a single string. Each file's content is separated by a newline
@@ -830,18 +738,18 @@ This function reads the content of each text file in the specified input directo
  in the same directory. Finally, all input files are deleted from the directory.
 
 
-#### seealso
+#### Seealso
 
 [`readLines`](#readlines) , [`writeLines`](#writelines) , [`file.remove`](#file.remove)
 
 
-#### value
+#### Value
 
 This function does not explicitly return any value. It prints a message
  indicating the successful completion of the merging and saving process.
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -853,27 +761,12 @@ lfa_merge_and_save("data_files", "merged_output")
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_merge_and_save(input_directory, output_name)
 ```
-
-
-#### alias
-
-lfa_merge_and_save
-
-
-#### filename
-
-lfa_merge_and_save.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -882,7 +775,7 @@ lfa_merge_and_save.qmd
 Convert Rd File to Markdown
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
@@ -891,7 +784,7 @@ Argument      |Description
 `append`     |     Logical, indicating whether to append to an existing file (default is FALSE).
 
 
-#### description
+#### Description
 
 IMPORTANT NOTE: 
  This function is nearly identical to the `Rd2md::Rd2markdown` function from the `Rd2md` 
@@ -905,7 +798,7 @@ IMPORTANT NOTE:
 *  We want to exclude certain tags from our implementation.
 
 
-#### details
+#### Details
 
 For that reason we copied the method and made changes as needed and also added this custom documentation.
  
@@ -927,18 +820,18 @@ For that reason we copied the method and made changes as needed and also added t
 *  Saves the resulting Markdown file at the specified location.
 
 
-#### seealso
+#### Seealso
 
 [`Rd2md::parseRd`](#rd2md::parserd)
 
 
-#### value
+#### Value
 
 This function does not explicitly return any value. It saves the converted Markdown file
  at the specified location as described in the details section.
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -950,27 +843,12 @@ lfa_rd_to_md("path/to/your/file.Rd", "path/to/existing/output/file.md", append =
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_rd_to_qmd(rdfile, outfile, append = FALSE)
 ```
-
-
-#### alias
-
-lfa_rd_to_qmd
-
-
-#### filename
-
-lfa_rd_to_qmd.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -979,7 +857,7 @@ lfa_rd_to_qmd.qmd
 Convert Rd Files to Markdown and Merge Results
 
 
-#### description
+#### Description
 
 This function converts all Rd (R documentation) files in the "man" directory
  to Markdown format (.qmd) and saves the converted files in the "results/appendix/package-docs" directory.
@@ -987,7 +865,7 @@ This function converts all Rd (R documentation) files in the "man" directory
  the merged content into a file named "docs.qmd" in the "results/appendix/package-docs" directory.
 
 
-#### details
+#### Details
 
 The function performs the following steps:
   
@@ -1005,18 +883,18 @@ The function performs the following steps:
 *  Saves the merged content into a file named "docs.qmd" in the "results/appendix/package-docs" directory.
 
 
-#### seealso
+#### Seealso
 
 [`lfa_rd_to_qmd`](#lfardtoqmd) , [`lfa_merge_and_save`](#lfamergeandsave)
 
 
-#### value
+#### Value
 
 This function does not explicitly return any value. It performs the conversion,
  merging, and saving operations as described in the details section.
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -1025,27 +903,12 @@ lfa_rd_to_results()
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_rd_to_results()
 ```
-
-
-#### alias
-
-lfa_rd_to_results
-
-
-#### filename
-
-lfa_rd_to_results.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -1054,7 +917,7 @@ lfa_rd_to_results.qmd
 Segment the elements of an point cloud by trees
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
@@ -1062,12 +925,12 @@ Argument      |Description
 `tile_location`     |     A tile_location type object holding the information about the location of the catalog. This is used to save the catalog after processing too.
 
 
-#### author
+#### Author
 
 Jakob Danel
 
 
-#### description
+#### Description
 
 This function will try to to divide the hole point cloud into unique trees.
  Therefore it is assigning for each chunk of the catalog  a `treeID` for each
@@ -1077,32 +940,17 @@ This function will try to to divide the hole point cloud into unique trees.
  of the point cloud will be deleted!
 
 
-#### value
+#### Value
 
 A catalog where each chunk has additional `treeID` values indicating the belonging tree.
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_segmentation(ctg, tile_location)
 ```
-
-
-#### alias
-
-lfa_segmentation
-
-
-#### filename
-
-lfa_segmentation.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 
 
@@ -1111,24 +959,24 @@ lfa_segmentation.qmd
 Set a flag to indicate the completion of a specific process.
 
 
-#### arguments
+#### Arguments
 
 Argument      |Description
 ------------- |----------------
 `flag_name`     |     A character string specifying the name of the flag file. It should be a descriptive and unique identifier for the process being flagged.
 
 
-#### description
+#### Description
 
 This function creates a hidden flag file at a specified location within the working directory to indicate that a particular processing step has been completed. If the flag file already exists, a warning is issued.
 
 
-#### value
+#### Value
 
 This function does not have a formal return value.
 
 
-#### examples
+#### Examples
 
 ```{r}
 #| eval: false
@@ -1137,26 +985,11 @@ lfa_set_flag("data_processing")
 ```
 
 
-#### usage
+#### Usage
 
 ```{r}
 #| eval: false
 lfa_set_flag(flag_name)
 ```
-
-
-#### alias
-
-lfa_set_flag
-
-
-#### filename
-
-lfa_set_flag.qmd
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
 
 

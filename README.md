@@ -107,11 +107,14 @@ For referencing add a `.bibtex` entry into the file `results/references.bib`. Yo
 
 #### Build and deploy
 
+For building the reports pdf:
 ```
-quarto render
+./build_report.sh
+```
+For deploying the pages to GitHub Pages:
+```
 quarto publish gh-pages
 ```
-
 ## Dependencies
 ```
 GEDIcalibratoR

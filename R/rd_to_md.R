@@ -83,11 +83,11 @@ lfa_rd_to_qmd <- function(rdfile, outfile, append = FALSE)
         file = outfile, append = TRUE, sep = "")
     cat(paste0(results$title, section.sep), file = outfile,
         append = TRUE, sep = "\n")
-    sections.print <- setdiff(names(results), c("name", "title"))
+    sections.print <- setdiff(names(results), c("name", "title","alias","filename","directory"))
     for (i in sections.print[!sections.print %in% c("name",
                                                     "title")]) {
       if (i %in% names(results)) {
-        cat(paste(subsection, i), section.sep,
+        cat(paste(subsection, lfa_capitalize_first_char(i)), section.sep,
             file = outfile, append = TRUE, sep = "")
         if (i %in% c("examples", "usage")) {
           cat("```{r}\n#| eval: false", paste(results[[i]], collapse = "\n"),
