@@ -3,9 +3,9 @@
 #' *IMPORTANT NOTE:*
 #' This function is nearly identical to the `Rd2md::Rd2markdown` function from the `Rd2md`
 #' package. We needed to implement our own version of it because of various reasons:
-#'   1. The algorithm uses hardcoded header sizes (h1 and h2 in original) which is not feasible for our use-case of the markdown.
-#'   2. We needed to add some Quarto Markdown specifics, e.g. to make sure that the examples will not be runned.
-#'   3. We want to exclude certain tags from our implementation.
+#'   - The algorithm uses hardcoded header sizes (h1 and h2 in original) which is not feasible for our use-case of the markdown.
+#'   - We needed to add some Quarto Markdown specifics, e.g. to make sure that the examples will not be runned.
+#'   - We want to exclude certain tags from our implementation.
 #'
 #' For that reason we copied the method and made changes as needed and also added this custom documentation.
 #'
@@ -23,10 +23,10 @@
 #'
 #' @details
 #' The function performs the following steps:
-#'   1. Parses the Rd file using the Rd2md package.
-#'   2. Creates a Markdown file with sections for the function's name, title, and additional content.
-#'   3. Appends the content to an existing file if `append` is set to TRUE.
-#'   4. Saves the resulting Markdown file at the specified location.
+#'   - Parses the Rd file using the Rd2md package.
+#'   - Creates a Markdown file with sections for the function's name, title, and additional content.
+#'   - Appends the content to an existing file if `append` is set to TRUE.
+#'   - Saves the resulting Markdown file at the specified location.
 #'
 #' @seealso
 #' \code{\link{Rd2md::parseRd}}

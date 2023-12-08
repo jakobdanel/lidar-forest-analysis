@@ -21,7 +21,7 @@ at the specified location as described in the details section.
 \emph{IMPORTANT NOTE:}
 This function is nearly identical to the \code{Rd2md::Rd2markdown} function from the \code{Rd2md}
 package. We needed to implement our own version of it because of various reasons:
-\enumerate{
+\itemize{
 \item The algorithm uses hardcoded header sizes (h1 and h2 in original) which is not feasible for our use-case of the markdown.
 \item We needed to add some Quarto Markdown specifics, e.g. to make sure that the examples will not be runned.
 \item We want to exclude certain tags from our implementation.
@@ -37,7 +37,7 @@ sections for the function's name, title, and additional content such as examples
 usage, arguments, and other sections present in the Rd file.
 
 The function performs the following steps:
-\enumerate{
+\itemize{
 \item Parses the Rd file using the Rd2md package.
 \item Creates a Markdown file with sections for the function's name, title, and additional content.
 \item Appends the content to an existing file if \code{append} is set to TRUE.

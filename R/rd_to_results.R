@@ -9,12 +9,12 @@
 #'
 #' @details
 #' The function performs the following steps:
-#'   1. Removes any existing "docs.qmd" file in the "results/appendix/package-docs" directory.
-#'   2. Finds all Rd files in the "man" directory.
-#'   3. Converts each Rd file to Markdown format (.qmd) using the `lfa_rd_to_qmd` function.
-#'   4. Saves the converted Markdown files in the "results/appendix/package-docs" directory.
-#'   5. Merges the content of all converted Markdown files into a single string.
-#'   6. Saves the merged content into a file named "docs.qmd" in the "results/appendix/package-docs" directory.
+#'   - Removes any existing "docs.qmd" file in the "results/appendix/package-docs" directory.
+#'   - Finds all Rd files in the "man" directory.
+#'   - Converts each Rd file to Markdown format (.qmd) using the `lfa_rd_to_qmd` function.
+#'   - Saves the converted Markdown files in the "results/appendix/package-docs" directory.
+#'   - Merges the content of all converted Markdown files into a single string.
+#'   - Saves the merged content into a file named "docs.qmd" in the "results/appendix/package-docs" directory.
 #'
 #' @seealso
 #' \code{\link{lfa_rd_to_qmd}}, \code{\link{lfa_merge_and_save}}

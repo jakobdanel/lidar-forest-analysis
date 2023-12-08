@@ -18,7 +18,7 @@ the merged content into a file named "docs.qmd" in the "results/appendix/package
 }
 \details{
 The function performs the following steps:
-\enumerate{
+\itemize{
 \item Removes any existing "docs.qmd" file in the "results/appendix/package-docs" directory.
 \item Finds all Rd files in the "man" directory.
 \item Converts each Rd file to Markdown format (.qmd) using the \code{lfa_rd_to_qmd} function.
