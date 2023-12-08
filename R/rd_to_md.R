@@ -1,5 +1,48 @@
+#' Convert Rd File to Markdown
+#'
+#' *IMPORTANT NOTE:*
+#' This function is nearly identical to the `Rd2md::Rd2markdown` function from the `Rd2md`
+#' package. We needed to implement our own version of it because of various reasons:
+#'   1. The algorithm uses hardcoded header sizes (h1 and h2 in original) which is not feasible for our use-case of the markdown.
+#'   2. We needed to add some Quarto Markdown specifics, e.g. to make sure that the examples will not be runned.
+#'   3. We want to exclude certain tags from our implementation.
+#'
+#' For that reason we copied the method and made changes as needed and also added this custom documentation.
+#'
+#' This function converts an Rd (R documentation) file to Markdown format (.md) and
+#' saves the converted file at the specified location. The function allows appending
+#' to an existing file or creating a new one. The resulting Markdown file includes
+#' sections for the function's name, title, and additional content such as examples,
+#' usage, arguments, and other sections present in the Rd file.
+#'
+#' @param rdfile The path to the Rd file or a parsed Rd object.
+#' @param outfile The path to the output Markdown file (including the file extension).
+#' @param append Logical, indicating whether to append to an existing file (default is FALSE).
+#'
 #' @export
-lfa_rd_to_md <- function(rdfile, outfile, append = FALSE)
+#'
+#' @details
+#' The function performs the following steps:
+#'   1. Parses the Rd file using the Rd2md package.
+#'   2. Creates a Markdown file with sections for the function's name, title, and additional content.
+#'   3. Appends the content to an existing file if `append` is set to TRUE.
+#'   4. Saves the resulting Markdown file at the specified location.
+#'
+#' @seealso
+#' \code{\link{Rd2md::parseRd}}
+#'
+#' @examples
+#' # Convert Rd file to Markdown and save it
+#' lfa_rd_to_md("path/to/your/file.Rd", "path/to/your/output/file.md")
+#'
+#' # Convert Rd file to Markdown and append to an existing file
+#' lfa_rd_to_md("path/to/your/file.Rd", "path/to/existing/output/file.md", append = TRUE)
+#'
+#' @return
+#' This function does not explicitly return any value. It saves the converted Markdown file
+#' at the specified location as described in the details section.
+#' @export
+lfa_rd_to_qmd <- function(rdfile, outfile, append = FALSE)
 {
   append <- as.logical(append)
   if (length(append) != 1)
@@ -15,7 +58,7 @@ lfa_rd_to_md <- function(rdfile, outfile, append = FALSE)
       stop("If append=TRUE, the outfile must exists already.")
   }
   type <- ifelse(inherits(rdfile, "Rd"), "bin", "src")
-  file.ext <- "md"
+  file.ext <- "qmd"
   section <- "###"
   subsection <- "####"
   section.sep <- "\n\n"
@@ -73,69 +116,4 @@ lfa_rd_to_md <- function(rdfile, outfile, append = FALSE)
   invisible(results)
 }
 
-
-#' @export
-lfa_rd_to_results <- function() {
-  # find all files
-  file.remove(file.path(getwd(),"results","appendix","package-docs","docs.qmd"))
-  files <- list.files(path = "./man/", pattern = ".Rd", full.names = "FALSE")
-  names <- tools::file_path_sans_ext(files)
-  in_path <- file.path(getwd(),"man",files)
-  out_path <- file.path(getwd(),"results","appendix","package-docs",paste0(names,".qmd"))
-  for(i in 1:length(in_path)){
-    if(file.exists(out_path[i])){
-      file.remove(out_path[i])
-    }
-    lfa_rd_to_md(in_path[i],out_path[i])
-  }
-  lfa_merge_and_save(file.path(getwd(),"results","appendix","package-docs"),"docs.qmd")
-}
-
-
-#' @export
-lfa_merge_and_save <- function(input_directory, output_name) {
-  # Check if the input directory exists
-  if (!file.exists(input_directory) || !file.info(input_directory)$isdir) {
-    stop("Error: The specified input directory does not exist.")
-  }
-
-  # Get a list of files in the input directory
-  files <- list.files(path = input_directory, full.names = TRUE)
-
-  # Check if there are files in the directory
-  if (length(files) == 0) {
-    stop("Error: No files found in the specified directory.")
-  }
-
-  # Read the content of each file and concatenate them into a single string
-  merged_content <- character()
-  for (file in files) {
-    content <- readLines(file, warn = FALSE)
-    merged_content <- c(merged_content, content, "")
-  }
-
-  # Remove the last empty element
-  merged_content <- head(merged_content, -1)
-
-  # Concatenate the lines with a newline character
-  merged_content <- paste(merged_content, collapse = "\n")
-
-  # Save the merged content to a file in the same directory
-  output_path <- file.path(input_directory, output_name)
-  writeLines(merged_content, con = output_path)
-
-  # Delete all input files
-  file.remove(files)
-
-  cat("Merging and saving completed successfully.\n")
-}
-
-# Example usage:
-# Replace 'input_directory' and 'output_name' with your desired values
-# merge_and_save("path/to/your/input/directory", "output_file_name")
-
-
-# Example usage:
-# Replace 'input_directory' and 'output_name' with your desired values
-# merge_and_save("path/to/your/input/directory", "output_file_name")
 

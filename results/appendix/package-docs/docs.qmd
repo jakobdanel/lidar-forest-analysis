@@ -44,7 +44,7 @@ lfa_check_flag
 
 #### filename
 
-lfa_check_flag.md
+lfa_check_flag.qmd
 
 
 #### directory
@@ -108,7 +108,7 @@ lfa_create_tile_location_objects
 
 #### filename
 
-lfa_create_tile_location_objects.md
+lfa_create_tile_location_objects.qmd
 
 
 #### directory
@@ -165,7 +165,7 @@ lfa_detection
 
 #### filename
 
-lfa_detection.md
+lfa_detection.qmd
 
 
 #### directory
@@ -248,7 +248,7 @@ lfa_download_areas
 
 #### filename
 
-lfa_download_areas.md
+lfa_download_areas.qmd
 
 
 #### directory
@@ -296,93 +296,7 @@ lfa_download
 
 #### filename
 
-lfa_download.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_get_detection_area`
-
-Get Detection for an area
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`species`     |     A character string specifying the target species.
-`name`     |     A character string specifying the name of the tile.
-
-
-#### description
-
-Retrieves the tree detection information for a specified species and tile.
-
-
-#### details
-
-This function reads tree detection data from geopackage files within the specified tile location for a given species. It then combines the data into a single SF data frame and returns it. The function assumes that the tree detection files follow a naming convention with the pattern "_detection.gpkg".
-
-
-#### keyword
-
-spatial
-
-
-#### references
-
-This function is part of the LiDAR Forest Analysis (LFA) package.
-
-
-#### seealso
-
-[`get_tile_dir`](#gettiledir)
-
-
-#### value
-
-A Simple Features (SF) data frame containing tree detection information for the specified species and tile.
-
-
-#### examples
-
-```{r}
-#| eval: false
-# Retrieve tree detection data for species "example_species" in tile "example_tile"
-trees_data <- lfa_get_detection_tile_location("example_species", "example_tile")
-
-# Example usage:
-trees_data <- lfa_get_detection_tile_location("example_species", "example_tile")
-
-# No trees found scenario:
-empty_data <- lfa_get_detection_tile_location("nonexistent_species", "nonexistent_tile")
-# The result will be an empty data frame if no trees are found for the specified species and tile.
-
-# Error handling:
-# In case of invalid inputs, the function may throw errors. Ensure correct species and tile names are provided.
-```
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_get_detection_area(species, name)
-```
-
-
-#### alias
-
-lfa_get_detection_area
-
-
-#### filename
-
-lfa_get_detection_area.md
+lfa_download.qmd
 
 
 #### directory
@@ -437,7 +351,7 @@ lfa_get_flag_path
 
 #### filename
 
-lfa_get_flag_path.md
+lfa_get_flag_path.qmd
 
 
 #### directory
@@ -494,7 +408,7 @@ lfa_ground_correction
 
 #### filename
 
-lfa_ground_correction.md
+lfa_ground_correction.qmd
 
 
 #### directory
@@ -578,7 +492,7 @@ lfa_init_data_structure
 
 #### filename
 
-lfa_init_data_structure.md
+lfa_init_data_structure.qmd
 
 
 #### directory
@@ -662,7 +576,7 @@ lfa_init
 
 #### filename
 
-lfa_init.md
+lfa_init.qmd
 
 
 #### directory
@@ -750,7 +664,7 @@ lfa_intersect_areas
 
 #### filename
 
-lfa_intersect_areas.md
+lfa_intersect_areas.qmd
 
 
 #### directory
@@ -799,7 +713,7 @@ lfa_load_ctg_if_not_present
 
 #### filename
 
-lfa_load_ctg_if_not_present.md
+lfa_load_ctg_if_not_present.qmd
 
 
 #### directory
@@ -876,7 +790,257 @@ lfa_map_tile_locations
 
 #### filename
 
-lfa_map_tile_locations.md
+lfa_map_tile_locations.qmd
+
+
+#### directory
+
+/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
+
+
+
+### `lfa_merge_and_save`
+
+Merge and Save Text Files in a Directory
+
+
+#### arguments
+
+Argument      |Description
+------------- |----------------
+`input_directory`     |     The path to the input directory containing text files.
+`output_name`     |     The name for the output file where the merged content will be saved.
+
+
+#### description
+
+This function takes an input directory and an output name as arguments.
+ It merges the textual content of all files in the specified directory into
+ a single string, with each file's content separated by a newline character.
+ The merged content is then saved into a file named after the output name
+ in the same directory. After the merging is complete, all input files are
+ deleted.
+
+
+#### details
+
+This function reads the content of each text file in the specified input directory
+ and concatenates them into a single string. Each file's content is separated by a newline
+ character. The merged content is then saved into a file named after the output name
+ in the same directory. Finally, all input files are deleted from the directory.
+
+
+#### seealso
+
+[`readLines`](#readlines) , [`writeLines`](#writelines) , [`file.remove`](#file.remove)
+
+
+#### value
+
+This function does not explicitly return any value. It prints a message
+ indicating the successful completion of the merging and saving process.
+
+
+#### examples
+
+```{r}
+#| eval: false
+# Merge text files in the "data_files" directory and save the result in "merged_output"
+lfa_merge_and_save("data_files", "merged_output")
+
+# Merge text files in the "data_files" directory and save the result in "merged_output"
+lfa_merge_and_save("data_files", "merged_output")
+```
+
+
+#### usage
+
+```{r}
+#| eval: false
+lfa_merge_and_save(input_directory, output_name)
+```
+
+
+#### alias
+
+lfa_merge_and_save
+
+
+#### filename
+
+lfa_merge_and_save.qmd
+
+
+#### directory
+
+/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
+
+
+
+### `lfa_rd_to_qmd`
+
+Convert Rd File to Markdown
+
+
+#### arguments
+
+Argument      |Description
+------------- |----------------
+`rdfile`     |     The path to the Rd file or a parsed Rd object.
+`outfile`     |     The path to the output Markdown file (including the file extension).
+`append`     |     Logical, indicating whether to append to an existing file (default is FALSE).
+
+
+#### description
+
+IMPORTANT NOTE: 
+ This function is nearly identical to the `Rd2md::Rd2markdown` function from the `Rd2md` 
+ package. We needed to implement our own version of it because of various reasons:
+  
+
+*  The algorithm uses hardcoded header sizes (h1 and h2 in original) which is not feasible for our use-case of the markdown. 
+
+*  We needed to add some Quarto Markdown specifics, e.g. to make sure that the examples will not be runned. 
+
+*  We want to exclude certain tags from our implementation.
+
+
+#### details
+
+For that reason we copied the method and made changes as needed and also added this custom documentation.
+ 
+ This function converts an Rd (R documentation) file to Markdown format (.md) and
+ saves the converted file at the specified location. The function allows appending
+ to an existing file or creating a new one. The resulting Markdown file includes
+ sections for the function's name, title, and additional content such as examples,
+ usage, arguments, and other sections present in the Rd file.
+ 
+ The function performs the following steps:
+  
+
+*  Parses the Rd file using the Rd2md package. 
+
+*  Creates a Markdown file with sections for the function's name, title, and additional content. 
+
+*  Appends the content to an existing file if `append` is set to TRUE. 
+
+*  Saves the resulting Markdown file at the specified location.
+
+
+#### seealso
+
+[`Rd2md::parseRd`](#rd2md::parserd)
+
+
+#### value
+
+This function does not explicitly return any value. It saves the converted Markdown file
+ at the specified location as described in the details section.
+
+
+#### examples
+
+```{r}
+#| eval: false
+# Convert Rd file to Markdown and save it
+lfa_rd_to_md("path/to/your/file.Rd", "path/to/your/output/file.md")
+
+# Convert Rd file to Markdown and append to an existing file
+lfa_rd_to_md("path/to/your/file.Rd", "path/to/existing/output/file.md", append = TRUE)
+```
+
+
+#### usage
+
+```{r}
+#| eval: false
+lfa_rd_to_qmd(rdfile, outfile, append = FALSE)
+```
+
+
+#### alias
+
+lfa_rd_to_qmd
+
+
+#### filename
+
+lfa_rd_to_qmd.qmd
+
+
+#### directory
+
+/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
+
+
+
+### `lfa_rd_to_results`
+
+Convert Rd Files to Markdown and Merge Results
+
+
+#### description
+
+This function converts all Rd (R documentation) files in the "man" directory
+ to Markdown format (.qmd) and saves the converted files in the "results/appendix/package-docs" directory.
+ It then merges the converted Markdown files into a single string and saves
+ the merged content into a file named "docs.qmd" in the "results/appendix/package-docs" directory.
+
+
+#### details
+
+The function performs the following steps:
+  
+
+*  Removes any existing "docs.qmd" file in the "results/appendix/package-docs" directory. 
+
+*  Finds all Rd files in the "man" directory. 
+
+*  Converts each Rd file to Markdown format (.qmd) using the `lfa_rd_to_qmd` function. 
+
+*  Saves the converted Markdown files in the "results/appendix/package-docs" directory. 
+
+*  Merges the content of all converted Markdown files into a single string. 
+
+*  Saves the merged content into a file named "docs.qmd" in the "results/appendix/package-docs" directory.
+
+
+#### seealso
+
+[`lfa_rd_to_qmd`](#lfardtoqmd) , [`lfa_merge_and_save`](#lfamergeandsave)
+
+
+#### value
+
+This function does not explicitly return any value. It performs the conversion,
+ merging, and saving operations as described in the details section.
+
+
+#### examples
+
+```{r}
+#| eval: false
+# Convert Rd files to Markdown and merge the results
+lfa_rd_to_results()
+```
+
+
+#### usage
+
+```{r}
+#| eval: false
+lfa_rd_to_results()
+```
+
+
+#### alias
+
+lfa_rd_to_results
+
+
+#### filename
+
+lfa_rd_to_results.qmd
 
 
 #### directory
@@ -933,7 +1097,7 @@ lfa_segmentation
 
 #### filename
 
-lfa_segmentation.md
+lfa_segmentation.qmd
 
 
 #### directory
@@ -988,1006 +1152,7 @@ lfa_set_flag
 
 #### filename
 
-lfa_set_flag.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_check_flag`
-
-Check if a flag is set, indicating the completion of a specific process.
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`flag_name`     |     A character string specifying the name of the flag file. It should be a descriptive and unique identifier for the process being checked.
-
-
-#### description
-
-This function checks for the existence of a hidden flag file at a specified location within the working directory. If the flag file is found, a message is printed, and the function returns `TRUE` to indicate that the associated processing step has already been completed. If the flag file is not found, the function returns `FALSE` , indicating that further processing can proceed.
-
-
-#### value
-
-A logical value indicating whether the flag is set ( `TRUE` ) or not ( `FALSE` ).
-
-
-#### examples
-
-```{r}
-#| eval: false
-# Check if the flag for a process named "data_processing" is set
-lfa_check_flag("data_processing")
-```
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_check_flag(flag_name)
-```
-
-
-#### alias
-
-lfa_check_flag
-
-
-#### filename
-
-lfa_check_flag.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_create_tile_location_objects`
-
-Create tile location objects
-
-
-#### author
-
-Jakob Danel
-
-
-#### description
-
-This function traverses a directory structure to find LAZ files and creates
- tile location objects for each file. The function looks into the the `data` 
- directory of the repository/working directory. It then creates `tile_location` 
- objects based on the folder structure. The folder structure should not be
- touched by hand, but created by `lfa_init_data_structure()` which builds the
- structure based on a shape file.
-
-
-#### seealso
-
-[`tile_location`](#tilelocation)
-
-
-#### value
-
-A vector containing tile location objects.
-
-
-#### examples
-
-```{r}
-#| eval: false
-lfa_create_tile_location_objects()
-
-lfa_create_tile_location_objects()
-```
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_create_tile_location_objects()
-```
-
-
-#### alias
-
-lfa_create_tile_location_objects
-
-
-#### filename
-
-lfa_create_tile_location_objects.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_detection`
-
-Perform tree detection on a lidar catalog and optionally save the results to a file.
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`catalog`     |     A lidar catalog containing point cloud data. If set to NULL, the function attempts to read the catalog from the specified tile location.
-`tile_location`     |     An object specifying the location of the lidar tile. If catalog is NULL, the function attempts to read the catalog from this tile location.
-`write_to_file`     |     A logical value indicating whether to save the detected tree information to a file. Default is TRUE.
-
-
-#### description
-
-This function utilizes lidar data to detect trees within a specified catalog. The detected tree information can be optionally saved to a file in the GeoPackage format. The function uses parallel processing to enhance efficiency.
-
-
-#### value
-
-A sf style data frame containing information about the detected trees.
-
-
-#### examples
-
-```{r}
-#| eval: false
-# Perform tree detection on a catalog and save the results to a file
-lfa_detection(catalog = my_catalog, tile_location = my_tile_location, write_to_file = TRUE)
-```
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_detection(catalog, tile_location, write_to_file = TRUE)
-```
-
-
-#### alias
-
-lfa_detection
-
-
-#### filename
-
-lfa_detection.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_download_areas`
-
-Download areas based on spatial features
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`sf_areas`     |     Spatial features representing areas to be downloaded. It must include columns like "species" "name" See details for more information.
-
-
-#### author
-
-Jakob Danel
-
-
-#### description
-
-This function initiates the data structure and downloads areas based on spatial features.
-
-
-#### details
-
-The input data frame, `sf_areas` , must have the following columns:
-  
-
-*  "species": The species associated with the area. 
-
-*  "name": The name of the area. 
- 
- The function uses the `lfa_init_data_structure` function to set up the data structure
- and then iterates through the rows of `sf_areas` to download each specified area.
-
-
-#### value
-
-None
-
-
-#### examples
-
-```{r}
-#| eval: false
-lfa_download_areas(sf_areas)
-
-
-# Example spatial features data frame
-sf_areas <- data.frame(
-species = c("SpeciesA", "SpeciesB"),
-name = c("Area1", "Area2"),
-# Must include also other attributes specialized to sf objects
-# such as geometry, for processing of the download
-)
-
-lfa_download_areas(sf_areas)
-```
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_download_areas(sf_areas)
-```
-
-
-#### alias
-
-lfa_download_areas
-
-
-#### filename
-
-lfa_download_areas.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_download`
-
-Download an las file from the state NRW from a specific location
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`species`     |     The species of the tree which is observed at this location
-`name`     |     The name of the area that is observed
-`location`     |     An sf object, which holds the location information for the area where the tile should be downloaded from.
-
-
-#### description
-
-It will download the file and save it to data/ list(list("html"), list(list("<species>"))) / list(list("html"), list(list("<name>"))) with the name of the tile
-
-
-#### value
-
-The LASCatalog object of the downloaded file
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_download(species, name, location)
-```
-
-
-#### alias
-
-lfa_download
-
-
-#### filename
-
-lfa_download.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_get_detection_area`
-
-Get Detection for an area
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`species`     |     A character string specifying the target species.
-`name`     |     A character string specifying the name of the tile.
-
-
-#### description
-
-Retrieves the tree detection information for a specified species and tile.
-
-
-#### details
-
-This function reads tree detection data from geopackage files within the specified tile location for a given species. It then combines the data into a single SF data frame and returns it. The function assumes that the tree detection files follow a naming convention with the pattern "_detection.gpkg".
-
-
-#### keyword
-
-spatial
-
-
-#### references
-
-This function is part of the LiDAR Forest Analysis (LFA) package.
-
-
-#### seealso
-
-[`get_tile_dir`](#gettiledir)
-
-
-#### value
-
-A Simple Features (SF) data frame containing tree detection information for the specified species and tile.
-
-
-#### examples
-
-```{r}
-#| eval: false
-# Retrieve tree detection data for species "example_species" in tile "example_tile"
-trees_data <- lfa_get_detection_tile_location("example_species", "example_tile")
-
-# Example usage:
-trees_data <- lfa_get_detection_tile_location("example_species", "example_tile")
-
-# No trees found scenario:
-empty_data <- lfa_get_detection_tile_location("nonexistent_species", "nonexistent_tile")
-# The result will be an empty data frame if no trees are found for the specified species and tile.
-
-# Error handling:
-# In case of invalid inputs, the function may throw errors. Ensure correct species and tile names are provided.
-```
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_get_detection_area(species, name)
-```
-
-
-#### alias
-
-lfa_get_detection_area
-
-
-#### filename
-
-lfa_get_detection_area.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_get_flag_path`
-
-Get the path to a flag file indicating the completion of a specific process.
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`flag_name`     |     A character string specifying the name of the flag file. It should be a descriptive and unique identifier for the process being flagged.
-
-
-#### description
-
-This function constructs and returns the path to a hidden flag file, which serves as an indicator that a particular processing step has been completed. The flag file is created in a designated location within the working directory.
-
-
-#### value
-
-A character string representing the absolute path to the hidden flag file.
-
-
-#### examples
-
-```{r}
-#| eval: false
-# Get the flag path for a process named "data_processing"
-lfa_get_flag_path("data_processing")
-```
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_get_flag_path(flag_name)
-```
-
-
-#### alias
-
-lfa_get_flag_path
-
-
-#### filename
-
-lfa_get_flag_path.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_ground_correction`
-
-Correct the point clouds for correct ground imagery
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`ctg`     |     An LASCatalog object. If not null, it will perform the actions on this object, if NULL inferring the catalog from the tile_location
-`tile_location`     |     A tile_location type object holding the information about the location of the cataog. This is used to save the catalog after processing too.
-
-
-#### author
-
-Jakob Danel
-
-
-#### description
-
-This function is needed to correct the Z value of the point cloud, relative to the real
- ground height. After using this function to your catalog, the Z values can be seen as the
- real elevation about the ground. At the moment the function uses the `tin()` function from
- the `lidr` package. NOTE : The operation is inplace and can not be reverted, the old values
- of the point cloud will be deleted!
-
-
-#### value
-
-A catalog with the corrected z values. The catalog is always stored at tile_location and
- holding only the transformed values.
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_ground_correction(ctg, tile_location)
-```
-
-
-#### alias
-
-lfa_ground_correction
-
-
-#### filename
-
-lfa_ground_correction.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_init_data_structure`
-
-Initialize data structure for species and areas
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`sf_species`     |     A data frame with information about species and associated areas.
-
-
-#### description
-
-This function initializes the data structure for storing species and associated areas.
-
-
-#### details
-
-The input data frame, `sf_species` , should have at least the following columns:
-  
-
-*  "species": The names of the species for which the data structure needs to be initialized. 
-
-*  "name": The names of the associated areas. 
- 
- The function creates directories based on the species and area information provided in
- the `sf_species` data frame. It checks whether the directories already exist and creates
- them if they don't.
-
-
-#### value
-
-None
-
-
-#### examples
-
-```{r}
-#| eval: false
-# Example species data frame
-sf_species <- data.frame(
-species = c("SpeciesA", "SpeciesB"),
-name = c("Area1", "Area2"),
-# Other necessary columns
-)
-
-lfa_init_data_structure(sf_species)
-
-# Example species data frame
-sf_species <- data.frame(
-species = c("SpeciesA", "SpeciesB"),
-name = c("Area1", "Area2"),
-# Other necessary columns
-)
-
-lfa_init_data_structure(sf_species)
-```
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_init_data_structure(sf_species)
-```
-
-
-#### alias
-
-lfa_init_data_structure
-
-
-#### filename
-
-lfa_init_data_structure.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_init`
-
-Initialize LFA (LiDAR forest analysis) data processing
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`sf_file`     |     A character string specifying the path to the shapefile containing spatial features of research areas.
-
-
-#### description
-
-This function initializes the LFA data processing by reading a shapefile containing
- spatial features of research areas, downloading the specified areas, and creating
- tile location objects for each area.
-
-
-#### details
-
-This function reads a shapefile ( `sf_file` ) using the `sf` package, which should
- contain information about research areas. It then calls the `lfa_download_areas` 
- function to download the specified areas and `lfa_create_tile_location_objects` 
- to create tile location objects based on Lidar data files in those areas. The
- shapefile MUST follow the following requirements:
-  
-
-*  Each geometry must be a single object of type polygon 
-
-*  Each entry must have the following attributes:  
-
-*  species: A string describing the tree species of the area. 
-
-*  name: A string describing the location of the area.
-
-
-#### value
-
-A vector containing tile location objects.
-
-
-#### examples
-
-```{r}
-#| eval: false
-# Initialize LFA processing with the default shapefile
-lfa_init()
-
-# Initialize LFA processing with a custom shapefile
-lfa_init("custom_areas.shp")
-
-# Example usage with the default shapefile
-lfa_init()
-
-# Example usage with a custom shapefile
-lfa_init("custom_areas.shp")
-```
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_init(sf_file = "research_areas.shp")
-```
-
-
-#### alias
-
-lfa_init
-
-
-#### filename
-
-lfa_init.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_intersect_areas`
-
-Intersect Lidar Catalog with Spatial Features
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`ctg`     |     A LAScatalog object representing the Lidar data to be processed.
-`tile_location`     |     A tile location object representing the specific area of interest.
-`areas_sf`     |     Spatial features defining areas.
-
-
-#### description
-
-This function intersects a Lidar catalog with a specific area defined by spatial features.
-
-
-#### details
-
-The function intersects the Lidar catalog specified by `ctg` with a specific area defined by
- the `tile_location` object and `areas_sf` . It removes points outside the specified area and
- returns a modified LAScatalog object.
- 
- The specified area is identified based on the `species` and `name` attributes in the
- `tile_location` object. If a matching area is not found in `areas_sf` , the function
- stops with an error.
- 
- The function then transforms the spatial reference of the identified area to match that of
- the Lidar catalog using `sf::st_transform` .
- 
- The processing is applied to each chunk in the catalog using the `identify_area` function,
- which merges spatial information and filters out points that are not classified as inside
- the identified area. After processing, the function writes the modified LAS files back to
- the original file locations, removing points outside the specified area.
- 
- If an error occurs during the processing of a chunk, a warning is issued, and the function
- continues processing the next chunks. If no points are found after filtering, a warning is
- issued, and NULL is returned.
-
-
-#### seealso
-
-Other functions in the Lidar forest analysis (LFA) package.
-
-
-#### value
-
-A modified LAScatalog object with points outside the specified area removed.
-
-
-#### examples
-
-```{r}
-#| eval: false
-# Example usage
-lfa_intersect_areas(ctg, tile_location, areas_sf)
-
-# Example usage
-lfa_intersect_areas(ctg, tile_location, areas_sf)
-```
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_intersect_areas(ctg, tile_location, areas_sf)
-```
-
-
-#### alias
-
-lfa_intersect_areas
-
-
-#### filename
-
-lfa_intersect_areas.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_load_ctg_if_not_present`
-
-Loading the catalog if it is not present
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`ctg`     |     Catalog object. Can be NULL
-`tile_location`     |     The location to look for the catalog tiles, if their are not present
-
-
-#### description
-
-This function checks if the catalog is `NULL` . If it is it will load the
- catalog from the `tile_location`
-
-
-#### value
-
-The provided ctg object if not null, else the catalog for the tiles
- of the tile_location.
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_load_ctg_if_not_present(ctg, tile_location)
-```
-
-
-#### alias
-
-lfa_load_ctg_if_not_present
-
-
-#### filename
-
-lfa_load_ctg_if_not_present.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_map_tile_locations`
-
-Map Function Over Tile Locations
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`tile_locations`     |     A list of tile location objects.
-`map_function`     |     The mapping function to be applied to each tile location.
-`...`     |     Additional arguments to be passed to the mapping function.
-
-
-#### description
-
-This function applies a specified mapping function to each tile location in a list.
-
-
-#### details
-
-This function iterates over each tile location in the provided list ( `tile_locations` )
- and applies the specified mapping function ( `map_function` ) to each tile location.
- The mapping function should accept a tile location object as its first argument, and
- additional arguments can be passed using the ellipsis ( `...` ) syntax.
- 
- This function is useful for performing operations on multiple tile locations concurrently,
- such as loading Lidar data, processing areas, or other tasks that involve tile locations.
-
-
-#### seealso
-
-The mapping function provided should be compatible with the structure and requirements
- of the tile locations and the specific task being performed.
-
-
-#### value
-
-None
-
-
-#### examples
-
-```{r}
-#| eval: false
-# Example usage
-lfa_map_tile_locations(tile_locations, my_mapping_function, param1 = "value")
-
-# Example usage
-lfa_map_tile_locations(tile_locations, my_mapping_function, param1 = "value")
-```
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_map_tile_locations(tile_locations, map_function, check_flag = NULL, ...)
-```
-
-
-#### alias
-
-lfa_map_tile_locations
-
-
-#### filename
-
-lfa_map_tile_locations.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_segmentation`
-
-Segment the elements of an point cloud by trees
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`ctg`     |     An LASCatalog object. If not null, it will perform the actions on this object, if NULL inferring the catalog from the tile_location
-`tile_location`     |     A tile_location type object holding the information about the location of the catalog. This is used to save the catalog after processing too.
-
-
-#### author
-
-Jakob Danel
-
-
-#### description
-
-This function will try to to divide the hole point cloud into unique trees.
- Therefore it is assigning for each chunk of the catalog  a `treeID` for each
- point. Therefore the algorithm uses the `li2012` implementation with the
- following parameters: `li2012(dt1 = 2, dt2 = 3, R = 2, Zu = 10, hmin = 5, speed_up = 12)` 
- NOTE : The operation is in place and can not be reverted, the old values
- of the point cloud will be deleted!
-
-
-#### value
-
-A catalog where each chunk has additional `treeID` values indicating the belonging tree.
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_segmentation(ctg, tile_location)
-```
-
-
-#### alias
-
-lfa_segmentation
-
-
-#### filename
-
-lfa_segmentation.md
-
-
-#### directory
-
-/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/results/appendix/package-docs
-
-
-
-### `lfa_set_flag`
-
-Set a flag to indicate the completion of a specific process.
-
-
-#### arguments
-
-Argument      |Description
-------------- |----------------
-`flag_name`     |     A character string specifying the name of the flag file. It should be a descriptive and unique identifier for the process being flagged.
-
-
-#### description
-
-This function creates a hidden flag file at a specified location within the working directory to indicate that a particular processing step has been completed. If the flag file already exists, a warning is issued.
-
-
-#### value
-
-This function does not have a formal return value.
-
-
-#### examples
-
-```{r}
-#| eval: false
-# Set the flag for a process named "data_processing"
-lfa_set_flag("data_processing")
-```
-
-
-#### usage
-
-```{r}
-#| eval: false
-lfa_set_flag(flag_name)
-```
-
-
-#### alias
-
-lfa_set_flag
-
-
-#### filename
-
-lfa_set_flag.md
+lfa_set_flag.qmd
 
 
 #### directory
