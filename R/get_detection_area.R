@@ -9,7 +9,6 @@
 #'
 #' @details This function reads tree detection data from geopackage files within the specified tile location for a given species. It then combines the data into a single SF data frame and returns it. The function assumes that the tree detection files follow a naming convention with the pattern "_detection.gpkg".
 #'
-#' @export
 #'
 #' @examples
 #' # Retrieve tree detection data for species "example_species" in tile "example_tile"
@@ -34,6 +33,7 @@
 #' # Error handling:
 #' # In case of invalid inputs, the function may throw errors. Ensure correct species and tile names are provided.
 #'
+#' @export
 lfa_get_detection_area <- function(species, name) {
   tile_location = new(
     "tile_location",

@@ -318,6 +318,124 @@ lfa_download(species, name, location)
 
 
 
+### `lfa_get_detection_area`
+
+Get Detection for an area
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`species`     |     A character string specifying the target species.
+`name`     |     A character string specifying the name of the tile.
+
+
+#### Description
+
+Retrieves the tree detection information for a specified species and tile.
+
+
+#### Details
+
+This function reads tree detection data from geopackage files within the specified tile location for a given species. It then combines the data into a single SF data frame and returns it. The function assumes that the tree detection files follow a naming convention with the pattern "_detection.gpkg".
+
+
+#### Keyword
+
+spatial
+
+
+#### References
+
+This function is part of the LiDAR Forest Analysis (LFA) package.
+
+
+#### Seealso
+
+[`get_tile_dir`](#gettiledir)
+
+
+#### Value
+
+A Simple Features (SF) data frame containing tree detection information for the specified species and tile.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Retrieve tree detection data for species "example_species" in tile "example_tile"
+trees_data <- lfa_get_detection_tile_location("example_species", "example_tile")
+
+# Example usage:
+trees_data <- lfa_get_detection_tile_location("example_species", "example_tile")
+
+# No trees found scenario:
+empty_data <- lfa_get_detection_tile_location("nonexistent_species", "nonexistent_tile")
+# The result will be an empty data frame if no trees are found for the specified species and tile.
+
+# Error handling:
+# In case of invalid inputs, the function may throw errors. Ensure correct species and tile names are provided.
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_get_detection_area(species, name)
+```
+
+
+
+### `lfa_get_detections_species`
+
+Retrieve detections for a specific species.
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`species`     |     A character string specifying the target species.
+
+
+#### Description
+
+This function retrieves detection data for a given species from multiple areas.
+
+
+#### Details
+
+The function looks for detection data in the "data" directory for the specified species.
+ It then iterates through each subdirectory (representing different areas) and consolidates the
+ detection data into a single data frame.
+
+
+#### Value
+
+A data frame containing detection information for the specified species in different areas.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Example usage:
+detections_data <- lfa_get_detections_species("example_species")
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_get_detections_species(species)
+```
+
+
+
 ### `lfa_get_flag_path`
 
 Get the path to a flag file indicating the completion of a specific process.
