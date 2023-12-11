@@ -435,11 +435,129 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
+<section id="lfa_get_detection_area" class="level3">
+<h3 class="anchored" data-anchor-id="lfa_get_detection_area"><code>lfa_get_detection_area</code></h3>
+<p>Get Detection for an area</p>
+<section id="arguments-5" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-5">Arguments</h4>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>species</code></td>
+<td>A character string specifying the target species.</td>
+</tr>
+<tr class="even">
+<td><code>name</code></td>
+<td>A character string specifying the name of the tile.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="description-6" class="level4">
+<h4 class="anchored" data-anchor-id="description-6">Description</h4>
+<p>Retrieves the tree detection information for a specified species and tile.</p>
+</section>
+<section id="details-2" class="level4">
+<h4 class="anchored" data-anchor-id="details-2">Details</h4>
+<p>This function reads tree detection data from geopackage files within the specified tile location for a given species. It then combines the data into a single SF data frame and returns it. The function assumes that the tree detection files follow a naming convention with the pattern “_detection.gpkg”.</p>
+</section>
+<section id="keyword-1" class="level4">
+<h4 class="anchored" data-anchor-id="keyword-1">Keyword</h4>
+<p>spatial</p>
+</section>
+<section id="references-1" class="level4">
+<h4 class="anchored" data-anchor-id="references-1">References</h4>
+<p>This function is part of the LiDAR Forest Analysis (LFA) package.</p>
+</section>
+<section id="seealso-2" class="level4">
+<h4 class="anchored" data-anchor-id="seealso-2">Seealso</h4>
+<p><a href="#gettiledir"><code>get_tile_dir</code></a></p>
+</section>
+<section id="value-6" class="level4">
+<h4 class="anchored" data-anchor-id="value-6">Value</h4>
+<p>A Simple Features (SF) data frame containing tree detection information for the specified species and tile.</p>
+</section>
+<section id="examples-5" class="level4">
+<h4 class="anchored" data-anchor-id="examples-5">Examples</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve tree detection data for species "example_species" in tile "example_tile"</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>trees_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detection_tile_location</span>(<span class="st">"example_species"</span>, <span class="st">"example_tile"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>trees_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detection_tile_location</span>(<span class="st">"example_species"</span>, <span class="st">"example_tile"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># No trees found scenario:</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>empty_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detection_tile_location</span>(<span class="st">"nonexistent_species"</span>, <span class="st">"nonexistent_tile"</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># The result will be an empty data frame if no trees are found for the specified species and tile.</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Error handling:</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># In case of invalid inputs, the function may throw errors. Ensure correct species and tile names are provided.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="usage-6" class="level4">
+<h4 class="anchored" data-anchor-id="usage-6">Usage</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_detection_area</span>(species, name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="lfa_get_detections_species" class="level3">
+<h3 class="anchored" data-anchor-id="lfa_get_detections_species"><code>lfa_get_detections_species</code></h3>
+<p>Retrieve detections for a specific species.</p>
+<section id="arguments-6" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-6">Arguments</h4>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>species</code></td>
+<td>A character string specifying the target species.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="description-7" class="level4">
+<h4 class="anchored" data-anchor-id="description-7">Description</h4>
+<p>This function retrieves detection data for a given species from multiple areas.</p>
+</section>
+<section id="details-3" class="level4">
+<h4 class="anchored" data-anchor-id="details-3">Details</h4>
+<p>The function looks for detection data in the “data” directory for the specified species. It then iterates through each subdirectory (representing different areas) and consolidates the detection data into a single data frame.</p>
+</section>
+<section id="value-7" class="level4">
+<h4 class="anchored" data-anchor-id="value-7">Value</h4>
+<p>A data frame containing detection information for the specified species in different areas.</p>
+</section>
+<section id="examples-6" class="level4">
+<h4 class="anchored" data-anchor-id="examples-6">Examples</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>detections_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detections_species</span>(<span class="st">"example_species"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="usage-7" class="level4">
+<h4 class="anchored" data-anchor-id="usage-7">Usage</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_detections_species</span>(species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
 <section id="lfa_get_flag_path" class="level3">
 <h3 class="anchored" data-anchor-id="lfa_get_flag_path"><code>lfa_get_flag_path</code></h3>
 <p>Get the path to a flag file indicating the completion of a specific process.</p>
-<section id="arguments-5" class="level4">
-<h4 class="anchored" data-anchor-id="arguments-5">Arguments</h4>
+<section id="arguments-7" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-7">Arguments</h4>
 <table class="table">
 <colgroup>
 <col style="width: 44%">
@@ -459,33 +577,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="description-6" class="level4">
-<h4 class="anchored" data-anchor-id="description-6">Description</h4>
+<section id="description-8" class="level4">
+<h4 class="anchored" data-anchor-id="description-8">Description</h4>
 <p>This function constructs and returns the path to a hidden flag file, which serves as an indicator that a particular processing step has been completed. The flag file is created in a designated location within the working directory.</p>
 </section>
-<section id="value-6" class="level4">
-<h4 class="anchored" data-anchor-id="value-6">Value</h4>
+<section id="value-8" class="level4">
+<h4 class="anchored" data-anchor-id="value-8">Value</h4>
 <p>A character string representing the absolute path to the hidden flag file.</p>
 </section>
-<section id="examples-5" class="level4">
-<h4 class="anchored" data-anchor-id="examples-5">Examples</h4>
+<section id="examples-7" class="level4">
+<h4 class="anchored" data-anchor-id="examples-7">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the flag path for a process named "data_processing"</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_flag_path</span>(<span class="st">"data_processing"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the flag path for a process named "data_processing"</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_flag_path</span>(<span class="st">"data_processing"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="usage-6" class="level4">
-<h4 class="anchored" data-anchor-id="usage-6">Usage</h4>
+<section id="usage-8" class="level4">
+<h4 class="anchored" data-anchor-id="usage-8">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_flag_path</span>(flag_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_flag_path</span>(flag_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="lfa_ground_correction" class="level3">
 <h3 class="anchored" data-anchor-id="lfa_ground_correction"><code>lfa_ground_correction</code></h3>
 <p>Correct the point clouds for correct ground imagery</p>
-<section id="arguments-6" class="level4">
-<h4 class="anchored" data-anchor-id="arguments-6">Arguments</h4>
+<section id="arguments-8" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-8">Arguments</h4>
 <table class="table">
 <colgroup>
 <col style="width: 44%">
@@ -513,26 +631,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="anchored" data-anchor-id="author-2">Author</h4>
 <p>Jakob Danel</p>
 </section>
-<section id="description-7" class="level4">
-<h4 class="anchored" data-anchor-id="description-7">Description</h4>
+<section id="description-9" class="level4">
+<h4 class="anchored" data-anchor-id="description-9">Description</h4>
 <p>This function is needed to correct the Z value of the point cloud, relative to the real ground height. After using this function to your catalog, the Z values can be seen as the real elevation about the ground. At the moment the function uses the <code>tin()</code> function from the <code>lidr</code> package. NOTE : The operation is inplace and can not be reverted, the old values of the point cloud will be deleted!</p>
 </section>
-<section id="value-7" class="level4">
-<h4 class="anchored" data-anchor-id="value-7">Value</h4>
+<section id="value-9" class="level4">
+<h4 class="anchored" data-anchor-id="value-9">Value</h4>
 <p>A catalog with the corrected z values. The catalog is always stored at tile_location and holding only the transformed values.</p>
 </section>
-<section id="usage-7" class="level4">
-<h4 class="anchored" data-anchor-id="usage-7">Usage</h4>
+<section id="usage-9" class="level4">
+<h4 class="anchored" data-anchor-id="usage-9">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_ground_correction</span>(ctg, tile_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_ground_correction</span>(ctg, tile_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="lfa_init_data_structure" class="level3">
 <h3 class="anchored" data-anchor-id="lfa_init_data_structure"><code>lfa_init_data_structure</code></h3>
 <p>Initialize data structure for species and areas</p>
-<section id="arguments-7" class="level4">
-<h4 class="anchored" data-anchor-id="arguments-7">Arguments</h4>
+<section id="arguments-9" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-9">Arguments</h4>
 <table class="table">
 <colgroup>
 <col style="width: 44%">
@@ -552,12 +670,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="description-8" class="level4">
-<h4 class="anchored" data-anchor-id="description-8">Description</h4>
+<section id="description-10" class="level4">
+<h4 class="anchored" data-anchor-id="description-10">Description</h4>
 <p>This function initializes the data structure for storing species and associated areas.</p>
 </section>
-<section id="details-2" class="level4">
-<h4 class="anchored" data-anchor-id="details-2">Details</h4>
+<section id="details-4" class="level4">
+<h4 class="anchored" data-anchor-id="details-4">Details</h4>
 <p>The input data frame, <code>sf_species</code> , should have at least the following columns:</p>
 <ul>
 <li><p>“species”: The names of the species for which the data structure needs to be initialized.</p></li>
@@ -565,44 +683,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>The function creates directories based on the species and area information provided in the <code>sf_species</code> data frame. It checks whether the directories already exist and creates them if they don’t.</p>
 </section>
-<section id="value-8" class="level4">
-<h4 class="anchored" data-anchor-id="value-8">Value</h4>
+<section id="value-10" class="level4">
+<h4 class="anchored" data-anchor-id="value-10">Value</h4>
 <p>None</p>
 </section>
-<section id="examples-6" class="level4">
-<h4 class="anchored" data-anchor-id="examples-6">Examples</h4>
+<section id="examples-8" class="level4">
+<h4 class="anchored" data-anchor-id="examples-8">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example species data frame</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>sf_species <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="at">species =</span> <span class="fu">c</span>(<span class="st">"SpeciesA"</span>, <span class="st">"SpeciesB"</span>),</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Area1"</span>, <span class="st">"Area2"</span>),</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Other necessary columns</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init_data_structure</span>(sf_species)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Example species data frame</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>sf_species <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="at">species =</span> <span class="fu">c</span>(<span class="st">"SpeciesA"</span>, <span class="st">"SpeciesB"</span>),</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Area1"</span>, <span class="st">"Area2"</span>),</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Other necessary columns</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init_data_structure</span>(sf_species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example species data frame</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>sf_species <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="at">species =</span> <span class="fu">c</span>(<span class="st">"SpeciesA"</span>, <span class="st">"SpeciesB"</span>),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Area1"</span>, <span class="st">"Area2"</span>),</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Other necessary columns</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init_data_structure</span>(sf_species)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Example species data frame</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>sf_species <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="at">species =</span> <span class="fu">c</span>(<span class="st">"SpeciesA"</span>, <span class="st">"SpeciesB"</span>),</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Area1"</span>, <span class="st">"Area2"</span>),</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Other necessary columns</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init_data_structure</span>(sf_species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="usage-8" class="level4">
-<h4 class="anchored" data-anchor-id="usage-8">Usage</h4>
+<section id="usage-10" class="level4">
+<h4 class="anchored" data-anchor-id="usage-10">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init_data_structure</span>(sf_species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init_data_structure</span>(sf_species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="lfa_init" class="level3">
 <h3 class="anchored" data-anchor-id="lfa_init"><code>lfa_init</code></h3>
 <p>Initialize LFA (LiDAR forest analysis) data processing</p>
-<section id="arguments-8" class="level4">
-<h4 class="anchored" data-anchor-id="arguments-8">Arguments</h4>
+<section id="arguments-10" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-10">Arguments</h4>
 <table class="table">
 <colgroup>
 <col style="width: 44%">
@@ -622,12 +740,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="description-9" class="level4">
-<h4 class="anchored" data-anchor-id="description-9">Description</h4>
+<section id="description-11" class="level4">
+<h4 class="anchored" data-anchor-id="description-11">Description</h4>
 <p>This function initializes the LFA data processing by reading a shapefile containing spatial features of research areas, downloading the specified areas, and creating tile location objects for each area.</p>
 </section>
-<section id="details-3" class="level4">
-<h4 class="anchored" data-anchor-id="details-3">Details</h4>
+<section id="details-5" class="level4">
+<h4 class="anchored" data-anchor-id="details-5">Details</h4>
 <p>This function reads a shapefile ( <code>sf_file</code> ) using the <code>sf</code> package, which should contain information about research areas. It then calls the <code>lfa_download_areas</code> function to download the specified areas and <code>lfa_create_tile_location_objects</code> to create tile location objects based on Lidar data files in those areas. The shapefile MUST follow the following requirements:</p>
 <ul>
 <li><p>Each geometry must be a single object of type polygon</p></li>
@@ -636,38 +754,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>name: A string describing the location of the area.</p></li>
 </ul>
 </section>
-<section id="value-9" class="level4">
-<h4 class="anchored" data-anchor-id="value-9">Value</h4>
+<section id="value-11" class="level4">
+<h4 class="anchored" data-anchor-id="value-11">Value</h4>
 <p>A vector containing tile location objects.</p>
 </section>
-<section id="examples-7" class="level4">
-<h4 class="anchored" data-anchor-id="examples-7">Examples</h4>
+<section id="examples-9" class="level4">
+<h4 class="anchored" data-anchor-id="examples-9">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize LFA processing with the default shapefile</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>()</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize LFA processing with a custom shapefile</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>(<span class="st">"custom_areas.shp"</span>)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage with the default shapefile</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>()</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage with a custom shapefile</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>(<span class="st">"custom_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize LFA processing with the default shapefile</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>()</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize LFA processing with a custom shapefile</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>(<span class="st">"custom_areas.shp"</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage with the default shapefile</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>()</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage with a custom shapefile</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>(<span class="st">"custom_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="usage-9" class="level4">
-<h4 class="anchored" data-anchor-id="usage-9">Usage</h4>
+<section id="usage-11" class="level4">
+<h4 class="anchored" data-anchor-id="usage-11">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>(<span class="at">sf_file =</span> <span class="st">"research_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>(<span class="at">sf_file =</span> <span class="st">"research_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="lfa_intersect_areas" class="level3">
 <h3 class="anchored" data-anchor-id="lfa_intersect_areas"><code>lfa_intersect_areas</code></h3>
 <p>Intersect Lidar Catalog with Spatial Features</p>
-<section id="arguments-9" class="level4">
-<h4 class="anchored" data-anchor-id="arguments-9">Arguments</h4>
+<section id="arguments-11" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-11">Arguments</h4>
 <table class="table">
 <colgroup>
 <col style="width: 44%">
@@ -695,48 +813,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="description-10" class="level4">
-<h4 class="anchored" data-anchor-id="description-10">Description</h4>
+<section id="description-12" class="level4">
+<h4 class="anchored" data-anchor-id="description-12">Description</h4>
 <p>This function intersects a Lidar catalog with a specific area defined by spatial features.</p>
 </section>
-<section id="details-4" class="level4">
-<h4 class="anchored" data-anchor-id="details-4">Details</h4>
+<section id="details-6" class="level4">
+<h4 class="anchored" data-anchor-id="details-6">Details</h4>
 <p>The function intersects the Lidar catalog specified by <code>ctg</code> with a specific area defined by the <code>tile_location</code> object and <code>areas_sf</code> . It removes points outside the specified area and returns a modified LAScatalog object.</p>
 <p>The specified area is identified based on the <code>species</code> and <code>name</code> attributes in the <code>tile_location</code> object. If a matching area is not found in <code>areas_sf</code> , the function stops with an error.</p>
 <p>The function then transforms the spatial reference of the identified area to match that of the Lidar catalog using <code>sf::st_transform</code> .</p>
 <p>The processing is applied to each chunk in the catalog using the <code>identify_area</code> function, which merges spatial information and filters out points that are not classified as inside the identified area. After processing, the function writes the modified LAS files back to the original file locations, removing points outside the specified area.</p>
 <p>If an error occurs during the processing of a chunk, a warning is issued, and the function continues processing the next chunks. If no points are found after filtering, a warning is issued, and NULL is returned.</p>
 </section>
-<section id="seealso-2" class="level4">
-<h4 class="anchored" data-anchor-id="seealso-2">Seealso</h4>
+<section id="seealso-3" class="level4">
+<h4 class="anchored" data-anchor-id="seealso-3">Seealso</h4>
 <p>Other functions in the Lidar forest analysis (LFA) package.</p>
 </section>
-<section id="value-10" class="level4">
-<h4 class="anchored" data-anchor-id="value-10">Value</h4>
+<section id="value-12" class="level4">
+<h4 class="anchored" data-anchor-id="value-12">Value</h4>
 <p>A modified LAScatalog object with points outside the specified area removed.</p>
 </section>
-<section id="examples-8" class="level4">
-<h4 class="anchored" data-anchor-id="examples-8">Examples</h4>
+<section id="examples-10" class="level4">
+<h4 class="anchored" data-anchor-id="examples-10">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_intersect_areas</span>(ctg, tile_location, areas_sf)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_intersect_areas</span>(ctg, tile_location, areas_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_intersect_areas</span>(ctg, tile_location, areas_sf)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_intersect_areas</span>(ctg, tile_location, areas_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="usage-10" class="level4">
-<h4 class="anchored" data-anchor-id="usage-10">Usage</h4>
+<section id="usage-12" class="level4">
+<h4 class="anchored" data-anchor-id="usage-12">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_intersect_areas</span>(ctg, tile_location, areas_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_intersect_areas</span>(ctg, tile_location, areas_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="lfa_load_ctg_if_not_present" class="level3">
 <h3 class="anchored" data-anchor-id="lfa_load_ctg_if_not_present"><code>lfa_load_ctg_if_not_present</code></h3>
 <p>Loading the catalog if it is not present</p>
-<section id="arguments-10" class="level4">
-<h4 class="anchored" data-anchor-id="arguments-10">Arguments</h4>
+<section id="arguments-12" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-12">Arguments</h4>
 <table class="table">
 <colgroup>
 <col style="width: 44%">
@@ -760,26 +878,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="description-11" class="level4">
-<h4 class="anchored" data-anchor-id="description-11">Description</h4>
+<section id="description-13" class="level4">
+<h4 class="anchored" data-anchor-id="description-13">Description</h4>
 <p>This function checks if the catalog is <code>NULL</code> . If it is it will load the catalog from the <code>tile_location</code></p>
 </section>
-<section id="value-11" class="level4">
-<h4 class="anchored" data-anchor-id="value-11">Value</h4>
+<section id="value-13" class="level4">
+<h4 class="anchored" data-anchor-id="value-13">Value</h4>
 <p>The provided ctg object if not null, else the catalog for the tiles of the tile_location.</p>
 </section>
-<section id="usage-11" class="level4">
-<h4 class="anchored" data-anchor-id="usage-11">Usage</h4>
+<section id="usage-13" class="level4">
+<h4 class="anchored" data-anchor-id="usage-13">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_load_ctg_if_not_present</span>(ctg, tile_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_load_ctg_if_not_present</span>(ctg, tile_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="lfa_map_tile_locations" class="level3">
 <h3 class="anchored" data-anchor-id="lfa_map_tile_locations"><code>lfa_map_tile_locations</code></h3>
 <p>Map Function Over Tile Locations</p>
-<section id="arguments-11" class="level4">
-<h4 class="anchored" data-anchor-id="arguments-11">Arguments</h4>
+<section id="arguments-13" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-13">Arguments</h4>
 <table class="table">
 <colgroup>
 <col style="width: 44%">
@@ -807,45 +925,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="description-12" class="level4">
-<h4 class="anchored" data-anchor-id="description-12">Description</h4>
+<section id="description-14" class="level4">
+<h4 class="anchored" data-anchor-id="description-14">Description</h4>
 <p>This function applies a specified mapping function to each tile location in a list.</p>
 </section>
-<section id="details-5" class="level4">
-<h4 class="anchored" data-anchor-id="details-5">Details</h4>
+<section id="details-7" class="level4">
+<h4 class="anchored" data-anchor-id="details-7">Details</h4>
 <p>This function iterates over each tile location in the provided list ( <code>tile_locations</code> ) and applies the specified mapping function ( <code>map_function</code> ) to each tile location. The mapping function should accept a tile location object as its first argument, and additional arguments can be passed using the ellipsis ( <code>...</code> ) syntax.</p>
 <p>This function is useful for performing operations on multiple tile locations concurrently, such as loading Lidar data, processing areas, or other tasks that involve tile locations.</p>
 </section>
-<section id="seealso-3" class="level4">
-<h4 class="anchored" data-anchor-id="seealso-3">Seealso</h4>
+<section id="seealso-4" class="level4">
+<h4 class="anchored" data-anchor-id="seealso-4">Seealso</h4>
 <p>The mapping function provided should be compatible with the structure and requirements of the tile locations and the specific task being performed.</p>
 </section>
-<section id="value-12" class="level4">
-<h4 class="anchored" data-anchor-id="value-12">Value</h4>
+<section id="value-14" class="level4">
+<h4 class="anchored" data-anchor-id="value-14">Value</h4>
 <p>None</p>
 </section>
-<section id="examples-9" class="level4">
-<h4 class="anchored" data-anchor-id="examples-9">Examples</h4>
+<section id="examples-11" class="level4">
+<h4 class="anchored" data-anchor-id="examples-11">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(tile_locations, my_mapping_function, <span class="at">param1 =</span> <span class="st">"value"</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(tile_locations, my_mapping_function, <span class="at">param1 =</span> <span class="st">"value"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(tile_locations, my_mapping_function, <span class="at">param1 =</span> <span class="st">"value"</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(tile_locations, my_mapping_function, <span class="at">param1 =</span> <span class="st">"value"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="usage-12" class="level4">
-<h4 class="anchored" data-anchor-id="usage-12">Usage</h4>
+<section id="usage-14" class="level4">
+<h4 class="anchored" data-anchor-id="usage-14">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(tile_locations, map_function, <span class="at">check_flag =</span> <span class="cn">NULL</span>, ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(tile_locations, map_function, <span class="at">check_flag =</span> <span class="cn">NULL</span>, ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="lfa_merge_and_save" class="level3">
 <h3 class="anchored" data-anchor-id="lfa_merge_and_save"><code>lfa_merge_and_save</code></h3>
 <p>Merge and Save Text Files in a Directory</p>
-<section id="arguments-12" class="level4">
-<h4 class="anchored" data-anchor-id="arguments-12">Arguments</h4>
+<section id="arguments-14" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-14">Arguments</h4>
 <table class="table">
 <colgroup>
 <col style="width: 44%">
@@ -869,44 +987,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="description-13" class="level4">
-<h4 class="anchored" data-anchor-id="description-13">Description</h4>
+<section id="description-15" class="level4">
+<h4 class="anchored" data-anchor-id="description-15">Description</h4>
 <p>This function takes an input directory and an output name as arguments. It merges the textual content of all files in the specified directory into a single string, with each file’s content separated by a newline character. The merged content is then saved into a file named after the output name in the same directory. After the merging is complete, all input files are deleted.</p>
 </section>
-<section id="details-6" class="level4">
-<h4 class="anchored" data-anchor-id="details-6">Details</h4>
+<section id="details-8" class="level4">
+<h4 class="anchored" data-anchor-id="details-8">Details</h4>
 <p>This function reads the content of each text file in the specified input directory and concatenates them into a single string. Each file’s content is separated by a newline character. The merged content is then saved into a file named after the output name in the same directory. Finally, all input files are deleted from the directory.</p>
 </section>
-<section id="seealso-4" class="level4">
-<h4 class="anchored" data-anchor-id="seealso-4">Seealso</h4>
+<section id="seealso-5" class="level4">
+<h4 class="anchored" data-anchor-id="seealso-5">Seealso</h4>
 <p><a href="#readlines"><code>readLines</code></a> , <a href="#writelines"><code>writeLines</code></a> , <a href="#file.remove"><code>file.remove</code></a></p>
 </section>
-<section id="value-13" class="level4">
-<h4 class="anchored" data-anchor-id="value-13">Value</h4>
+<section id="value-15" class="level4">
+<h4 class="anchored" data-anchor-id="value-15">Value</h4>
 <p>This function does not explicitly return any value. It prints a message indicating the successful completion of the merging and saving process.</p>
 </section>
-<section id="examples-10" class="level4">
-<h4 class="anchored" data-anchor-id="examples-10">Examples</h4>
+<section id="examples-12" class="level4">
+<h4 class="anchored" data-anchor-id="examples-12">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge text files in the "data_files" directory and save the result in "merged_output"</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_merge_and_save</span>(<span class="st">"data_files"</span>, <span class="st">"merged_output"</span>)</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge text files in the "data_files" directory and save the result in "merged_output"</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_merge_and_save</span>(<span class="st">"data_files"</span>, <span class="st">"merged_output"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge text files in the "data_files" directory and save the result in "merged_output"</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_merge_and_save</span>(<span class="st">"data_files"</span>, <span class="st">"merged_output"</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge text files in the "data_files" directory and save the result in "merged_output"</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_merge_and_save</span>(<span class="st">"data_files"</span>, <span class="st">"merged_output"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="usage-13" class="level4">
-<h4 class="anchored" data-anchor-id="usage-13">Usage</h4>
+<section id="usage-15" class="level4">
+<h4 class="anchored" data-anchor-id="usage-15">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_merge_and_save</span>(input_directory, output_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_merge_and_save</span>(input_directory, output_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="lfa_rd_to_qmd" class="level3">
 <h3 class="anchored" data-anchor-id="lfa_rd_to_qmd"><code>lfa_rd_to_qmd</code></h3>
 <p>Convert Rd File to Markdown</p>
-<section id="arguments-13" class="level4">
-<h4 class="anchored" data-anchor-id="arguments-13">Arguments</h4>
+<section id="arguments-15" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-15">Arguments</h4>
 <table class="table">
 <colgroup>
 <col style="width: 44%">
@@ -934,8 +1052,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="description-14" class="level4">
-<h4 class="anchored" data-anchor-id="description-14">Description</h4>
+<section id="description-16" class="level4">
+<h4 class="anchored" data-anchor-id="description-16">Description</h4>
 <p>IMPORTANT NOTE: This function is nearly identical to the <code>Rd2md::Rd2markdown</code> function from the <code>Rd2md</code> package. We needed to implement our own version of it because of various reasons:</p>
 <ul>
 <li><p>The algorithm uses hardcoded header sizes (h1 and h2 in original) which is not feasible for our use-case of the markdown.</p></li>
@@ -943,8 +1061,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>We want to exclude certain tags from our implementation.</p></li>
 </ul>
 </section>
-<section id="details-7" class="level4">
-<h4 class="anchored" data-anchor-id="details-7">Details</h4>
+<section id="details-9" class="level4">
+<h4 class="anchored" data-anchor-id="details-9">Details</h4>
 <p>For that reason we copied the method and made changes as needed and also added this custom documentation.</p>
 <p>This function converts an Rd (R documentation) file to Markdown format (.md) and saves the converted file at the specified location. The function allows appending to an existing file or creating a new one. The resulting Markdown file includes sections for the function’s name, title, and additional content such as examples, usage, arguments, and other sections present in the Rd file.</p>
 <p>The function performs the following steps:</p>
@@ -955,40 +1073,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Saves the resulting Markdown file at the specified location.</p></li>
 </ul>
 </section>
-<section id="seealso-5" class="level4">
-<h4 class="anchored" data-anchor-id="seealso-5">Seealso</h4>
+<section id="seealso-6" class="level4">
+<h4 class="anchored" data-anchor-id="seealso-6">Seealso</h4>
 <p><a href="#rd2md::parserd"><code>Rd2md::parseRd</code></a></p>
 </section>
-<section id="value-14" class="level4">
-<h4 class="anchored" data-anchor-id="value-14">Value</h4>
+<section id="value-16" class="level4">
+<h4 class="anchored" data-anchor-id="value-16">Value</h4>
 <p>This function does not explicitly return any value. It saves the converted Markdown file at the specified location as described in the details section.</p>
 </section>
-<section id="examples-11" class="level4">
-<h4 class="anchored" data-anchor-id="examples-11">Examples</h4>
+<section id="examples-13" class="level4">
+<h4 class="anchored" data-anchor-id="examples-13">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Rd file to Markdown and save it</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_md</span>(<span class="st">"path/to/your/file.Rd"</span>, <span class="st">"path/to/your/output/file.md"</span>)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Rd file to Markdown and append to an existing file</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_md</span>(<span class="st">"path/to/your/file.Rd"</span>, <span class="st">"path/to/existing/output/file.md"</span>, <span class="at">append =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Rd file to Markdown and save it</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_md</span>(<span class="st">"path/to/your/file.Rd"</span>, <span class="st">"path/to/your/output/file.md"</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Rd file to Markdown and append to an existing file</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_md</span>(<span class="st">"path/to/your/file.Rd"</span>, <span class="st">"path/to/existing/output/file.md"</span>, <span class="at">append =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="usage-14" class="level4">
-<h4 class="anchored" data-anchor-id="usage-14">Usage</h4>
+<section id="usage-16" class="level4">
+<h4 class="anchored" data-anchor-id="usage-16">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_qmd</span>(rdfile, outfile, <span class="at">append =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_qmd</span>(rdfile, outfile, <span class="at">append =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="lfa_rd_to_results" class="level3">
 <h3 class="anchored" data-anchor-id="lfa_rd_to_results"><code>lfa_rd_to_results</code></h3>
 <p>Convert Rd Files to Markdown and Merge Results</p>
-<section id="description-15" class="level4">
-<h4 class="anchored" data-anchor-id="description-15">Description</h4>
+<section id="description-17" class="level4">
+<h4 class="anchored" data-anchor-id="description-17">Description</h4>
 <p>This function converts all Rd (R documentation) files in the “man” directory to Markdown format (.qmd) and saves the converted files in the “results/appendix/package-docs” directory. It then merges the converted Markdown files into a single string and saves the merged content into a file named “docs.qmd” in the “results/appendix/package-docs” directory.</p>
 </section>
-<section id="details-8" class="level4">
-<h4 class="anchored" data-anchor-id="details-8">Details</h4>
+<section id="details-10" class="level4">
+<h4 class="anchored" data-anchor-id="details-10">Details</h4>
 <p>The function performs the following steps:</p>
 <ul>
 <li><p>Removes any existing “docs.qmd” file in the “results/appendix/package-docs” directory.</p></li>
@@ -999,33 +1117,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Saves the merged content into a file named “docs.qmd” in the “results/appendix/package-docs” directory.</p></li>
 </ul>
 </section>
-<section id="seealso-6" class="level4">
-<h4 class="anchored" data-anchor-id="seealso-6">Seealso</h4>
+<section id="seealso-7" class="level4">
+<h4 class="anchored" data-anchor-id="seealso-7">Seealso</h4>
 <p><a href="#lfardtoqmd"><code>lfa_rd_to_qmd</code></a> , <a href="#lfamergeandsave"><code>lfa_merge_and_save</code></a></p>
 </section>
-<section id="value-15" class="level4">
-<h4 class="anchored" data-anchor-id="value-15">Value</h4>
+<section id="value-17" class="level4">
+<h4 class="anchored" data-anchor-id="value-17">Value</h4>
 <p>This function does not explicitly return any value. It performs the conversion, merging, and saving operations as described in the details section.</p>
 </section>
-<section id="examples-12" class="level4">
-<h4 class="anchored" data-anchor-id="examples-12">Examples</h4>
+<section id="examples-14" class="level4">
+<h4 class="anchored" data-anchor-id="examples-14">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Rd files to Markdown and merge the results</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_results</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Rd files to Markdown and merge the results</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_results</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="usage-15" class="level4">
-<h4 class="anchored" data-anchor-id="usage-15">Usage</h4>
+<section id="usage-17" class="level4">
+<h4 class="anchored" data-anchor-id="usage-17">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_results</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_results</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="lfa_segmentation" class="level3">
 <h3 class="anchored" data-anchor-id="lfa_segmentation"><code>lfa_segmentation</code></h3>
 <p>Segment the elements of an point cloud by trees</p>
-<section id="arguments-14" class="level4">
-<h4 class="anchored" data-anchor-id="arguments-14">Arguments</h4>
+<section id="arguments-16" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-16">Arguments</h4>
 <table class="table">
 <colgroup>
 <col style="width: 44%">
@@ -1053,26 +1171,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="anchored" data-anchor-id="author-3">Author</h4>
 <p>Jakob Danel</p>
 </section>
-<section id="description-16" class="level4">
-<h4 class="anchored" data-anchor-id="description-16">Description</h4>
+<section id="description-18" class="level4">
+<h4 class="anchored" data-anchor-id="description-18">Description</h4>
 <p>This function will try to to divide the hole point cloud into unique trees. Therefore it is assigning for each chunk of the catalog a <code>treeID</code> for each point. Therefore the algorithm uses the <code>li2012</code> implementation with the following parameters: <code>li2012(dt1 = 2, dt2 = 3, R = 2, Zu = 10, hmin = 5, speed_up = 12)</code> NOTE : The operation is in place and can not be reverted, the old values of the point cloud will be deleted!</p>
 </section>
-<section id="value-16" class="level4">
-<h4 class="anchored" data-anchor-id="value-16">Value</h4>
+<section id="value-18" class="level4">
+<h4 class="anchored" data-anchor-id="value-18">Value</h4>
 <p>A catalog where each chunk has additional <code>treeID</code> values indicating the belonging tree.</p>
 </section>
-<section id="usage-16" class="level4">
-<h4 class="anchored" data-anchor-id="usage-16">Usage</h4>
+<section id="usage-18" class="level4">
+<h4 class="anchored" data-anchor-id="usage-18">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_segmentation</span>(ctg, tile_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_segmentation</span>(ctg, tile_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="lfa_set_flag" class="level3">
 <h3 class="anchored" data-anchor-id="lfa_set_flag"><code>lfa_set_flag</code></h3>
 <p>Set a flag to indicate the completion of a specific process.</p>
-<section id="arguments-15" class="level4">
-<h4 class="anchored" data-anchor-id="arguments-15">Arguments</h4>
+<section id="arguments-17" class="level4">
+<h4 class="anchored" data-anchor-id="arguments-17">Arguments</h4>
 <table class="table">
 <colgroup>
 <col style="width: 44%">
@@ -1092,25 +1210,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="description-17" class="level4">
-<h4 class="anchored" data-anchor-id="description-17">Description</h4>
+<section id="description-19" class="level4">
+<h4 class="anchored" data-anchor-id="description-19">Description</h4>
 <p>This function creates a hidden flag file at a specified location within the working directory to indicate that a particular processing step has been completed. If the flag file already exists, a warning is issued.</p>
 </section>
-<section id="value-17" class="level4">
-<h4 class="anchored" data-anchor-id="value-17">Value</h4>
+<section id="value-19" class="level4">
+<h4 class="anchored" data-anchor-id="value-19">Value</h4>
 <p>This function does not have a formal return value.</p>
 </section>
-<section id="examples-13" class="level4">
-<h4 class="anchored" data-anchor-id="examples-13">Examples</h4>
+<section id="examples-15" class="level4">
+<h4 class="anchored" data-anchor-id="examples-15">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the flag for a process named "data_processing"</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_set_flag</span>(<span class="st">"data_processing"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the flag for a process named "data_processing"</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_set_flag</span>(<span class="st">"data_processing"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="usage-17" class="level4">
-<h4 class="anchored" data-anchor-id="usage-17">Usage</h4>
+<section id="usage-19" class="level4">
+<h4 class="anchored" data-anchor-id="usage-19">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_set_flag</span>(flag_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_set_flag</span>(flag_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
