@@ -23,6 +23,8 @@
 #'
 #' @param ylim A numeric vector of length 2 specifying the y-axis limits. Default is c(0, 1000).
 #'
+#' @param title The title of the plot.
+#'
 #' @return A ggplot object representing the stacked distribution plot.
 #'
 #' @seealso
@@ -45,7 +47,9 @@ lfa_create_stacked_distributions_plot <-
            bin = 100,
            ylab = "Amount trees",
            xlim = c(0, 100),
-           ylim = c(0, 1000)) {
+           ylim = c(0, 1000),
+           title = "Histograms of height distributions between species 'beech', 'oak', 'pine' and 'spruce' divided by the different areas of Interest"
+           ) {
     # Convert x_value and fill_value to symbols
     x_sym <- rlang::sym(x_value)
     fill_sym <- rlang::sym(fill_value)
@@ -64,6 +68,7 @@ lfa_create_stacked_distributions_plot <-
         ggplot2::facet_wrap(~ specie, scales = "free") +
         ggplot2::ylab(ylab) +
         ggplot2::scale_fill_brewer(palette = "Set3") +
-        ggplot2::coord_cartesian(xlim = xlim, ylim = ylim)
+        ggplot2::coord_cartesian(xlim = xlim, ylim = ylim) +
+        ggplot2::ggtitle(title)
     )
   }

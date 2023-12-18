@@ -12,7 +12,9 @@ lfa_create_stacked_distributions_plot(
   bin = 100,
   ylab = "Amount trees",
   xlim = c(0, 100),
-  ylim = c(0, 1000)
+  ylim = c(0, 1000),
+  title =
+    "Histograms of height distributions between species 'beech', 'oak', 'pine' and 'spruce' divided by the different areas of Interest"
 )
 }
 \arguments{
@@ -31,6 +33,8 @@ are differentiated in the plot.}
 \item{xlim}{A numeric vector of length 2 specifying the x-axis limits. Default is c(0, 100).}
 
 \item{ylim}{A numeric vector of length 2 specifying the y-axis limits. Default is c(0, 1000).}
+
+\item{title}{The title of the plot.}
 }
 \value{
 A ggplot object representing the stacked distribution plot.
