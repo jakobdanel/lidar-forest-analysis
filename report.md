@@ -1,6 +1,6 @@
 # Forest Data Analysis Report
 Jakob Danel and Frederick Bruch
-2023-12-15
+2023-12-18
 
 -   [<span class="toc-section-number">1</span>
     Introduction](#introduction)
@@ -9,12 +9,15 @@ Jakob Danel and Frederick Bruch
         acquisition](#data-acquisition)
     -   [<span class="toc-section-number">2.2</span>
         Preprocessing](#preprocessing)
--   [<span class="toc-section-number">3</span> Analysis](#analysis)
--   [<span class="toc-section-number">4</span> References](#references)
--   [<span class="toc-section-number">5</span> Appendix](#appendix)
-    -   [<span class="toc-section-number">5.1</span> Script which can be
+-   [<span class="toc-section-number">3</span> Results](#results)
+    -   [<span class="toc-section-number">3.1</span> Researched
+        areas](#researched-areas)
+-   [<span class="toc-section-number">4</span> Analysis](#analysis)
+-   [<span class="toc-section-number">5</span> References](#references)
+-   [<span class="toc-section-number">6</span> Appendix](#appendix)
+    -   [<span class="toc-section-number">6.1</span> Script which can be
         used to do all preprocessing](#sec-appendix-preprocessing)
-    -   [<span class="toc-section-number">5.2</span>
+    -   [<span class="toc-section-number">6.2</span>
         Documentation](#documentation)
 
 # Introduction
@@ -115,8 +118,271 @@ an implementation of the tree data using a local maximum approach, is
 utilized for this purpose (Popescu and Wynne 2004). The results are
 stored in GeoPackage files within our data structure.
 
-See [Section 5.1](#sec-appendix-preprocessing) for the implementation of
+See [Section 6.1](#sec-appendix-preprocessing) for the implementation of
 the preprocessing.
+
+# Results
+
+## Researched areas
+
+<table>
+<caption>Different areas listed with their size and detected
+trees.</caption>
+<thead>
+<tr class="header">
+<th>Species</th>
+<th>Area</th>
+<th>Size</th>
+<th># trees</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Oak</td>
+<td>Münster</td>
+<td>100m<span class="math inline"><sup>2</sup></span></td>
+<td>126</td>
+</tr>
+</tbody>
+</table>
+
+Different areas listed with their size and detected trees.
+
+``` r
+shp <- sf::read_sf("research_areas.shp")
+table <- lfa::lfa_get_all_areas()
+```
+
+    Warning: replacing previous import 'lidR::st_concave_hull' by
+    'sf::st_concave_hull' when loading 'lfa'
+
+``` r
+sf::sf_use_s2(FALSE)
+```
+
+    Spherical geometry (s2) switched off
+
+``` r
+for (row in 1:nrow(table)) {
+  area <-
+    dplyr::filter(shp, shp$species == table[row, "specie"] &
+                    shp$name == table[row, "area"])
+  area_size <- area |> sf::st_area()
+  point <- area |> sf::st_centroid() |> sf::st_coordinates()
+  table[row,"point"] <- paste0("(",round(point[1], digits = 4),", ",round(point[2],digits = 4),")")
+  
+  table[row, "area_size"] = paste0(round(area_size,digits = 2), " m$^2$")
+  
+  
+  table[row, "amount_detections"] = nrow(lfa::lfa_get_detection_area(table[row, "specie"], table[row, "area"]))
+  table[row, "specie"] <- lfa::lfa_capitalize_first_char(table[row,"specie"])
+  table[row, "area"] <- lfa::lfa_capitalize_first_char(table[row,"area"])
+  }
+```
+
+    Linking to GEOS 3.10.2, GDAL 3.4.1, PROJ 8.2.1; sf_use_s2() is FALSE
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+    of_largest_polygon): st_centroid does not give correct centroids for
+    longitude/latitude data
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+    of_largest_polygon): st_centroid does not give correct centroids for
+    longitude/latitude data
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+    of_largest_polygon): st_centroid does not give correct centroids for
+    longitude/latitude data
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+    of_largest_polygon): st_centroid does not give correct centroids for
+    longitude/latitude data
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+    of_largest_polygon): st_centroid does not give correct centroids for
+    longitude/latitude data
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+    of_largest_polygon): st_centroid does not give correct centroids for
+    longitude/latitude data
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+    of_largest_polygon): st_centroid does not give correct centroids for
+    longitude/latitude data
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+    of_largest_polygon): st_centroid does not give correct centroids for
+    longitude/latitude data
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+    of_largest_polygon): st_centroid does not give correct centroids for
+    longitude/latitude data
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+    of_largest_polygon): st_centroid does not give correct centroids for
+    longitude/latitude data
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+    of_largest_polygon): st_centroid does not give correct centroids for
+    longitude/latitude data
+
+    Warning: st_centroid assumes attributes are constant over geometries
+
+    Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
+    of_largest_polygon): st_centroid does not give correct centroids for
+    longitude/latitude data
+
+``` r
+table$area <- gsub("_", " ", table$area)
+table$area <- gsub("ue", "ü", table$area)
+
+knitr::kable(table, "markdown", col.names = c("Specie", "Area name","Location","Area size (m$^2$)","# detections" ), caption = "Researched Areas of Interests with dominant specie, area name, area of the AOI and detected trees.", digits = 2)
+```
+
+<table style="width:100%;">
+<caption>Researched Areas of Interests with dominant specie, area name,
+area of the AOI and detected trees.</caption>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 26%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Specie</th>
+<th style="text-align: left;">Area name</th>
+<th style="text-align: left;">Location</th>
+<th style="text-align: left;">Area size (m<span
+class="math inline"><sup>2</sup></span>)</th>
+<th style="text-align: right;"># detections</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Beech</td>
+<td style="text-align: left;">Bielefeld brackwede</td>
+<td style="text-align: left;">(8.5244, 51.9902)</td>
+<td style="text-align: left;">161410.57 m<span
+class="math inline"><sup>2</sup></span></td>
+<td style="text-align: right;">1443</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Beech</td>
+<td style="text-align: left;">Billerbeck</td>
+<td style="text-align: left;">(7.3273, 51.9987)</td>
+<td style="text-align: left;">185887.25 m<span
+class="math inline"><sup>2</sup></span></td>
+<td style="text-align: right;">1732</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Beech</td>
+<td style="text-align: left;">Wülfenrath</td>
+<td style="text-align: left;">(7.0769, 51.2917)</td>
+<td style="text-align: left;">350621.21 m<span
+class="math inline"><sup>2</sup></span></td>
+<td style="text-align: right;">3315</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Oak</td>
+<td style="text-align: left;">Hamm</td>
+<td style="text-align: left;">(7.8618, 51.6639)</td>
+<td style="text-align: left;">269397.22 m<span
+class="math inline"><sup>2</sup></span></td>
+<td style="text-align: right;">2441</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Oak</td>
+<td style="text-align: left;">Münster</td>
+<td style="text-align: left;">(7.6187, 51.9174)</td>
+<td style="text-align: left;">164116.61 m<span
+class="math inline"><sup>2</sup></span></td>
+<td style="text-align: right;">1270</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Oak</td>
+<td style="text-align: left;">Rinkerode</td>
+<td style="text-align: left;">(7.6744, 51.8598)</td>
+<td style="text-align: left;">198811.09 m<span
+class="math inline"><sup>2</sup></span></td>
+<td style="text-align: right;">1643</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pine</td>
+<td style="text-align: left;">Greffen</td>
+<td style="text-align: left;">(8.1697, 51.9913)</td>
+<td style="text-align: left;">49418.81 m<span
+class="math inline"><sup>2</sup></span></td>
+<td style="text-align: right;">513</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pine</td>
+<td style="text-align: left;">Mesum</td>
+<td style="text-align: left;">(7.5403, 52.2573)</td>
+<td style="text-align: left;">405072.85 m<span
+class="math inline"><sup>2</sup></span></td>
+<td style="text-align: right;">5031</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pine</td>
+<td style="text-align: left;">Telgte</td>
+<td style="text-align: left;">(7.7816, 52.0024)</td>
+<td style="text-align: left;">274132.34 m<span
+class="math inline"><sup>2</sup></span></td>
+<td style="text-align: right;">3368</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Spruce</td>
+<td style="text-align: left;">Brilon</td>
+<td style="text-align: left;">(8.5352, 51.4084)</td>
+<td style="text-align: left;">211478.2 m<span
+class="math inline"><sup>2</sup></span></td>
+<td style="text-align: right;">3342</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Spruce</td>
+<td style="text-align: left;">Marienheide</td>
+<td style="text-align: left;">(7.5618, 51.0841)</td>
+<td style="text-align: left;">223183.78 m<span
+class="math inline"><sup>2</sup></span></td>
+<td style="text-align: right;">1257</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Spruce</td>
+<td style="text-align: left;">Osterwald</td>
+<td style="text-align: left;">(8.3721, 51.2151)</td>
+<td style="text-align: left;">216026.43 m<span
+class="math inline"><sup>2</sup></span></td>
+<td style="text-align: right;">2806</td>
+</tr>
+</tbody>
+</table>
+
+Researched Areas of Interests with dominant specie, area name, area of
+the AOI and detected trees.
 
 # Analysis
 
