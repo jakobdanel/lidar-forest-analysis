@@ -191,18 +191,14 @@ div.csl-indent {
 <h1 data-number="2"><span class="header-section-number">2</span> Methods</h1>
 <section id="data-acquisition" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="data-acquisition"><span class="header-section-number">2.1</span> Data acquisition</h2>
-<p>This file describing the data acquisition of this project.</p>
-<p>Sources for gaining information about the tree species in NRW forests:</p>
-<ul>
-<li>Waldmonitor.de <span class="citation" data-cites="welle2014">(<a href="#ref-welle2014" role="doc-biblioref">Welle et al. 2022</a>)</span></li>
-<li>Dominant tree species by Thuenen: https://atlas.thuenen.de/layers/geonode:Dominant_Species_Class</li>
-<li>Validating with Sentinel RGB imageries the shape and texture of the area:
-<ul>
-<li>leaf color</li>
-<li>human made /natural shapes of the forest</li>
-<li>Human made objects in the direct neighboorhoud of the area.</li>
-</ul></li>
-</ul>
+<p>Our primary objective is to identify patches where one tree species exhibits a high level of dominance, striving to capture monocultural stands within the diverse forests of Nordrhein-Westfalia (NRW). Recognizing the practical challenges of finding true monocultures, we aim to identify patches where one species is highly dominant, enabling meaningful comparisons across different species.</p>
+<p>The study is framed within the NRW region due to the availability of an easily accessible dataset. Our focus includes four prominent tree species in NRW: oak, beech, spruce, and pine, representing the most prevalent species in the region. To ensure the validity of our findings, we derive three patches for each species, thereby confirming that observed variables are characteristic of a particular species rather than a specific patch. Each patch is carefully selected to encompass an area of approximately 50-100 hectares and contain between 5,000 and 10,000 trees. Striking a balance between relevance and manageability, these patches avoid excessive size to enhance the likelihood of capturing varied species mixes and ensure compatibility with local hardware.</p>
+<p>Specific Goals:</p>
+<ol type="1">
+<li>Retrieve patches with highly dominant tree species.</li>
+<li>Minimize or eliminate the presence of human-made structures within the selected patches.</li>
+</ol>
+<p>To achieve our goals, we utilized the waldmonitor dataset <span class="citation" data-cites="welle2014">(<a href="#ref-welle2014" role="doc-biblioref">Welle et al. 2022</a>)</span> and the map provided by <span class="citation" data-cites="Blickensdoerfer2022">(<a href="#ref-Blickensdoerfer2022" role="doc-biblioref">Blickensdoerfer 2022</a>)</span>, both indicating dominant tree species in NRW. We identified patches of feasible size where both sources predicted the presence of a specific species. Further validation involved examining sentinel images of these forest regions to assess the evenness of structures, leaf color distribution, and the absence of significant human-made structures such as roads or buildings. The subsequent preprocessing steps, detailed in the following subsection, involved refining our selected patches and deriving relevant variables, such as tree distribution and density, to ensure that the chosen areas align with the desired research domains.</p>
 </section>
 <section id="preprocessing" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="preprocessing"><span class="header-section-number">2.2</span> Preprocessing</h2>
@@ -243,6 +239,7 @@ div.csl-indent {
 </div>
 </div>
 </div>
+<p>We draw three patches for each species from different regions (see <a href="#tbl-summary-researched-areas">Table&nbsp;1</a>). We download the LiDAR data for those patches and runned all preprocessing steps as described. We than checked with certain derived parameters (e.g.&nbsp;tree heights, tree distributions or tree density) that all patches contain valid forest data. In that step we discovered, that in one patch some forest clearance took place in the near past. This patch was removed from the dataset and was replaced with a new one.</p>
 <p>In our research, drawing patches evenly distributed across Nordrhein-Westfalia is inherently constrained by natural factors. Consequently, the patches for oak and pine predominantly originate from the Münsterland region, as illustrated in <a href="#fig-patches-nrw">Figure&nbsp;1</a>. For spruce, the patches were derived from Sauerland, reflecting the prevalence of spruce forests in this specific region within NRW, as corroborated by Welle et al. <span class="citation" data-cites="welle2014">(<a href="#ref-welle2014" role="doc-biblioref">Welle et al. 2022</a>)</span> and Blickensdörfer et al. <span class="citation" data-cites="Blickensdoerfer2022">(<a href="#ref-Blickensdoerfer2022" role="doc-biblioref">Blickensdoerfer 2022</a>)</span>. Beech patches, on the other hand, were generated from diverse locations within NRW. Across all patches, no human-made objects were identified, with the exception of small paths for pedestrians and forestry vehicles.</p>
 <p>The distribution of area and detections is notable for each four species. Beech covers 69,791.9 hectares with a total of 5,954 detections, oak spans 63,232.49 hectares with 5,354 detections, pine extends across 72,862.4 hectares with 8,912 detections, and spruce encompasses 57,940.02 hectares with 8,619 detections. Both the amount of detections and the corresponding area exhibit a relatively uniform distribution across the diverse patches, as summarized in <a href="#tbl-summary-researched-areas">Table&nbsp;1</a>.</p>
 <p>With the selected dataset described, we intentionally chose three patches for each four species that exhibit a practical and usable size for our research objectives. These carefully chosen patches align with the conditions essential for our study, providing comprehensive and representative data for in-depth analysis and meaningful insights into the characteristics of each tree species within the specified areas.</p>

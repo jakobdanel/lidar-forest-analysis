@@ -77,18 +77,14 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="data-acquisition" class="level2">
 <h2 class="anchored" data-anchor-id="data-acquisition">Data acquisition</h2>
-<p>This file describing the data acquisition of this project.</p>
-<p>Sources for gaining information about the tree species in NRW forests:</p>
-<ul>
-<li>Waldmonitor.de <span class="citation" data-cites="welle2014">[@welle2014]</span></li>
-<li>Dominant tree species by Thuenen: https://atlas.thuenen.de/layers/geonode:Dominant_Species_Class</li>
-<li>Validating with Sentinel RGB imageries the shape and texture of the area:
-<ul>
-<li>leaf color</li>
-<li>human made /natural shapes of the forest</li>
-<li>Human made objects in the direct neighboorhoud of the area.</li>
-</ul></li>
-</ul>
+<p>Our primary objective is to identify patches where one tree species exhibits a high level of dominance, striving to capture monocultural stands within the diverse forests of Nordrhein-Westfalia (NRW). Recognizing the practical challenges of finding true monocultures, we aim to identify patches where one species is highly dominant, enabling meaningful comparisons across different species.</p>
+<p>The study is framed within the NRW region due to the availability of an easily accessible dataset. Our focus includes four prominent tree species in NRW: oak, beech, spruce, and pine, representing the most prevalent species in the region. To ensure the validity of our findings, we derive three patches for each species, thereby confirming that observed variables are characteristic of a particular species rather than a specific patch. Each patch is carefully selected to encompass an area of approximately 50-100 hectares and contain between 5,000 and 10,000 trees. Striking a balance between relevance and manageability, these patches avoid excessive size to enhance the likelihood of capturing varied species mixes and ensure compatibility with local hardware.</p>
+<p>Specific Goals:</p>
+<ol type="1">
+<li>Retrieve patches with highly dominant tree species.</li>
+<li>Minimize or eliminate the presence of human-made structures within the selected patches.</li>
+</ol>
+<p>To achieve our goals, we utilized the waldmonitor dataset <span class="citation" data-cites="welle2014">[@welle2014]</span> and the map provided by <span class="citation" data-cites="Blickensdoerfer2022">[@Blickensdoerfer2022]</span>, both indicating dominant tree species in NRW. We identified patches of feasible size where both sources predicted the presence of a specific species. Further validation involved examining sentinel images of these forest regions to assess the evenness of structures, leaf color distribution, and the absence of significant human-made structures such as roads or buildings. The subsequent preprocessing steps, detailed in the following subsection, involved refining our selected patches and deriving relevant variables, such as tree distribution and density, to ensure that the chosen areas align with the desired research domains.</p>
 
 
 </section>
