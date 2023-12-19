@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jakob Danel and Frederick Bruch">
-<meta name="dcterms.date" content="2023-12-18">
+<meta name="dcterms.date" content="2023-12-19">
 
 <title>Forest Data Analysis Report</title>
 <style>
@@ -114,8 +114,9 @@ div.csl-indent {
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
 
 </head>
 
@@ -141,12 +142,11 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#researched-areas" id="toc-researched-areas" class="nav-link" data-scroll-target="#researched-areas"><span class="header-section-number">3.1</span> Researched areas</a></li>
   </ul></li>
-  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis"><span class="header-section-number">4</span> Analysis</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">5</span> References</a></li>
-  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix"><span class="header-section-number">6</span> Appendix</a>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">4</span> References</a></li>
+  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix"><span class="header-section-number">5</span> Appendix</a>
   <ul class="collapse">
-  <li><a href="#sec-appendix-preprocessing" id="toc-sec-appendix-preprocessing" class="nav-link" data-scroll-target="#sec-appendix-preprocessing"><span class="header-section-number">6.1</span> Script which can be used to do all preprocessing</a></li>
-  <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation"><span class="header-section-number">6.2</span> Documentation</a></li>
+  <li><a href="#sec-appendix-preprocessing" id="toc-sec-appendix-preprocessing" class="nav-link" data-scroll-target="#sec-appendix-preprocessing"><span class="header-section-number">5.1</span> Script which can be used to do all preprocessing</a></li>
+  <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation"><span class="header-section-number">5.2</span> Documentation</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -173,7 +173,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">December 18, 2023</p>
+      <p class="date">December 19, 2023</p>
     </div>
   </div>
   
@@ -213,179 +213,266 @@ div.csl-indent {
 <p>Following the size reduction to our dataset, the next step involves correcting the <code>z</code> values. The <code>z</code> values in the data are originally relative to the ellipsoid used for referencing, but we require them to be relative to the ground. To achieve this, we utilize the <code>lidR::tin</code> function, which extrapolates a convex hull between all ground points (classified by the data provider) and calculates the z value based on this structure.</p>
 <p>Subsequently, we aim to perform segmentation for each distinct tree, marking each item of the point cloud with a tree ID. We employ the algorithm described by <span class="citation" data-cites="li2012">Li et al. (<a href="#ref-li2012" role="doc-biblioref">2012</a>)</span>, using parameters <code>li2012(dt1 = 2, dt2 = 3, R = 2, Zu = 10, hmin = 5, speed_up = 12)</code>. The meanings of these parameters are elucidated in Li et al.’s work <span class="citation" data-cites="li2012">(<a href="#ref-li2012" role="doc-biblioref">Li et al. 2012</a>)</span>.</p>
 <p>Finally, the last preprocessing step involves individual tree detection, seeking a single <code>POINT</code> object for each tree. The <code>lidR::lmf</code> function, an implementation of the tree data using a local maximum approach, is utilized for this purpose <span class="citation" data-cites="popescu2004">(<a href="#ref-popescu2004" role="doc-biblioref">Popescu and Wynne 2004</a>)</span>. The results are stored in GeoPackage files within our data structure.</p>
-<p>See <a href="#sec-appendix-preprocessing">Section&nbsp;6.1</a> for the implementation of the preprocessing.</p>
+<p>See <a href="#sec-appendix-preprocessing">Section&nbsp;5.1</a> for the implementation of the preprocessing.</p>
 </section>
 </section>
 <section id="results" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Results</h1>
 <section id="researched-areas" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="researched-areas"><span class="header-section-number">3.1</span> Researched areas</h2>
-<table class="table">
-<caption>Different areas listed with their size and detected trees.</caption>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">sf_use_s2</span>(<span class="cn">FALSE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>patches <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">"research_areas.shp"</span>) <span class="sc">|&gt;</span> sf<span class="sc">::</span><span class="fu">st_centroid</span>()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>de <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">"results/results/states_de/Bundesländer_2017_mit_Einwohnerzahl.shp"</span>) <span class="co"># Source: https://hub.arcgis.com/datasets/esri-de-content::bundesl%C3%A4nder-2017-mit-einwohnerzahl/explore?location=51.099647%2C10.454033%2C7.43</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>nrw <span class="ot">&lt;-</span> de[<span class="dv">5</span>,] <span class="sc">|&gt;</span> sf<span class="sc">::</span><span class="fu">st_geometry</span>()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_sf</span>(<span class="at">data =</span> nrw) <span class="sc">+</span> </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">data =</span> patches, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">col =</span> species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-patches-nrw" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="report_files/figure-html/fig-patches-nrw-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: Locations of the different patches with the dominant species for that patch. The patches centroids are displayed on a basemap describing the borders from NRW.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In our research, drawing patches evenly distributed across Nordrhein-Westfalia is inherently constrained by natural factors. Consequently, the patches for oak and pine predominantly originate from the Münsterland region, as illustrated in <a href="#fig-patches-nrw">Figure&nbsp;1</a>. For spruce, the patches were derived from Sauerland, reflecting the prevalence of spruce forests in this specific region within NRW, as corroborated by Welle et al. <span class="citation" data-cites="welle2014">(<a href="#ref-welle2014" role="doc-biblioref">Welle et al. 2022</a>)</span> and Blickensdörfer et al. <span class="citation" data-cites="Blickensdoerfer2022">(<a href="#ref-Blickensdoerfer2022" role="doc-biblioref">Blickensdoerfer 2022</a>)</span>. Beech patches, on the other hand, were generated from diverse locations within NRW. Across all patches, no human-made objects were identified, with the exception of small paths for pedestrians and forestry vehicles.</p>
+<p>The distribution of area and detections is notable for each four species. Beech covers 69,791.9 hectares with a total of 5,954 detections, oak spans 63,232.49 hectares with 5,354 detections, pine extends across 72,862.4 hectares with 8,912 detections, and spruce encompasses 57,940.02 hectares with 8,619 detections. Both the amount of detections and the corresponding area exhibit a relatively uniform distribution across the diverse patches, as summarized in <a href="#tbl-summary-researched-areas">Table&nbsp;1</a>.</p>
+<p>With the selected dataset described, we intentionally chose three patches for each four species that exhibit a practical and usable size for our research objectives. These carefully chosen patches align with the conditions essential for our study, providing comprehensive and representative data for in-depth analysis and meaningful insights into the characteristics of each tree species within the specified areas.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>shp <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">"research_areas.shp"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>table <span class="ot">&lt;-</span> lfa<span class="sc">::</span><span class="fu">lfa_get_all_areas</span>()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">sf_use_s2</span>(<span class="cn">FALSE</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (row <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(table)) {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  area <span class="ot">&lt;-</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(shp, shp<span class="sc">$</span>species <span class="sc">==</span> table[row, <span class="st">"specie"</span>] <span class="sc">&amp;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                    shp<span class="sc">$</span>name <span class="sc">==</span> table[row, <span class="st">"area"</span>])</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  area_size <span class="ot">&lt;-</span> area <span class="sc">|&gt;</span> sf<span class="sc">::</span><span class="fu">st_area</span>()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  point <span class="ot">&lt;-</span> area <span class="sc">|&gt;</span> sf<span class="sc">::</span><span class="fu">st_centroid</span>() <span class="sc">|&gt;</span> sf<span class="sc">::</span><span class="fu">st_coordinates</span>()</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  table[row,<span class="st">"point"</span>] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"("</span>,<span class="fu">round</span>(point[<span class="dv">1</span>], <span class="at">digits =</span> <span class="dv">4</span>),<span class="st">", "</span>,<span class="fu">round</span>(point[<span class="dv">2</span>],<span class="at">digits =</span> <span class="dv">4</span>),<span class="st">")"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  table[row, <span class="st">"area_size"</span>] <span class="ot">=</span> <span class="fu">round</span>(area_size,<span class="at">digits =</span> <span class="dv">2</span>) <span class="co">#paste0(round(area_size,digits = 2), " m²")</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  amount_det <span class="ot">&lt;-</span> <span class="fu">nrow</span>(lfa<span class="sc">::</span><span class="fu">lfa_get_detection_area</span>(table[row, <span class="st">"specie"</span>], table[row, <span class="st">"area"</span>]))</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(amount_det)){</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">nrow</span>(lfa<span class="sc">::</span><span class="fu">lfa_get_detection_area</span>(table[row, <span class="st">"specie"</span>], table[row, <span class="st">"area"</span>])),table[row, <span class="st">"specie"</span>],table[row, <span class="st">"area"</span>])</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  table[row, <span class="st">"amount_detections"</span>] <span class="ot">=</span> amount_det</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># table[row, "specie"] &lt;- lfa::lfa_capitalize_first_char(table[row,"specie"])</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  table[row, <span class="st">"area"</span>] <span class="ot">&lt;-</span> lfa<span class="sc">::</span><span class="fu">lfa_capitalize_first_char</span>(table[row,<span class="st">"area"</span>])</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>table<span class="sc">$</span>area <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_"</span>, <span class="st">" "</span>, table<span class="sc">$</span>area)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>table<span class="sc">$</span>area <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"ue"</span>, <span class="st">"ü"</span>, table<span class="sc">$</span>area)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>table <span class="ot">=</span> table[,<span class="sc">!</span><span class="fu">names</span>(table) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"specie"</span>)]</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(table, <span class="st">"html"</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Patch Name"</span>,<span class="st">"Location"</span>,<span class="st">"Area size (m²)"</span>,<span class="st">"Amount tree detections"</span> ), <span class="at">caption =</span> <span class="cn">NULL</span>, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">escape =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hold_position"</span>, <span class="st">"bordered"</span>,<span class="st">"responsive"</span>),</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">stripe_index =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,<span class="dv">7</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">pack_rows</span>(<span class="st">"Beech"</span>, <span class="dv">1</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">pack_rows</span>(<span class="st">"Oak"</span>, <span class="dv">4</span>, <span class="dv">6</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">pack_rows</span>(<span class="st">"Pine"</span>, <span class="dv">7</span>, <span class="dv">9</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">pack_rows</span>(<span class="st">"Spruce"</span>, <span class="dv">10</span>, <span class="dv">12</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="tbl-summary-researched-areas" class="anchored">
+<div class="table-responsive">
+<table class="table table-striped table-bordered table-sm small" data-quarto-postprocess="true">
+<caption>Table&nbsp;1: Summary of researched patches grouped by species, with their location, area and the amount of detected trees.</caption>
 <thead>
 <tr class="header">
-<th>Species</th>
-<th>Area</th>
-<th>Size</th>
-<th># trees</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Patch Name</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Location</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Area size (m²)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Amount tree detections</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" data-grouplength="3">
+<td colspan="4" style="border-bottom: 1px solid"><strong>Beech</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em; font-weight: bold;" data-indentlevel="1">Bielefeld brackwede</td>
+<td style="text-align: left;">(8.5244, 51.9902)</td>
+<td style="text-align: right;">161410.57</td>
+<td style="text-align: right;">1443</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em; font-weight: bold;" data-indentlevel="1">Billerbeck</td>
+<td style="text-align: left;">(7.3273, 51.9987)</td>
+<td style="text-align: right;">185887.25</td>
+<td style="text-align: right;">1732</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em; font-weight: bold;" data-indentlevel="1">Wülfenrath</td>
+<td style="text-align: left;">(7.0769, 51.2917)</td>
+<td style="text-align: right;">350621.21</td>
+<td style="text-align: right;">2779</td>
+</tr>
+<tr class="odd" data-grouplength="3">
+<td colspan="4" style="border-bottom: 1px solid"><strong>Oak</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em; font-weight: bold;" data-indentlevel="1">Hamm</td>
+<td style="text-align: left;">(7.8618, 51.6639)</td>
+<td style="text-align: right;">269397.22</td>
+<td style="text-align: right;">2441</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em; font-weight: bold;" data-indentlevel="1">Münster</td>
+<td style="text-align: left;">(7.6187, 51.9174)</td>
+<td style="text-align: right;">164116.61</td>
+<td style="text-align: right;">1270</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em; font-weight: bold;" data-indentlevel="1">Rinkerode</td>
+<td style="text-align: left;">(7.6744, 51.8598)</td>
+<td style="text-align: right;">198811.09</td>
+<td style="text-align: right;">1643</td>
+</tr>
+<tr class="odd" data-grouplength="3">
+<td colspan="4" style="border-bottom: 1px solid"><strong>Pine</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em; font-weight: bold;" data-indentlevel="1">Greffen</td>
+<td style="text-align: left;">(8.1697, 51.9913)</td>
+<td style="text-align: right;">49418.81</td>
+<td style="text-align: right;">513</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em; font-weight: bold;" data-indentlevel="1">Mesum</td>
+<td style="text-align: left;">(7.5403, 52.2573)</td>
+<td style="text-align: right;">405072.85</td>
+<td style="text-align: right;">5031</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em; font-weight: bold;" data-indentlevel="1">Telgte</td>
+<td style="text-align: left;">(7.7816, 52.0024)</td>
+<td style="text-align: right;">274132.34</td>
+<td style="text-align: right;">3368</td>
+</tr>
+<tr class="odd" data-grouplength="3">
+<td colspan="4" style="border-bottom: 1px solid"><strong>Spruce</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em; font-weight: bold;" data-indentlevel="1">Brilon</td>
+<td style="text-align: left;">(8.5352, 51.4084)</td>
+<td style="text-align: right;">211478.20</td>
+<td style="text-align: right;">3342</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding-left: 2em; font-weight: bold;" data-indentlevel="1">Oberhundem</td>
+<td style="text-align: left;">(8.1861, 51.0909)</td>
+<td style="text-align: right;">151895.53</td>
+<td style="text-align: right;">2471</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding-left: 2em; font-weight: bold;" data-indentlevel="1">Osterwald</td>
+<td style="text-align: left;">(8.3721, 51.2151)</td>
+<td style="text-align: right;">216026.43</td>
+<td style="text-align: right;">2806</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+</div>
+</div>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">specie</th>
+<th style="text-align: left;">area</th>
+<th style="text-align: right;">density (1/m²)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Oak</td>
-<td>Münster</td>
-<td>100m<span class="math inline">\(^2\)</span></td>
-<td>126</td>
+<td style="text-align: left;">beech</td>
+<td style="text-align: left;">bielefeld_brackwede</td>
+<td style="text-align: right;">0.0089399</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">beech</td>
+<td style="text-align: left;">billerbeck</td>
+<td style="text-align: right;">0.0093175</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">beech</td>
+<td style="text-align: left;">wuelfenrath</td>
+<td style="text-align: right;">0.0079259</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">oak</td>
+<td style="text-align: left;">hamm</td>
+<td style="text-align: right;">0.0090610</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">oak</td>
+<td style="text-align: left;">muenster</td>
+<td style="text-align: right;">0.0077384</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">oak</td>
+<td style="text-align: left;">rinkerode</td>
+<td style="text-align: right;">0.0082641</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pine</td>
+<td style="text-align: left;">greffen</td>
+<td style="text-align: right;">0.0103807</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pine</td>
+<td style="text-align: left;">mesum</td>
+<td style="text-align: right;">0.0124200</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pine</td>
+<td style="text-align: left;">telgte</td>
+<td style="text-align: right;">0.0122860</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">spruce</td>
+<td style="text-align: left;">brilon</td>
+<td style="text-align: right;">0.0158030</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">spruce</td>
+<td style="text-align: left;">oberhundem</td>
+<td style="text-align: right;">0.0162678</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">spruce</td>
+<td style="text-align: left;">osterwald</td>
+<td style="text-align: right;">0.0129892</td>
 </tr>
 </tbody>
 </table>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>shp <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">"research_areas.shp"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>table <span class="ot">&lt;-</span> lfa<span class="sc">::</span><span class="fu">lfa_get_all_areas</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: replacing previous import 'lidR::st_concave_hull' by
-'sf::st_concave_hull' when loading 'lfa'</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">sf_use_s2</span>(<span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Spherical geometry (s2) switched off</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (row <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(table)) {</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  area <span class="ot">&lt;-</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(shp, shp<span class="sc">$</span>species <span class="sc">==</span> table[row, <span class="st">"specie"</span>] <span class="sc">&amp;</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                    shp<span class="sc">$</span>name <span class="sc">==</span> table[row, <span class="st">"area"</span>])</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  area_size <span class="ot">&lt;-</span> area <span class="sc">|&gt;</span> sf<span class="sc">::</span><span class="fu">st_area</span>()</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  point <span class="ot">&lt;-</span> area <span class="sc">|&gt;</span> sf<span class="sc">::</span><span class="fu">st_centroid</span>() <span class="sc">|&gt;</span> sf<span class="sc">::</span><span class="fu">st_coordinates</span>()</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  table[row,<span class="st">"point"</span>] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"("</span>,<span class="fu">round</span>(point[<span class="dv">1</span>], <span class="at">digits =</span> <span class="dv">4</span>),<span class="st">", "</span>,<span class="fu">round</span>(point[<span class="dv">2</span>],<span class="at">digits =</span> <span class="dv">4</span>),<span class="st">")"</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  table[row, <span class="st">"area_size"</span>] <span class="ot">=</span> <span class="fu">paste0</span>(<span class="fu">round</span>(area_size,<span class="at">digits =</span> <span class="dv">2</span>), <span class="st">" m$^2$"</span>)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  table[row, <span class="st">"amount_detections"</span>] <span class="ot">=</span> <span class="fu">nrow</span>(lfa<span class="sc">::</span><span class="fu">lfa_get_detection_area</span>(table[row, <span class="st">"specie"</span>], table[row, <span class="st">"area"</span>]))</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  table[row, <span class="st">"specie"</span>] <span class="ot">&lt;-</span> lfa<span class="sc">::</span><span class="fu">lfa_capitalize_first_char</span>(table[row,<span class="st">"specie"</span>])</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  table[row, <span class="st">"area"</span>] <span class="ot">&lt;-</span> lfa<span class="sc">::</span><span class="fu">lfa_capitalize_first_char</span>(table[row,<span class="st">"area"</span>])</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Linking to GEOS 3.10.2, GDAL 3.4.1, PROJ 8.2.1; sf_use_s2() is FALSE</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
-of_largest_polygon): st_centroid does not give correct centroids for
-longitude/latitude data</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
-of_largest_polygon): st_centroid does not give correct centroids for
-longitude/latitude data</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
-of_largest_polygon): st_centroid does not give correct centroids for
-longitude/latitude data</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
-of_largest_polygon): st_centroid does not give correct centroids for
-longitude/latitude data</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
-of_largest_polygon): st_centroid does not give correct centroids for
-longitude/latitude data</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
-of_largest_polygon): st_centroid does not give correct centroids for
-longitude/latitude data</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
-of_largest_polygon): st_centroid does not give correct centroids for
-longitude/latitude data</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
-of_largest_polygon): st_centroid does not give correct centroids for
-longitude/latitude data</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
-of_largest_polygon): st_centroid does not give correct centroids for
-longitude/latitude data</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
-of_largest_polygon): st_centroid does not give correct centroids for
-longitude/latitude data</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
-of_largest_polygon): st_centroid does not give correct centroids for
-longitude/latitude data</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sfc(st_geometry(x), of_largest_polygon =
-of_largest_polygon): st_centroid does not give correct centroids for
-longitude/latitude data</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>table<span class="sc">$</span>area <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"_"</span>, <span class="st">" "</span>, table<span class="sc">$</span>area)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>table<span class="sc">$</span>area <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"ue"</span>, <span class="st">"ü"</span>, table<span class="sc">$</span>area)</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(table, <span class="st">"latex"</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Specie"</span>, <span class="st">"Area name"</span>,<span class="st">"Location"</span>,<span class="st">"Area size (m$^2$)"</span>,<span class="st">"# detections"</span> ), <span class="at">caption =</span> <span class="st">"Researched Areas of Interests with dominant specie, area name, area of the AOI and detected trees."</span>, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">escape =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">latex_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hold_position"</span>),</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">stripe_index =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,<span class="dv">7</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span></span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-
-</div>
-</div>
 </section>
 </section>
-<section id="analysis" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Analysis</h1>
-</section>
-<section id="references" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> References</h1>
+<section id="references" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Blickensdoerfer2022" class="csl-entry" role="listitem">
+Blickensdoerfer, Lukas. 2022. <span>“Dominant Tree Species for Germany (2017/2018).”</span> <em>Waldatlas- Wald Und Waldnutzung</em>. Thünen Atlas. <a href="https://atlas.thuenen.de/layers/geonode:Dominant_Species_Class">https://atlas.thuenen.de/layers/geonode:Dominant_Species_Class</a>.
+</div>
 <div id="ref-li2012" class="csl-entry" role="listitem">
 Li, Wenkai, Qinghua Guo, Marek Jakubowski, and Maggi Kelly. 2012. <span>“A New Method for Segmenting Individual Trees from the Lidar Point Cloud.”</span> <em>Photogrammetric Engineering and Remote Sensing</em> 78 (January): 75–84. <a href="https://doi.org/10.14358/PERS.78.1.75">https://doi.org/10.14358/PERS.78.1.75</a>.
 </div>
@@ -397,18 +484,18 @@ Welle, Torsten, Lukas Aschenbrenner, Kevin Kuonath, Stefan Kirmaier, and Jonas F
 </div>
 </div>
 </section>
-<section id="appendix" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Appendix</h1>
-<section id="sec-appendix-preprocessing" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="sec-appendix-preprocessing"><span class="header-section-number">6.1</span> Script which can be used to do all preprocessing</h2>
+<section id="appendix" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Appendix</h1>
+<section id="sec-appendix-preprocessing" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="sec-appendix-preprocessing"><span class="header-section-number">5.1</span> Script which can be used to do all preprocessing</h2>
 <p>Load the file with the research areas ::: {.cell}</p>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>sf <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"research_areas.shp"</span>))</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sf <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"research_areas.shp"</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Simple feature collection with 12 features and 3 fields
 Geometry type: POLYGON
 Dimension:     XY
-Bounding box:  xmin: 7.071625 ymin: 51.08151 xmax: 8.539877 ymax: 52.25983
+Bounding box:  xmin: 7.071625 ymin: 51.0895 xmax: 8.539877 ymax: 52.25983
 Geodetic CRS:  WGS 84
 # A tibble: 12 × 4
       id species name                                                   geometry
@@ -422,46 +509,46 @@ Geodetic CRS:  WGS 84
  7     7 beech   bielefeld_brackwede ((8.524749 51.9921, 8.528418 51.99079, 8.5…
  8     8 beech   wuelfenrath         ((7.071625 51.29256, 7.072311 51.29334, 7.…
  9     9 beech   billerbeck          ((7.324729 51.99783, 7.323548 51.99923, 7.…
-10    10 spruce  marienheide         ((7.558102 51.08358, 7.558317 51.08527, 7.…
-11    11 spruce  brilon              ((8.532195 51.41029, 8.535027 51.41064, 8.…
-12    12 spruce  osterwald           ((8.369328 51.21693, 8.371238 51.21718, 8.…</code></pre>
+10    11 spruce  brilon              ((8.532195 51.41029, 8.535027 51.41064, 8.…
+11    12 spruce  osterwald           ((8.369328 51.21693, 8.371238 51.21718, 8.…
+12    10 spruce  oberhundem          ((8.18082 51.08999, 8.180868 51.09143, 8.1…</code></pre>
 </div>
 <p>:::</p>
 <p>Init the project ::: {.cell}</p>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lfa)</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">sf_use_s2</span>(<span class="cn">FALSE</span>)</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>locations <span class="ot">&lt;-</span> <span class="fu">lfa_init</span>(<span class="st">"research_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lfa)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">sf_use_s2</span>(<span class="cn">FALSE</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>locations <span class="ot">&lt;-</span> <span class="fu">lfa_init</span>(<span class="st">"research_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>:::</p>
 <p>Do all of the prprocessing steps ::: {.cell}</p>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations,retile,<span class="at">check_flag =</span> <span class="st">"retile"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations,retile,<span class="at">check_flag =</span> <span class="st">"retile"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>No further processing: flag retile is set!Function is already computed, no further computings here</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>NULL</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_intersect_areas, <span class="at">ctg =</span> <span class="cn">NULL</span>, <span class="at">areas_sf =</span> sf,<span class="at">check_flag =</span> <span class="st">"intersect"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_intersect_areas, <span class="at">ctg =</span> <span class="cn">NULL</span>, <span class="at">areas_sf =</span> sf,<span class="at">check_flag =</span> <span class="st">"intersect"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>No further processing: flag intersect is set!Function is already computed, no further computings here</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>NULL</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_ground_correction, <span class="at">ctg =</span> <span class="cn">NULL</span>,<span class="at">check_flag =</span> <span class="st">"z_correction"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_ground_correction, <span class="at">ctg =</span> <span class="cn">NULL</span>,<span class="at">check_flag =</span> <span class="st">"z_correction"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>No further processing: flag z_correction is set!Function is already computed, no further computings here</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>NULL</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_segmentation, <span class="at">ctg =</span> <span class="cn">NULL</span>,<span class="at">check_flag =</span> <span class="st">"segmentation"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_segmentation, <span class="at">ctg =</span> <span class="cn">NULL</span>,<span class="at">check_flag =</span> <span class="st">"segmentation"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>No further processing: flag segmentation is set!Function is already computed, no further computings here</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>NULL</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_detection, <span class="at">catalog =</span> <span class="cn">NULL</span>, <span class="at">write_to_file =</span> <span class="cn">TRUE</span>,<span class="at">check_flag =</span> <span class="st">"detection"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_detection, <span class="at">catalog =</span> <span class="cn">NULL</span>, <span class="at">write_to_file =</span> <span class="cn">TRUE</span>,<span class="at">check_flag =</span> <span class="st">"detection"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>No further processing: flag detection is set!Function is already computed, no further computings here</code></pre>
 </div>
@@ -470,10 +557,10 @@ Geodetic CRS:  WGS 84
 </div>
 <p>:::</p>
 </section>
-<section id="documentation" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="documentation"><span class="header-section-number">6.2</span> Documentation</h2>
-<section id="lfa_capitalize_first_char" class="level3" data-number="6.2.1">
-<h3 data-number="6.2.1" class="anchored" data-anchor-id="lfa_capitalize_first_char"><span class="header-section-number">6.2.1</span> <code>lfa_capitalize_first_char</code></h3>
+<section id="documentation" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="documentation"><span class="header-section-number">5.2</span> Documentation</h2>
+<section id="lfa_capitalize_first_char" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="lfa_capitalize_first_char"><span class="header-section-number">5.2.1</span> <code>lfa_capitalize_first_char</code></h3>
 <p>Capitalize First Character of a String</p>
 <section id="arguments" class="level4">
 <h4 class="anchored" data-anchor-id="arguments">Arguments</h4>
@@ -533,23 +620,23 @@ Geodetic CRS:  WGS 84
 <section id="examples" class="level4">
 <h4 class="anchored" data-anchor-id="examples">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Capitalize the first character of a string</span></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">capitalize_first_char</span>(<span class="st">"hello"</span>) <span class="co"># Returns "Hello"</span></span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">capitalize_first_char</span>(<span class="st">"World"</span>) <span class="co"># Returns "World"</span></span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Error example (non-alphabetic first character)</span></span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="fu">capitalize_first_char</span>(<span class="st">"123abc"</span>) <span class="co"># Throws an error</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Capitalize the first character of a string</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">capitalize_first_char</span>(<span class="st">"hello"</span>) <span class="co"># Returns "Hello"</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">capitalize_first_char</span>(<span class="st">"World"</span>) <span class="co"># Returns "World"</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Error example (non-alphabetic first character)</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">capitalize_first_char</span>(<span class="st">"123abc"</span>) <span class="co"># Throws an error</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage" class="level4">
 <h4 class="anchored" data-anchor-id="usage">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_capitalize_first_char</span>(input_string)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_capitalize_first_char</span>(input_string)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_check_flag" class="level3" data-number="6.2.2">
-<h3 data-number="6.2.2" class="anchored" data-anchor-id="lfa_check_flag"><span class="header-section-number">6.2.2</span> <code>lfa_check_flag</code></h3>
+<section id="lfa_check_flag" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="lfa_check_flag"><span class="header-section-number">5.2.2</span> <code>lfa_check_flag</code></h3>
 <p>Check if a flag is set, indicating the completion of a specific process.</p>
 <section id="arguments-1" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-1">Arguments</h4>
@@ -583,19 +670,19 @@ Geodetic CRS:  WGS 84
 <section id="examples-1" class="level4">
 <h4 class="anchored" data-anchor-id="examples-1">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the flag for a process named "data_processing" is set</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_check_flag</span>(<span class="st">"data_processing"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the flag for a process named "data_processing" is set</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_check_flag</span>(<span class="st">"data_processing"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-1" class="level4">
 <h4 class="anchored" data-anchor-id="usage-1">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_check_flag</span>(flag_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_check_flag</span>(flag_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_create_tile_location_objects" class="level3" data-number="6.2.3">
-<h3 data-number="6.2.3" class="anchored" data-anchor-id="lfa_create_tile_location_objects"><span class="header-section-number">6.2.3</span> <code>lfa_create_tile_location_objects</code></h3>
+<section id="lfa_create_tile_location_objects" class="level3" data-number="5.2.3">
+<h3 data-number="5.2.3" class="anchored" data-anchor-id="lfa_create_tile_location_objects"><span class="header-section-number">5.2.3</span> <code>lfa_create_tile_location_objects</code></h3>
 <p>Create tile location objects</p>
 <section id="author" class="level4">
 <h4 class="anchored" data-anchor-id="author">Author</h4>
@@ -616,20 +703,20 @@ Geodetic CRS:  WGS 84
 <section id="examples-2" class="level4">
 <h4 class="anchored" data-anchor-id="examples-2">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_create_tile_location_objects</span>()</span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_create_tile_location_objects</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_create_tile_location_objects</span>()</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_create_tile_location_objects</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-2" class="level4">
 <h4 class="anchored" data-anchor-id="usage-2">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_create_tile_location_objects</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_create_tile_location_objects</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_detection" class="level3" data-number="6.2.4">
-<h3 data-number="6.2.4" class="anchored" data-anchor-id="lfa_detection"><span class="header-section-number">6.2.4</span> <code>lfa_detection</code></h3>
+<section id="lfa_detection" class="level3" data-number="5.2.4">
+<h3 data-number="5.2.4" class="anchored" data-anchor-id="lfa_detection"><span class="header-section-number">5.2.4</span> <code>lfa_detection</code></h3>
 <p>Perform tree detection on a lidar catalog and optionally save the results to a file.</p>
 <section id="arguments-2" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-2">Arguments</h4>
@@ -671,19 +758,19 @@ Geodetic CRS:  WGS 84
 <section id="examples-3" class="level4">
 <h4 class="anchored" data-anchor-id="examples-3">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform tree detection on a catalog and save the results to a file</span></span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_detection</span>(<span class="at">catalog =</span> my_catalog, <span class="at">tile_location =</span> my_tile_location, <span class="at">write_to_file =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform tree detection on a catalog and save the results to a file</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_detection</span>(<span class="at">catalog =</span> my_catalog, <span class="at">tile_location =</span> my_tile_location, <span class="at">write_to_file =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-3" class="level4">
 <h4 class="anchored" data-anchor-id="usage-3">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_detection</span>(catalog, tile_location, <span class="at">write_to_file =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_detection</span>(catalog, tile_location, <span class="at">write_to_file =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_download_areas" class="level3" data-number="6.2.5">
-<h3 data-number="6.2.5" class="anchored" data-anchor-id="lfa_download_areas"><span class="header-section-number">6.2.5</span> <code>lfa_download_areas</code></h3>
+<section id="lfa_download_areas" class="level3" data-number="5.2.5">
+<h3 data-number="5.2.5" class="anchored" data-anchor-id="lfa_download_areas"><span class="header-section-number">5.2.5</span> <code>lfa_download_areas</code></h3>
 <p>Download areas based on spatial features</p>
 <section id="arguments-3" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-3">Arguments</h4>
@@ -730,29 +817,29 @@ Geodetic CRS:  WGS 84
 <section id="examples-4" class="level4">
 <h4 class="anchored" data-anchor-id="examples-4">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_download_areas</span>(sf_areas)</span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example spatial features data frame</span></span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>sf_areas <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a><span class="at">species =</span> <span class="fu">c</span>(<span class="st">"SpeciesA"</span>, <span class="st">"SpeciesB"</span>),</span>
-<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a><span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Area1"</span>, <span class="st">"Area2"</span>),</span>
-<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Must include also other attributes specialized to sf objects</span></span>
-<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a><span class="co"># such as geometry, for processing of the download</span></span>
-<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_download_areas</span>(sf_areas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_download_areas</span>(sf_areas)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example spatial features data frame</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>sf_areas <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="at">species =</span> <span class="fu">c</span>(<span class="st">"SpeciesA"</span>, <span class="st">"SpeciesB"</span>),</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Area1"</span>, <span class="st">"Area2"</span>),</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Must include also other attributes specialized to sf objects</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co"># such as geometry, for processing of the download</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_download_areas</span>(sf_areas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-4" class="level4">
 <h4 class="anchored" data-anchor-id="usage-4">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_download_areas</span>(sf_areas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_download_areas</span>(sf_areas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_download" class="level3" data-number="6.2.6">
-<h3 data-number="6.2.6" class="anchored" data-anchor-id="lfa_download"><span class="header-section-number">6.2.6</span> <code>lfa_download</code></h3>
+<section id="lfa_download" class="level3" data-number="5.2.6">
+<h3 data-number="5.2.6" class="anchored" data-anchor-id="lfa_download"><span class="header-section-number">5.2.6</span> <code>lfa_download</code></h3>
 <p>Download an las file from the state NRW from a specific location</p>
 <section id="arguments-4" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-4">Arguments</h4>
@@ -794,12 +881,12 @@ Geodetic CRS:  WGS 84
 <section id="usage-5" class="level4">
 <h4 class="anchored" data-anchor-id="usage-5">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_download</span>(species, name, location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_download</span>(species, name, location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_get_detection_area" class="level3" data-number="6.2.7">
-<h3 data-number="6.2.7" class="anchored" data-anchor-id="lfa_get_detection_area"><span class="header-section-number">6.2.7</span> <code>lfa_get_detection_area</code></h3>
+<section id="lfa_get_detection_area" class="level3" data-number="5.2.7">
+<h3 data-number="5.2.7" class="anchored" data-anchor-id="lfa_get_detection_area"><span class="header-section-number">5.2.7</span> <code>lfa_get_detection_area</code></h3>
 <p>Get Detection for an area</p>
 <section id="arguments-5" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-5">Arguments</h4>
@@ -849,29 +936,29 @@ Geodetic CRS:  WGS 84
 <section id="examples-5" class="level4">
 <h4 class="anchored" data-anchor-id="examples-5">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve tree detection data for species "example_species" in tile "example_tile"</span></span>
-<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>trees_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detection_tile_location</span>(<span class="st">"example_species"</span>, <span class="st">"example_tile"</span>)</span>
-<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
-<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>trees_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detection_tile_location</span>(<span class="st">"example_species"</span>, <span class="st">"example_tile"</span>)</span>
-<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a><span class="co"># No trees found scenario:</span></span>
-<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>empty_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detection_tile_location</span>(<span class="st">"nonexistent_species"</span>, <span class="st">"nonexistent_tile"</span>)</span>
-<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a><span class="co"># The result will be an empty data frame if no trees are found for the specified species and tile.</span></span>
-<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Error handling:</span></span>
-<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a><span class="co"># In case of invalid inputs, the function may throw errors. Ensure correct species and tile names are provided.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve tree detection data for species "example_species" in tile "example_tile"</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>trees_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detection_tile_location</span>(<span class="st">"example_species"</span>, <span class="st">"example_tile"</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>trees_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detection_tile_location</span>(<span class="st">"example_species"</span>, <span class="st">"example_tile"</span>)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co"># No trees found scenario:</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>empty_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detection_tile_location</span>(<span class="st">"nonexistent_species"</span>, <span class="st">"nonexistent_tile"</span>)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co"># The result will be an empty data frame if no trees are found for the specified species and tile.</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Error handling:</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co"># In case of invalid inputs, the function may throw errors. Ensure correct species and tile names are provided.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-6" class="level4">
 <h4 class="anchored" data-anchor-id="usage-6">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_detection_area</span>(species, name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_detection_area</span>(species, name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_get_detections_species" class="level3" data-number="6.2.8">
-<h3 data-number="6.2.8" class="anchored" data-anchor-id="lfa_get_detections_species"><span class="header-section-number">6.2.8</span> <code>lfa_get_detections_species</code></h3>
+<section id="lfa_get_detections_species" class="level3" data-number="5.2.8">
+<h3 data-number="5.2.8" class="anchored" data-anchor-id="lfa_get_detections_species"><span class="header-section-number">5.2.8</span> <code>lfa_get_detections_species</code></h3>
 <p>Retrieve detections for a specific species.</p>
 <section id="arguments-6" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-6">Arguments</h4>
@@ -905,19 +992,19 @@ Geodetic CRS:  WGS 84
 <section id="examples-6" class="level4">
 <h4 class="anchored" data-anchor-id="examples-6">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>detections_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detections_species</span>(<span class="st">"example_species"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage:</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>detections_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detections_species</span>(<span class="st">"example_species"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-7" class="level4">
 <h4 class="anchored" data-anchor-id="usage-7">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_detections_species</span>(species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_detections_species</span>(species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_get_detections" class="level3" data-number="6.2.9">
-<h3 data-number="6.2.9" class="anchored" data-anchor-id="lfa_get_detections"><span class="header-section-number">6.2.9</span> <code>lfa_get_detections</code></h3>
+<section id="lfa_get_detections" class="level3" data-number="5.2.9">
+<h3 data-number="5.2.9" class="anchored" data-anchor-id="lfa_get_detections"><span class="header-section-number">5.2.9</span> <code>lfa_get_detections</code></h3>
 <p>Retrieve aggregated detection data for multiple species.</p>
 <section id="concept-1" class="level4">
 <h4 class="anchored" data-anchor-id="concept-1">Concept</h4>
@@ -943,21 +1030,21 @@ Geodetic CRS:  WGS 84
 <section id="examples-7" class="level4">
 <h4 class="anchored" data-anchor-id="examples-7">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_detections</span>()</span>
-<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve aggregated detection data for multiple species</span></span>
-<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>detections_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detections</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_detections</span>()</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve aggregated detection data for multiple species</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>detections_data <span class="ot">&lt;-</span> <span class="fu">lfa_get_detections</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-8" class="level4">
 <h4 class="anchored" data-anchor-id="usage-8">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_detections</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_detections</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_get_flag_path" class="level3" data-number="6.2.10">
-<h3 data-number="6.2.10" class="anchored" data-anchor-id="lfa_get_flag_path"><span class="header-section-number">6.2.10</span> <code>lfa_get_flag_path</code></h3>
+<section id="lfa_get_flag_path" class="level3" data-number="5.2.10">
+<h3 data-number="5.2.10" class="anchored" data-anchor-id="lfa_get_flag_path"><span class="header-section-number">5.2.10</span> <code>lfa_get_flag_path</code></h3>
 <p>Get the path to a flag file indicating the completion of a specific process.</p>
 <section id="arguments-7" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-7">Arguments</h4>
@@ -991,19 +1078,19 @@ Geodetic CRS:  WGS 84
 <section id="examples-8" class="level4">
 <h4 class="anchored" data-anchor-id="examples-8">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the flag path for a process named "data_processing"</span></span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_flag_path</span>(<span class="st">"data_processing"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the flag path for a process named "data_processing"</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_flag_path</span>(<span class="st">"data_processing"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-9" class="level4">
 <h4 class="anchored" data-anchor-id="usage-9">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_flag_path</span>(flag_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_flag_path</span>(flag_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_get_species" class="level3" data-number="6.2.11">
-<h3 data-number="6.2.11" class="anchored" data-anchor-id="lfa_get_species"><span class="header-section-number">6.2.11</span> <code>lfa_get_species</code></h3>
+<section id="lfa_get_species" class="level3" data-number="5.2.11">
+<h3 data-number="5.2.11" class="anchored" data-anchor-id="lfa_get_species"><span class="header-section-number">5.2.11</span> <code>lfa_get_species</code></h3>
 <p>Get a list of species from the data directory.</p>
 <section id="concept-2" class="level4">
 <h4 class="anchored" data-anchor-id="concept-2">Concept</h4>
@@ -1033,19 +1120,19 @@ Geodetic CRS:  WGS 84
 <section id="examples-9" class="level4">
 <h4 class="anchored" data-anchor-id="examples-9">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve the list of species</span></span>
-<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>species_list <span class="ot">&lt;-</span> <span class="fu">lfa_get_species</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve the list of species</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>species_list <span class="ot">&lt;-</span> <span class="fu">lfa_get_species</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-10" class="level4">
 <h4 class="anchored" data-anchor-id="usage-10">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_species</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_get_species</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_ground_correction" class="level3" data-number="6.2.12">
-<h3 data-number="6.2.12" class="anchored" data-anchor-id="lfa_ground_correction"><span class="header-section-number">6.2.12</span> <code>lfa_ground_correction</code></h3>
+<section id="lfa_ground_correction" class="level3" data-number="5.2.12">
+<h3 data-number="5.2.12" class="anchored" data-anchor-id="lfa_ground_correction"><span class="header-section-number">5.2.12</span> <code>lfa_ground_correction</code></h3>
 <p>Correct the point clouds for correct ground imagery</p>
 <section id="arguments-8" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-8">Arguments</h4>
@@ -1087,12 +1174,12 @@ Geodetic CRS:  WGS 84
 <section id="usage-11" class="level4">
 <h4 class="anchored" data-anchor-id="usage-11">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_ground_correction</span>(ctg, tile_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_ground_correction</span>(ctg, tile_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_init_data_structure" class="level3" data-number="6.2.13">
-<h3 data-number="6.2.13" class="anchored" data-anchor-id="lfa_init_data_structure"><span class="header-section-number">6.2.13</span> <code>lfa_init_data_structure</code></h3>
+<section id="lfa_init_data_structure" class="level3" data-number="5.2.13">
+<h3 data-number="5.2.13" class="anchored" data-anchor-id="lfa_init_data_structure"><span class="header-section-number">5.2.13</span> <code>lfa_init_data_structure</code></h3>
 <p>Initialize data structure for species and areas</p>
 <section id="arguments-9" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-9">Arguments</h4>
@@ -1135,34 +1222,34 @@ Geodetic CRS:  WGS 84
 <section id="examples-10" class="level4">
 <h4 class="anchored" data-anchor-id="examples-10">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example species data frame</span></span>
-<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>sf_species <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="at">species =</span> <span class="fu">c</span>(<span class="st">"SpeciesA"</span>, <span class="st">"SpeciesB"</span>),</span>
-<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a><span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Area1"</span>, <span class="st">"Area2"</span>),</span>
-<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Other necessary columns</span></span>
-<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init_data_structure</span>(sf_species)</span>
-<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Example species data frame</span></span>
-<span id="cb72-11"><a href="#cb72-11" aria-hidden="true" tabindex="-1"></a>sf_species <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb72-12"><a href="#cb72-12" aria-hidden="true" tabindex="-1"></a><span class="at">species =</span> <span class="fu">c</span>(<span class="st">"SpeciesA"</span>, <span class="st">"SpeciesB"</span>),</span>
-<span id="cb72-13"><a href="#cb72-13" aria-hidden="true" tabindex="-1"></a><span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Area1"</span>, <span class="st">"Area2"</span>),</span>
-<span id="cb72-14"><a href="#cb72-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Other necessary columns</span></span>
-<span id="cb72-15"><a href="#cb72-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb72-16"><a href="#cb72-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb72-17"><a href="#cb72-17" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init_data_structure</span>(sf_species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example species data frame</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>sf_species <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="at">species =</span> <span class="fu">c</span>(<span class="st">"SpeciesA"</span>, <span class="st">"SpeciesB"</span>),</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Area1"</span>, <span class="st">"Area2"</span>),</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Other necessary columns</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init_data_structure</span>(sf_species)</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Example species data frame</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>sf_species <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a><span class="at">species =</span> <span class="fu">c</span>(<span class="st">"SpeciesA"</span>, <span class="st">"SpeciesB"</span>),</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a><span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Area1"</span>, <span class="st">"Area2"</span>),</span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Other necessary columns</span></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init_data_structure</span>(sf_species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-12" class="level4">
 <h4 class="anchored" data-anchor-id="usage-12">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init_data_structure</span>(sf_species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init_data_structure</span>(sf_species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_init" class="level3" data-number="6.2.14">
-<h3 data-number="6.2.14" class="anchored" data-anchor-id="lfa_init"><span class="header-section-number">6.2.14</span> <code>lfa_init</code></h3>
+<section id="lfa_init" class="level3" data-number="5.2.14">
+<h3 data-number="5.2.14" class="anchored" data-anchor-id="lfa_init"><span class="header-section-number">5.2.14</span> <code>lfa_init</code></h3>
 <p>Initialize LFA (LiDAR forest analysis) data processing</p>
 <section id="arguments-10" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-10">Arguments</h4>
@@ -1206,28 +1293,28 @@ Geodetic CRS:  WGS 84
 <section id="examples-11" class="level4">
 <h4 class="anchored" data-anchor-id="examples-11">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize LFA processing with the default shapefile</span></span>
-<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>()</span>
-<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize LFA processing with a custom shapefile</span></span>
-<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>(<span class="st">"custom_areas.shp"</span>)</span>
-<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage with the default shapefile</span></span>
-<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>()</span>
-<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage with a custom shapefile</span></span>
-<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>(<span class="st">"custom_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize LFA processing with the default shapefile</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>()</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize LFA processing with a custom shapefile</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>(<span class="st">"custom_areas.shp"</span>)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage with the default shapefile</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>()</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage with a custom shapefile</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>(<span class="st">"custom_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-13" class="level4">
 <h4 class="anchored" data-anchor-id="usage-13">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>(<span class="at">sf_file =</span> <span class="st">"research_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_init</span>(<span class="at">sf_file =</span> <span class="st">"research_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_intersect_areas" class="level3" data-number="6.2.15">
-<h3 data-number="6.2.15" class="anchored" data-anchor-id="lfa_intersect_areas"><span class="header-section-number">6.2.15</span> <code>lfa_intersect_areas</code></h3>
+<section id="lfa_intersect_areas" class="level3" data-number="5.2.15">
+<h3 data-number="5.2.15" class="anchored" data-anchor-id="lfa_intersect_areas"><span class="header-section-number">5.2.15</span> <code>lfa_intersect_areas</code></h3>
 <p>Intersect Lidar Catalog with Spatial Features</p>
 <section id="arguments-11" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-11">Arguments</h4>
@@ -1281,22 +1368,22 @@ Geodetic CRS:  WGS 84
 <section id="examples-12" class="level4">
 <h4 class="anchored" data-anchor-id="examples-12">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
-<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_intersect_areas</span>(ctg, tile_location, areas_sf)</span>
-<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
-<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_intersect_areas</span>(ctg, tile_location, areas_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_intersect_areas</span>(ctg, tile_location, areas_sf)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_intersect_areas</span>(ctg, tile_location, areas_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-14" class="level4">
 <h4 class="anchored" data-anchor-id="usage-14">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_intersect_areas</span>(ctg, tile_location, areas_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_intersect_areas</span>(ctg, tile_location, areas_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_load_ctg_if_not_present" class="level3" data-number="6.2.16">
-<h3 data-number="6.2.16" class="anchored" data-anchor-id="lfa_load_ctg_if_not_present"><span class="header-section-number">6.2.16</span> <code>lfa_load_ctg_if_not_present</code></h3>
+<section id="lfa_load_ctg_if_not_present" class="level3" data-number="5.2.16">
+<h3 data-number="5.2.16" class="anchored" data-anchor-id="lfa_load_ctg_if_not_present"><span class="header-section-number">5.2.16</span> <code>lfa_load_ctg_if_not_present</code></h3>
 <p>Loading the catalog if it is not present</p>
 <section id="arguments-12" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-12">Arguments</h4>
@@ -1334,12 +1421,12 @@ Geodetic CRS:  WGS 84
 <section id="usage-15" class="level4">
 <h4 class="anchored" data-anchor-id="usage-15">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_load_ctg_if_not_present</span>(ctg, tile_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_load_ctg_if_not_present</span>(ctg, tile_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_map_tile_locations" class="level3" data-number="6.2.17">
-<h3 data-number="6.2.17" class="anchored" data-anchor-id="lfa_map_tile_locations"><span class="header-section-number">6.2.17</span> <code>lfa_map_tile_locations</code></h3>
+<section id="lfa_map_tile_locations" class="level3" data-number="5.2.17">
+<h3 data-number="5.2.17" class="anchored" data-anchor-id="lfa_map_tile_locations"><span class="header-section-number">5.2.17</span> <code>lfa_map_tile_locations</code></h3>
 <p>Map Function Over Tile Locations</p>
 <section id="arguments-13" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-13">Arguments</h4>
@@ -1390,22 +1477,22 @@ Geodetic CRS:  WGS 84
 <section id="examples-13" class="level4">
 <h4 class="anchored" data-anchor-id="examples-13">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
-<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(tile_locations, my_mapping_function, <span class="at">param1 =</span> <span class="st">"value"</span>)</span>
-<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
-<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(tile_locations, my_mapping_function, <span class="at">param1 =</span> <span class="st">"value"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(tile_locations, my_mapping_function, <span class="at">param1 =</span> <span class="st">"value"</span>)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(tile_locations, my_mapping_function, <span class="at">param1 =</span> <span class="st">"value"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-16" class="level4">
 <h4 class="anchored" data-anchor-id="usage-16">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(tile_locations, map_function, <span class="at">check_flag =</span> <span class="cn">NULL</span>, ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(tile_locations, map_function, <span class="at">check_flag =</span> <span class="cn">NULL</span>, ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_merge_and_save" class="level3" data-number="6.2.18">
-<h3 data-number="6.2.18" class="anchored" data-anchor-id="lfa_merge_and_save"><span class="header-section-number">6.2.18</span> <code>lfa_merge_and_save</code></h3>
+<section id="lfa_merge_and_save" class="level3" data-number="5.2.18">
+<h3 data-number="5.2.18" class="anchored" data-anchor-id="lfa_merge_and_save"><span class="header-section-number">5.2.18</span> <code>lfa_merge_and_save</code></h3>
 <p>Merge and Save Text Files in a Directory</p>
 <section id="arguments-14" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-14">Arguments</h4>
@@ -1451,22 +1538,22 @@ Geodetic CRS:  WGS 84
 <section id="examples-14" class="level4">
 <h4 class="anchored" data-anchor-id="examples-14">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge text files in the "data_files" directory and save the result in "merged_output"</span></span>
-<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_merge_and_save</span>(<span class="st">"data_files"</span>, <span class="st">"merged_output"</span>)</span>
-<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge text files in the "data_files" directory and save the result in "merged_output"</span></span>
-<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_merge_and_save</span>(<span class="st">"data_files"</span>, <span class="st">"merged_output"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge text files in the "data_files" directory and save the result in "merged_output"</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_merge_and_save</span>(<span class="st">"data_files"</span>, <span class="st">"merged_output"</span>)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge text files in the "data_files" directory and save the result in "merged_output"</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_merge_and_save</span>(<span class="st">"data_files"</span>, <span class="st">"merged_output"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-17" class="level4">
 <h4 class="anchored" data-anchor-id="usage-17">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_merge_and_save</span>(input_directory, output_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_merge_and_save</span>(input_directory, output_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_rd_to_qmd" class="level3" data-number="6.2.19">
-<h3 data-number="6.2.19" class="anchored" data-anchor-id="lfa_rd_to_qmd"><span class="header-section-number">6.2.19</span> <code>lfa_rd_to_qmd</code></h3>
+<section id="lfa_rd_to_qmd" class="level3" data-number="5.2.19">
+<h3 data-number="5.2.19" class="anchored" data-anchor-id="lfa_rd_to_qmd"><span class="header-section-number">5.2.19</span> <code>lfa_rd_to_qmd</code></h3>
 <p>Convert Rd File to Markdown</p>
 <section id="arguments-15" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-15">Arguments</h4>
@@ -1529,22 +1616,22 @@ Geodetic CRS:  WGS 84
 <section id="examples-15" class="level4">
 <h4 class="anchored" data-anchor-id="examples-15">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Rd file to Markdown and save it</span></span>
-<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_md</span>(<span class="st">"path/to/your/file.Rd"</span>, <span class="st">"path/to/your/output/file.md"</span>)</span>
-<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Rd file to Markdown and append to an existing file</span></span>
-<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_md</span>(<span class="st">"path/to/your/file.Rd"</span>, <span class="st">"path/to/existing/output/file.md"</span>, <span class="at">append =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Rd file to Markdown and save it</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_md</span>(<span class="st">"path/to/your/file.Rd"</span>, <span class="st">"path/to/your/output/file.md"</span>)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Rd file to Markdown and append to an existing file</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_md</span>(<span class="st">"path/to/your/file.Rd"</span>, <span class="st">"path/to/existing/output/file.md"</span>, <span class="at">append =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-18" class="level4">
 <h4 class="anchored" data-anchor-id="usage-18">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_qmd</span>(rdfile, outfile, <span class="at">append =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_qmd</span>(rdfile, outfile, <span class="at">append =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_rd_to_results" class="level3" data-number="6.2.20">
-<h3 data-number="6.2.20" class="anchored" data-anchor-id="lfa_rd_to_results"><span class="header-section-number">6.2.20</span> <code>lfa_rd_to_results</code></h3>
+<section id="lfa_rd_to_results" class="level3" data-number="5.2.20">
+<h3 data-number="5.2.20" class="anchored" data-anchor-id="lfa_rd_to_results"><span class="header-section-number">5.2.20</span> <code>lfa_rd_to_results</code></h3>
 <p>Convert Rd Files to Markdown and Merge Results</p>
 <section id="description-19" class="level4">
 <h4 class="anchored" data-anchor-id="description-19">Description</h4>
@@ -1573,19 +1660,19 @@ Geodetic CRS:  WGS 84
 <section id="examples-16" class="level4">
 <h4 class="anchored" data-anchor-id="examples-16">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Rd files to Markdown and merge the results</span></span>
-<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_results</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert Rd files to Markdown and merge the results</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_results</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-19" class="level4">
 <h4 class="anchored" data-anchor-id="usage-19">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_results</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_rd_to_results</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_segmentation" class="level3" data-number="6.2.21">
-<h3 data-number="6.2.21" class="anchored" data-anchor-id="lfa_segmentation"><span class="header-section-number">6.2.21</span> <code>lfa_segmentation</code></h3>
+<section id="lfa_segmentation" class="level3" data-number="5.2.21">
+<h3 data-number="5.2.21" class="anchored" data-anchor-id="lfa_segmentation"><span class="header-section-number">5.2.21</span> <code>lfa_segmentation</code></h3>
 <p>Segment the elements of an point cloud by trees</p>
 <section id="arguments-16" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-16">Arguments</h4>
@@ -1627,12 +1714,12 @@ Geodetic CRS:  WGS 84
 <section id="usage-20" class="level4">
 <h4 class="anchored" data-anchor-id="usage-20">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_segmentation</span>(ctg, tile_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_segmentation</span>(ctg, tile_location)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="lfa_set_flag" class="level3" data-number="6.2.22">
-<h3 data-number="6.2.22" class="anchored" data-anchor-id="lfa_set_flag"><span class="header-section-number">6.2.22</span> <code>lfa_set_flag</code></h3>
+<section id="lfa_set_flag" class="level3" data-number="5.2.22">
+<h3 data-number="5.2.22" class="anchored" data-anchor-id="lfa_set_flag"><span class="header-section-number">5.2.22</span> <code>lfa_set_flag</code></h3>
 <p>Set a flag to indicate the completion of a specific process.</p>
 <section id="arguments-17" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-17">Arguments</h4>
@@ -1666,14 +1753,14 @@ Geodetic CRS:  WGS 84
 <section id="examples-17" class="level4">
 <h4 class="anchored" data-anchor-id="examples-17">Examples</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the flag for a process named "data_processing"</span></span>
-<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_set_flag</span>(<span class="st">"data_processing"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the flag for a process named "data_processing"</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_set_flag</span>(<span class="st">"data_processing"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="usage-21" class="level4">
 <h4 class="anchored" data-anchor-id="usage-21">Usage</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_set_flag</span>(flag_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_set_flag</span>(flag_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
