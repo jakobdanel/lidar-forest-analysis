@@ -12,6 +12,7 @@ date: today
 author: Jakob Danel and Frederick Bruch
 bibliography: references.bib
 execute-dir: .. 
+prefer-html: true
 ---
 
 # Introduction
