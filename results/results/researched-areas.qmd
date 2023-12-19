@@ -1,0 +1,58 @@
+```{r}
+#| echo: false
+knitr::opts_knit$set(root.dir = "/home/jakob/gi-master/project-courses/lidar-forest-analysis/src")
+```
+
+## Researched areas
+
+```{r}
+#| code-fold: true
+#| warning: false
+getwd()
+setwd("/home/jakob/gi-master/project-courses/lidar-forest-analysis/src")
+shp <- sf::read_sf("research_areas.shp")
+table <- lfa::lfa_get_all_areas()
+
+sf::sf_use_s2(FALSE)
+for (row in 1:nrow(table)) {
+  area <-
+    dplyr::filter(shp, shp$species == table[row, "specie"] &
+                    shp$name == table[row, "area"])
+  area_size <- area |> sf::st_area()
+  point <- area |> sf::st_centroid() |> sf::st_coordinates()
+  table[row,"point"] <- paste0("(",round(point[1], digits = 4),", ",round(point[2],digits = 4),")")
+  
+  table[row, "area_size"] = round(area_size,digits = 2) #paste0(round(area_size,digits = 2), " m²")
+  
+  amount_det <- nrow(lfa::lfa_get_detection_area(table[row, "specie"], table[row, "area"]))
+  if(is.null(amount_det)){
+    cat(nrow(lfa::lfa_get_detection_area(table[row, "specie"], table[row, "area"])),table[row, "specie"],table[row, "area"])
+  }
+  table[row, "amount_detections"] = amount_det
+  
+  # table[row, "specie"] <- lfa::lfa_capitalize_first_char(table[row,"specie"])
+  table[row, "area"] <- lfa::lfa_capitalize_first_char(table[row,"area"])
+  }
+table$area <- gsub("_", " ", table$area)
+table$area <- gsub("ue", "ü", table$area)
+table = table[,!names(table) %in% c("specie")]
+
+knitr::kable(table, "html", col.names = c("Area name","Location","Area size (m²)","# detections" ), caption = "Researched Areas of Interests with dominant specie, area name, area of the AOI and detected trees.", digits = 2, escape = TRUE) |>
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hold_position", "bordered","responsive"),
+    stripe_index = c(1:3,7:9),
+    full_width = FALSE
+  ) |>
+  kableExtra::pack_rows("Beech", 1, 3) |>
+  kableExtra::pack_rows("Oak", 4, 6) |>
+  kableExtra::pack_rows("Pine", 7, 9) |>
+  kableExtra::pack_rows("Spruce", 10, 12) |>
+  kableExtra::column_spec(1, bold = TRUE)
+```
+
+- Beech has  69.7919 hectares with 5954 total detections
+- Oak has 63.23249 hectares with 5354 total detections
+- Pine has 72.8624 hectares with 8912 total detections
+- Spruce  57.94002 hectares with 8619 total detections
+
+The amount of detections and the area is quite evenly distributed along the different patches.
