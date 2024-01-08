@@ -123,6 +123,8 @@ lidR
 sf
 dplyr
 ```
+## Viualization of the structure
+![Visualization of the codebase](./diagram.svg)
 
 ## course progress
 
