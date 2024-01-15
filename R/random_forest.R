@@ -31,6 +31,7 @@ lfa_random_forest <-
            response_variable = "specie",
            seed = 123,
            ...) {
+    set.seed(seed)
     # Determine the predictor variables by excluding specified columns
     predictor_variables <-
       setdiff(names(tree_data),
