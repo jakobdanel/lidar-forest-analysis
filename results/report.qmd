@@ -12,6 +12,7 @@ date: today
 author: Jakob Danel and Frederick Bruch
 bibliography: references.bib
 execute-dir: .. 
+prefer-html: true
 ---
 
 # Introduction
@@ -23,7 +24,24 @@ This report documents the analysis of forest data for different tree species.
 {{< include methods/data-aquisition.qmd >}}
 {{< include methods/preprocessing.qmd >}}
 
-# Analysis
+# Results
+{{< include results/researched-areas.qmd >}}
+
+
+|specie |area                |   density (1/m²)|
+|:------|:-------------------|---------:|
+|beech  |bielefeld_brackwede | 0.0089399|
+|beech  |billerbeck          | 0.0093175|
+|beech  |wuelfenrath         | 0.0079259|
+|oak    |hamm                | 0.0090610|
+|oak    |muenster            | 0.0077384|
+|oak    |rinkerode           | 0.0082641|
+|pine   |greffen             | 0.0103807|
+|pine   |mesum               | 0.0124200|
+|pine   |telgte              | 0.0122860|
+|spruce |brilon              | 0.0158030|
+|spruce |oberhundem          | 0.0162678|
+|spruce |osterwald           | 0.0129892|
 
 # References
 

@@ -436,6 +436,64 @@ lfa_get_detections_species(species)
 
 
 
+### `lfa_get_detections`
+
+Retrieve aggregated detection data for multiple species.
+
+
+#### Concept
+
+data retrieval functions
+
+
+#### Description
+
+This function obtains aggregated detection data for multiple species by iterating
+ through the list of species obtained from [`lfa_get_species`](#lfagetspecies) . For each
+ species, it calls [`lfa_get_detections_species`](#lfagetdetectionsspecies) to retrieve the
+ corresponding detection data and aggregates the results into a single data frame.
+ The resulting data frame includes columns for the species, tree detection data,
+ and the area in which the detections occurred.
+
+
+#### Keyword
+
+aggregation
+
+
+#### Seealso
+
+[`lfa_get_species`](#lfagetspecies) , [`lfa_get_detections_species`](#lfagetdetectionsspecies) 
+ 
+ Other data retrieval functions:
+ [`lfa_get_species`](#lfagetspecies)
+
+
+#### Value
+
+A data frame containing aggregated detection data for multiple species.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+lfa_get_detections()
+
+# Retrieve aggregated detection data for multiple species
+detections_data <- lfa_get_detections()
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_get_detections()
+```
+
+
+
 ### `lfa_get_flag_path`
 
 Get the path to a flag file indicating the completion of a specific process.
@@ -472,6 +530,63 @@ lfa_get_flag_path("data_processing")
 ```{r}
 #| eval: false
 lfa_get_flag_path(flag_name)
+```
+
+
+
+### `lfa_get_species`
+
+Get a list of species from the data directory.
+
+
+#### Concept
+
+data retrieval functions
+
+
+#### Description
+
+This function retrieves a list of species by scanning the "data" directory
+ located in the current working directory.
+
+
+#### Keyword
+
+data
+
+
+#### References
+
+This function relies on the [`list.dirs`](#list.dirs) function for directory listing.
+
+
+#### Seealso
+
+[`list.dirs`](#list.dirs) 
+ 
+ Other data retrieval functions:
+ [`lfa_get_detections`](#lfagetdetections)
+
+
+#### Value
+
+A character vector containing the names of species found in the "data" directory.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Retrieve the list of species
+species_list <- lfa_get_species()
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_get_species()
 ```
 
 

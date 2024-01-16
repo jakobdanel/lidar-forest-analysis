@@ -1,0 +1,80 @@
+```{r}
+#| echo: false
+knitr::opts_knit$set(root.dir = "/home/jakob/gi-master/project-courses/lidar-forest-analysis/src")
+```
+
+## Researched areas
+
+```{r}
+#| warning: false
+#| code-fold: true
+#| label: fig-patches-nrw
+#| fig-cap: Locations of the different patches with the dominant species for that patch. The patches centroids are displayed on a basemap describing the borders from NRW. 
+library(ggplot2)
+sf::sf_use_s2(FALSE)
+patches <- sf::read_sf("research_areas.shp") |> sf::st_centroid()
+
+de <- sf::read_sf("results/results/states_de/Bundesländer_2017_mit_Einwohnerzahl.shp") # Source: https://hub.arcgis.com/datasets/esri-de-content::bundesl%C3%A4nder-2017-mit-einwohnerzahl/explore?location=51.099647%2C10.454033%2C7.43
+nrw <- de[5,] |> sf::st_geometry()
+
+
+ggplot() + geom_sf(data = nrw) + 
+    geom_sf(data = patches, mapping = aes(col = species))
+```
+We draw three patches for each species from different regions (see @tbl-summary-researched-areas). We download the LiDAR data for those patches and runned all preprocessing steps as described. We than checked with certain derived parameters (e.g. tree heights, tree distributions or tree density) that all patches contain valid forest data. In that step we discovered, that in one patch some forest clearance took place in the near past. This patch was removed from the dataset and was replaced with a new one.    
+
+In our research, drawing patches evenly distributed across Nordrhein-Westfalia is inherently constrained by natural factors. Consequently, the patches for oak and pine predominantly originate from the Münsterland region, as illustrated in [@fig-patches-nrw]. For spruce, the patches were derived from Sauerland, reflecting the prevalence of spruce forests in this specific region within NRW, as corroborated by Welle et al. [@welle2014] and Blickensdörfer et al. [@Blickensdoerfer2022]. Beech patches, on the other hand, were generated from diverse locations within NRW. Across all patches, no human-made objects were identified, with the exception of small paths for pedestrians and forestry vehicles.
+
+The distribution of area and detections is notable for each four species. Beech covers 69,791.9 hectares with a total of 5,954 detections, oak spans 63,232.49 hectares with 5,354 detections, pine extends across 72,862.4 hectares with 8,912 detections, and spruce encompasses 57,940.02 hectares with 8,619 detections. Both the amount of detections and the corresponding area exhibit a relatively uniform distribution across the diverse patches, as summarized in @tbl-summary-researched-areas. 
+
+With the selected dataset described, we intentionally chose three patches for each four species that exhibit a practical and usable size for our research objectives. These carefully chosen patches align with the conditions essential for our study, providing comprehensive and representative data for in-depth analysis and meaningful insights into the characteristics of each tree species within the specified areas.
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| label: tbl-summary-researched-areas
+#| tbl-cap: Summary of researched patches grouped by species, with their location, area and the amount of detected trees.
+shp <- sf::read_sf("research_areas.shp")
+table <- lfa::lfa_get_all_areas()
+
+sf::sf_use_s2(FALSE)
+for (row in 1:nrow(table)) {
+  area <-
+    dplyr::filter(shp, shp$species == table[row, "specie"] &
+                    shp$name == table[row, "area"])
+  area_size <- area |> sf::st_area()
+  point <- area |> sf::st_centroid() |> sf::st_coordinates()
+  table[row,"point"] <- paste0("(",round(point[1], digits = 4),", ",round(point[2],digits = 4),")")
+  
+  table[row, "area_size"] = round(area_size,digits = 2) #paste0(round(area_size,digits = 2), " m²")
+  
+  amount_det <- nrow(lfa::lfa_get_detection_area(table[row, "specie"], table[row, "area"]))
+  if(is.null(amount_det)){
+    cat(nrow(lfa::lfa_get_detection_area(table[row, "specie"], table[row, "area"])),table[row, "specie"],table[row, "area"])
+  }
+  table[row, "amount_detections"] = amount_det
+  
+  # table[row, "specie"] <- lfa::lfa_capitalize_first_char(table[row,"specie"])
+  table[row, "area"] <- lfa::lfa_capitalize_first_char(table[row,"area"])
+  }
+table$area <- gsub("_", " ", table$area)
+table$area <- gsub("ue", "ü", table$area)
+table = table[,!names(table) %in% c("specie")]
+
+knitr::kable(table, "html", col.names = c("Patch Name","Location","Area size (m²)","Amount tree detections" ), caption = NULL, digits = 2, escape = TRUE) |>
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hold_position", "bordered","responsive"),
+    stripe_index = c(1:3,7:9),
+    full_width = FALSE
+  ) |>
+  kableExtra::pack_rows("Beech", 1, 3) |>
+  kableExtra::pack_rows("Oak", 4, 6) |>
+  kableExtra::pack_rows("Pine", 7, 9) |>
+  kableExtra::pack_rows("Spruce", 10, 12) |>
+  kableExtra::column_spec(1, bold = TRUE)
+```
+
+
+
+
