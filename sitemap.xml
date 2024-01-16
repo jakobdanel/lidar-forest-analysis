@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://github.com/jakobdanel/lidar-forest-analysis/methods/data-aquisition.html</loc>
-    <lastmod>2023-12-19T17:23:22.791Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/jakobdanel/lidar-forest-analysis/results/researched-areas.html</loc>
-    <lastmod>2023-12-19T17:23:22.135Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/jakobdanel/lidar-forest-analysis/appendix/package-docs/docs.html</loc>
-    <lastmod>2023-12-19T17:23:12.015Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/jakobdanel/lidar-forest-analysis/appendix/preprocessing.html</loc>
-    <lastmod>2023-12-19T17:23:10.527Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/jakobdanel/lidar-forest-analysis/report.html</loc>
-    <lastmod>2023-12-19T17:23:14.311Z</lastmod>
+    <loc>https://github.com/jakobdanel/lidar-forest-analysis/methods/distribution-analysis.html</loc>
+    <lastmod>2024-01-16T15:12:35.558Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/jakobdanel/lidar-forest-analysis/methods/preprocessing.html</loc>
-    <lastmod>2023-12-19T17:23:22.499Z</lastmod>
+    <lastmod>2024-01-16T15:12:34.994Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/jakobdanel/lidar-forest-analysis/report.html</loc>
+    <lastmod>2024-01-16T15:12:33.958Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/jakobdanel/lidar-forest-analysis/appendix/preprocessing.html</loc>
+    <lastmod>2024-01-16T15:12:12.990Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/jakobdanel/lidar-forest-analysis/appendix/package-docs/docs.html</loc>
+    <lastmod>2024-01-16T15:12:15.654Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/jakobdanel/lidar-forest-analysis/results/researched-areas.html</loc>
+    <lastmod>2024-01-16T15:12:34.622Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/jakobdanel/lidar-forest-analysis/methods/data-aquisition.html</loc>
+    <lastmod>2024-01-16T15:12:35.278Z</lastmod>
   </url>
 </urlset>
