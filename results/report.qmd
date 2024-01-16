@@ -9,7 +9,21 @@ toc-title: Contents
 number-sections: true
 number-depth: 3
 date: today
-author: Jakob Danel and Frederick Bruch
+author:
+    - name: Jakob Danel
+      email: jakob.danel@uni-muenster.de
+      url: https://github.com/jakobdanel
+      affiliations:
+      - name: Universität Münster
+        city: Münster
+        country: Germany
+    - name: Federick Bruch
+      email: f_bruc03@uni-muenster.de
+      url: https://www.uni-muenster.de/Geoinformatics/institute/staff/index.php/351/Frederick_Bruch
+      affiliations:
+      - name: Universität Münster
+        city: Münster
+        country: Germany
 bibliography: references.bib
 execute-dir: .. 
 prefer-html: true
@@ -23,7 +37,7 @@ This report documents the analysis of forest data for different tree species.
 
 {{< include methods/data-aquisition.qmd >}}
 {{< include methods/preprocessing.qmd >}}
-
+{{< include methods/distribution-analysis.qmd >}}
 # Results
 {{< include results/researched-areas.qmd >}}
 
@@ -42,6 +56,8 @@ This report documents the analysis of forest data for different tree species.
 |spruce |brilon              | 0.0158030|
 |spruce |oberhundem          | 0.0162678|
 |spruce |osterwald           | 0.0129892|
+
+
 
 # References
 

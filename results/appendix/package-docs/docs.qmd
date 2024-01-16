@@ -126,6 +126,81 @@ lfa_check_flag(flag_name)
 
 
 
+### `lfa_create_stacked_distributions_plot`
+
+Create a stacked distribution plot for tree detections, visualizing the distribution
+ of a specified variable on the x-axis, differentiated by another variable.
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`trees`     |     A data frame containing tree detection data.
+`x_value`     |     A character string specifying the column name used for finding the values on the x-axis of the histogram.
+`fill_value`     |     A character string specifying the column name by which the data are differentiated in the plot.
+`bin`     |     An integer specifying the number of bins for the histogram. Default is 100.
+`ylab`     |     A character string specifying the y-axis label. Default is "Amount trees."
+`xlim`     |     A numeric vector of length 2 specifying the x-axis limits. Default is c(0, 100).
+`ylim`     |     A numeric vector of length 2 specifying the y-axis limits. Default is c(0, 1000).
+`title`     |     The title of the plot.
+
+
+#### Description
+
+This function generates a stacked distribution plot using the ggplot2 package,
+ providing a visual representation of the distribution of a specified variable
+ ( `x_value` ) on the x-axis, with differentiation based on another variable
+ ( `fill_value` ). The data for the plot are derived from the provided `trees` 
+ data frame.
+
+
+#### Keyword
+
+data
+
+
+#### Seealso
+
+[`ggplot2::geom_histogram`](#ggplot2::geomhistogram) , [`ggplot2::facet_wrap`](#ggplot2::facetwrap) ,
+ [`ggplot2::ylab`](#ggplot2::ylab) , [`ggplot2::scale_fill_brewer`](#ggplot2::scalefillbrewer) ,
+ [`ggplot2::coord_cartesian`](#ggplot2::coordcartesian)
+
+
+#### Value
+
+A ggplot object representing the stacked distribution plot.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Create a stacked distribution plot for variable "Z," differentiated by "area"
+trees <- lfa_get_detections()
+lfa_create_stacked_distributions_plot(trees, "Z", "area")
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_create_stacked_distributions_plot(
+  trees,
+  x_value,
+  fill_value,
+  bin = 100,
+  ylab = "Amount trees",
+  xlim = c(0, 100),
+  ylim = c(0, 1000),
+  title =
+    "Histograms of height distributions between species 'beech', 'oak', 'pine' and 'spruce' divided by the different areas of Interest"
+)
+```
+
+
+
 ### `lfa_create_tile_location_objects`
 
 Create tile location objects
@@ -318,6 +393,53 @@ lfa_download(species, name, location)
 
 
 
+### `lfa_get_all_areas`
+
+Retrieve a data frame containing all species and corresponding areas.
+
+
+#### Description
+
+This function scans the "data" directory within the current working directory to
+ obtain a list of species. It then iterates through each species to retrieve the list
+ of areas associated with that species. The resulting data frame contains two columns:
+ "specie" representing the species and "area" representing the corresponding area.
+
+
+#### Keyword
+
+data
+
+
+#### Seealso
+
+[`list.dirs`](#list.dirs)
+
+
+#### Value
+
+A data frame with columns "specie" and "area" containing information about
+ all species and their associated areas.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Retrieve a data frame with information about all species and areas
+all_areas_df <- lfa_get_all_areas()
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_get_all_areas()
+```
+
+
+
 ### `lfa_get_detection_area`
 
 Get Detection for an area
@@ -436,64 +558,6 @@ lfa_get_detections_species(species)
 
 
 
-### `lfa_get_detections`
-
-Retrieve aggregated detection data for multiple species.
-
-
-#### Concept
-
-data retrieval functions
-
-
-#### Description
-
-This function obtains aggregated detection data for multiple species by iterating
- through the list of species obtained from [`lfa_get_species`](#lfagetspecies) . For each
- species, it calls [`lfa_get_detections_species`](#lfagetdetectionsspecies) to retrieve the
- corresponding detection data and aggregates the results into a single data frame.
- The resulting data frame includes columns for the species, tree detection data,
- and the area in which the detections occurred.
-
-
-#### Keyword
-
-aggregation
-
-
-#### Seealso
-
-[`lfa_get_species`](#lfagetspecies) , [`lfa_get_detections_species`](#lfagetdetectionsspecies) 
- 
- Other data retrieval functions:
- [`lfa_get_species`](#lfagetspecies)
-
-
-#### Value
-
-A data frame containing aggregated detection data for multiple species.
-
-
-#### Examples
-
-```{r}
-#| eval: false
-lfa_get_detections()
-
-# Retrieve aggregated detection data for multiple species
-detections_data <- lfa_get_detections()
-```
-
-
-#### Usage
-
-```{r}
-#| eval: false
-lfa_get_detections()
-```
-
-
-
 ### `lfa_get_flag_path`
 
 Get the path to a flag file indicating the completion of a specific process.
@@ -530,63 +594,6 @@ lfa_get_flag_path("data_processing")
 ```{r}
 #| eval: false
 lfa_get_flag_path(flag_name)
-```
-
-
-
-### `lfa_get_species`
-
-Get a list of species from the data directory.
-
-
-#### Concept
-
-data retrieval functions
-
-
-#### Description
-
-This function retrieves a list of species by scanning the "data" directory
- located in the current working directory.
-
-
-#### Keyword
-
-data
-
-
-#### References
-
-This function relies on the [`list.dirs`](#list.dirs) function for directory listing.
-
-
-#### Seealso
-
-[`list.dirs`](#list.dirs) 
- 
- Other data retrieval functions:
- [`lfa_get_detections`](#lfagetdetections)
-
-
-#### Value
-
-A character vector containing the names of species found in the "data" directory.
-
-
-#### Examples
-
-```{r}
-#| eval: false
-# Retrieve the list of species
-species_list <- lfa_get_species()
-```
-
-
-#### Usage
-
-```{r}
-#| eval: false
-lfa_get_species()
 ```
 
 
@@ -1141,6 +1148,47 @@ lfa_rd_to_results()
 ```{r}
 #| eval: false
 lfa_rd_to_results()
+```
+
+
+
+### `lfa_read_area_as_catalog`
+
+Read LiDAR data from a specified species and location as a catalog.
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`specie`     |     A character string specifying the species of interest.
+`location_name`     |     A character string specifying the name of the location.
+
+
+#### Description
+
+This function constructs the file path based on the specified `specie` and `location_name` ,
+ lists the directories at that path, and reads the LiDAR data into a `lidR::LAScatalog` .
+
+
+#### Value
+
+A `lidR::LAScatalog` object containing the LiDAR data from the specified location and species.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+lfa_read_area_as_catalog("beech", "location1")
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_read_area_as_catalog(specie, location_name)
 ```
 
 
