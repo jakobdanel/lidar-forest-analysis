@@ -1,0 +1,20 @@
+## Analysis of different distributions
+
+Analysis of data distributions is a critical aspect of our research, with a focus on comparing two or more distributions. Our objective extends beyond evaluating the disparities between species; we also aim to assess differences within a species. To gain a comprehensive understanding of the data, we employ various visualization techniques, including histograms, density functions, and box plots.
+
+In tandem with visualizations, descriptive statistics, such as means, standard errors, and quantiles, are leveraged to provide key insights into the central tendency and variability of the data.
+
+For a more quantitative analysis of distribution dissimilarity, statistical tests are employed. The Kullback-Leibler (KL) difference serves as a measure to compare the similarity of a set of distributions. This involves converting distributions into their density functions, with the standard error serving as the bandwidth. The KL difference is calculated for each pair of distributions, as it is asymmetric. For the two distributions the KL difference is defined as following [@kullback1951kullback]:
+
+$$
+D_{KL}(P \, \| \, Q) = \sum_i P(i) \log\left(\frac{P(i)}{Q(i)}\right)
+$$
+
+To obtain a symmetric score, the Jensen-Shannon Divergence (JSD) is utilized [@grosse2002analysis], expressed by the formula:
+
+$$
+JS(P || Q) = \frac{1}{2} * KL(P || M) + \frac{1}{2} * KL(Q || M)
+$$
+Here, $M = \frac{1}{2} * (P + Q)$. The JSD provides a balanced measure of dissimilarity between distributions [@Brownlee2019Calculate]. For comparing the different scores to each other, we will use averages.
+
+Additionally, the Kolmogorov-Smirnov Test is implemented to assess whether two distributions significantly differ from each other. This statistical test offers a formal evaluation of the dissimilarity between empirical distribution functions.
