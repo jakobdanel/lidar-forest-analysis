@@ -6,6 +6,7 @@
 #' @param tree_data A data frame containing the tree data, including the response variable ("specie") and predictor variables.
 #' @param excluded_input_columns A character vector specifying columns to be excluded from predictor variables.
 #' @param response_variable The response variable to be predicted (default is "specie").
+#’ @param ntree Number of trees generated in the random Forest.
 #' @param seed An integer to set the seed for reproducibility (default is 123).
 #' @param ... Additional parameters to be passed to the randomForest function.
 #' @return A list containing the following elements:
@@ -24,37 +25,12 @@
 #' # Print the list of results
 #' print(results)
 #'
-#'@export
-#' Random Forest Classifier with Leave-One-Out Cross-Validation
-#'
-#' This function performs a random forest classification using leave-one-out cross-validation for each area in the input tree data.
-#' It returns a list containing various results, including predicted species, confusion matrix, accuracy, and the formula used for modeling.
-#'
-#' @param tree_data A data frame containing the tree data, including the response variable ("specie") and predictor variables.
-#' @param excluded_input_columns A character vector specifying columns to be excluded from predictor variables.
-#' @param response_variable The response variable to be predicted (default is "specie").
-#' @param seed An integer to set the seed for reproducibility (default is 123).
-#' @param ... Additional parameters to be passed to the randomForest function.
-#' @return A list containing the following elements:
-#'   \itemize{
-#'     \item \code{predicted_species_absolute}: A data frame with observed and predicted species for each area.
-#'     \item \code{predicted_species_relative}: A data frame wit the relative precictions per speices and areas, normalized by the total predictions in each area.
-#'     \item \code{confusion_matrix}: A confusion matrix showing the counts of predicted vs. observed species.
-#'     \item \code{accuracy}: The accuracy of the model, calculated as the sum of diagonal elements in the confusion matrix divided by the total count.
-#'     \item \code{formula}: The formula used for modeling.
-#'   }
-#'
-#' @examples
-#' # Assuming tree_data is defined
-#' results <- lfa_random_forest(tree_data, excluded_input_columns = c("column1", "column2"))
-#'
-#' # Print the list of results
-#' print(results)
-#'
+
 #'@export
 lfa_random_forest <- function(tree_data,
                               excluded_input_columns,
                               response_variable = "specie",
+                              ntree = 100,
                               seed = 123,
                               ...) {
   set.seed(seed)
@@ -63,10 +39,11 @@ lfa_random_forest <- function(tree_data,
     setdiff(names(tree_data),
             c(response_variable, excluded_input_columns))
   tree_data$specie <- as.factor(tree_data$specie)
-  # Get unique categories from the 'are' column
+  # Get unique categories from the 'area' column
   areas <- unique(tree_data$area)
   results_list <- list()
   predicted_df <- data.frame()  # Initialize predicted_df here
+  importance_list <- list()  # Initialize importance_list here
   # Perform leave-one-out cross-validation for each area
   for (area in areas) {
     print(area)
@@ -79,8 +56,10 @@ lfa_random_forest <- function(tree_data,
     model <-
       randomForest::randomForest(formula(formula_str),
                                  data = train_data,
-                                 ntree = 100,
+                                 ntree = ntree,
+                                 importance = TRUE,
                                  ...)
+    importance_list[[area]] <- model$importance  # Store importance values for the area
     predictions <- predict(model, newdata = test_data)
     predictions |> table() |> print()
     result_table <- table(predictions)
@@ -130,6 +109,7 @@ lfa_random_forest <- function(tree_data,
   return_list$confusion_matrix = confusion_matrix
   return_list$accuracy = sum(diag(confusion_matrix)) / sum(confusion_matrix)
   return_list$formula = formula_str
+  return_list$importance_list = importance_list  # Include importance values in the output
   return(return_list)
 }
 

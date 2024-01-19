@@ -8,6 +8,7 @@ lfa_random_forest(
   tree_data,
   excluded_input_columns,
   response_variable = "specie",
+  ntree = 100,
   seed = 123,
   ...
 )
