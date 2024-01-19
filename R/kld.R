@@ -23,6 +23,8 @@
 #'
 #' @export
 lfa_kld <- function(p, q, epsilon = 1e-10) {
+  p <- p / sum(p)
+  q <- q / sum(q)
   p <- p + epsilon
   q <- q + epsilon
   return(sum(p * log(p / q)))
