@@ -1,0 +1,113 @@
+## n-nearest Neighbours
+
+```{r}
+#| code-fold: true
+#| results: hide
+neighbors <- lfa::lfa_combine_sf_obj(lfa::lfa_get_neighbor_paths(),lfa::lfa_get_all_areas())
+```
+
+### Overview
+To initiate our analysis, we first establish a framework for selecting neighbors by examining the distance development with different n, as illustrated in @fig-n-nearest-overview. The curves share a similar design, but the actual values vary. Notably, as n increases, the distance between all patches also increases, indicating a broader spatial context.
+
+Considering this trend, we extend our investigation beyond the nearest neighbor to include the 100th nearest neighbor. The $\Delta$distance shows a consistent decrease with each increment in n, reinforcing our decision to limit exploration beyond n of a hundred. Additionally, the constraint is driven by practical considerations, as our sample size occasionally lacks the capacity to explore larger n values, resulting in inaccurate values due to the absence of the true nearest neighbor within the sample area.
+
+
+```{r}
+#| code-fold: true
+#| fig-cap: Average Distance to n-nearest neighbor from each patch. For simplicity colored by the dominant specie of each tree.
+#| label: fig-n-nearest-overview 
+lfa::lfa_create_neighbor_mean_curves(neighbors) |> lfa::lfa_create_plot_per_area()
+```
+
+
+### The Nearest Neighbour
+Our initial focus centers on examining the distance to the nearest neighbor for each tree. Notably, the curve representing Spruce exhibits distinct characteristics compared to the three other curves—displaying a steeper profile with less variance, as depicted in @fig-density-1-nearest.
+
+Further analysis of all patches reveals similar distributions, as evident in the boxplot shown in Figure 2 (@fig-boxplot-1-nearest), where mean and variance demonstrate consistency across patches. However, these graphical statistics present challenges in effectively distinguishing between different tree species based on the distance to the nearest neighbor.
+
+
+```{r}
+#| warning: false
+#| label: fig-density-1-nearest
+#| code-fold: true
+#| fig-cap: Density plot of the distance to the nearest neighbor distribution across all patches grouped by the dominant species.
+lfa::lfa_create_density_plots(neighbors,value_column = "Neighbor_1",category_column1 = "area",category_column2 = "specie", title = "Density plots for the nearest neighbor among species and areas", xlims = c(0,15))
+```
+
+
+
+```{r}
+#| warning: false
+#| label: fig-boxplot-1-nearest
+#| code-fold: true
+#| fig-cap: Density plot of the distance to the nearest neighbor distribution across all patches grouped by the dominant species.
+lfa::lfa_create_boxplot(neighbors,value_column = "Neighbor_1",category_column1 = "area",category_column2 = "specie", title = "Box plots for the nearest neighbor among species and areas")
+```
+
+
+### The 100th nearest Neighbor
+Moving on to the analysis of the 100th nearest neighbor, intriguing patterns emerge. Peaks in the curves display varying heights and positions, with a notable example being the complete shift between Oak and Spruce, as illustrated in @fig-density-100-nearest.
+
+However, it is essential to acknowledge the high variance observed between curves within a species, such as Pine or Beech. While this variance could serve as a potential indicator, it comes with the caveat that the sample size must be substantial for reliable conclusions.
+
+Examining boxplots reveals numerous outliers above the boxes, hinting at potential edge effects on the sides of patches. This observation raises concerns about the adequacy of trees in these areas for a more in-depth analysis, posing challenges in deriving accurate insights.
+
+
+```{r}
+#| warning: false
+#| label: fig-density-100-nearest
+#| code-fold: true
+#| fig-cap: Density plot of the distance to the nearest neighbor distribution across all patches grouped by the dominant species.
+lfa::lfa_create_density_plots(neighbors,value_column = "Neighbor_100",category_column1 = "area",category_column2 = "specie", title = "Density plots for the nearest neighbor along species and areas", xlims = c(35,100))
+```
+
+
+
+
+```{r}
+#| warning: false
+#| label: fig-boxplot-100-nearest
+#| code-fold: true
+#| fig-cap: Density plot of the distance to the nearest neighbor distribution across all patches grouped by the dominant species.
+lfa::lfa_create_boxplot(neighbors,value_column = "Neighbor_100",category_column1 = "area",category_column2 = "specie", title = "Box plots for the nearest neighbor along species and areas")
+```
+
+#### Average distance to 100 nearest neighbors
+
+```{r}
+#| warning: false
+#| code-fold: true
+#| results: hide
+names <- paste0("Neighbor_",1:100)
+neighbors$avg = rowMeans(dplyr::select(as.data.frame(neighbors),names))
+```
+
+Turning our attention to the averages of the first 100 neighbors, our analysis indicates strikingly similar results. There is considerable variance observed between different species, as well as within individual species, as depicted in @fig-density-avg-nearest.
+
+Despite the uniformity in average results, the issue of outliers persists, as evident in the boxplot representation shown in @fig-boxplot-avg-nearest. These outliers pose challenges and may be indicative of specific environmental conditions affecting tree distributions. Further exploration is required to better understand and mitigate the impact of outliers on our analysis.
+
+
+
+```{r}
+#| warning: false
+#| label: fig-density-avg-nearest
+#| code-fold: true
+#| fig-cap: Density plot of the average distance to the nearest neighbor (n=100) distribution across all patches grouped by the dominant species.
+lfa::lfa_create_density_plots(neighbors,value_column = "avg",category_column1 = "area",category_column2 = "specie", title = "Density plots for the avergae of 100 nearest neighbors across species and areas", xlims = c(25,60))
+```
+
+
+
+The neighbor analysis proves potentially useful for distinguishing between tree species, yet the observed variances within each species suggest that relying solely on distance to neighbors may not suffice.
+
+A critical consideration is the sample size problem, wherein more distinguishable patterns emerge with higher neighbor levels, but this necessitates a sufficiently large sample size. Unfortunately, deriving a clear relationship between sample size and the number of tree neighbors remains elusive in our current findings. This gap in understanding could be a pertinent subject for further research, delving into the intricate interplay between sample size and the effectiveness of neighbor analysis in species differentiation.
+
+
+
+```{r}
+#| warning: false
+#| label: fig-boxplot-avg-nearest
+#| code-fold: true
+#| fig-cap: Density plot of the average distance to the nearest neighbor (n = 100) distribution across all patches grouped by the dominant species.
+lfa::lfa_create_boxplot(neighbors,value_column = "avg",category_column1 = "area",category_column2 = "specie", title = "Box plots for the average to the nearest neighbor across all species and areas")
+```
