@@ -15,7 +15,7 @@
 #' @export
 #'
 lfa_kld_from_vec <- function(x, y) {
-  x.d = density(x)
-  y.d = density(y)
+  x.d = density(x, na.rm = TRUE)
+  y.d = density(y, na.rm = TRUE)
   return(lfa::lfa_kld(x.d$y, y.d$y))
 }
