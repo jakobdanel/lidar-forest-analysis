@@ -26,8 +26,8 @@
 lfa_create_density_plots <-
   function(data,
            value_column,
-           category_column1,
-           category_column2,
+           category_column1 = "area",
+           category_column2 = "specie",
            title = NULL,
            xlims = NULL,
            ylims = NULL) {
