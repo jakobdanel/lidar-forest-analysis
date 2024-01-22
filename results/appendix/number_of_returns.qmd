@@ -1,12 +1,14 @@
-### Distribution of Z-Values
+### Distribution of the number of returns
 
 
 ```{r}
 #| warning: false
 #| code-fold: true
 #| results: hide
-data <- lfa::lfa_get_detections()
-value_column <- "Z"
+data <- sf::st_read("data/tree_properties.gpkg")
+neighbors <- lfa::lfa_get_neighbor_paths() |> lfa::lfa_combine_sf_obj(lfa::lfa_get_all_areas())
+data = sf::st_join(data,neighbors, join = sf::st_within)
+value_column <- "number_of_returns"
 ```
 
 
@@ -18,8 +20,8 @@ value_column <- "Z"
 ```{r}
 #| warning: false
 #| code-fold: true
-#| label: tbl-z-values-kld_specie
-#| tbl-cap: "Kullback-Leibler-Divergence between the researched species Beech, Oak, Pine and Spruce for the atrribute z-values" 
+#| label: tbl-number-of-returns-kld_specie
+#| tbl-cap: "Kullback-Leibler-Divergence between the researched species Beech, Oak, Pine and Spruce for the atrribute number-of-returns" 
 kld_results_specie <- lfa::lfa_run_test_asymmetric(data,value_column,"specie",lfa::lfa_kld_from_vec)
 lfa::lfa_generate_result_table_tests(kld_results_specie,"Kullback-Leibler-Divergence between species")
 ```
@@ -37,8 +39,8 @@ colMeans(kld_results_specie, na.rm = TRUE) |> mean()
 ```{r}
 #| warning: false
 #| code-fold: true
-#| label: tbl-z-values-kld-beech
-#| tbl-cap: "Kullback-Leibler-Divergence between the researched areas which have the dominante specie beech for the atrribute z-values"
+#| label: tbl-number-of-returns-kld-beech
+#| tbl-cap: "Kullback-Leibler-Divergence between the researched areas which have the dominante specie beech for the atrribute number-of-returns"
 specie <- data[data$specie=="beech",]
 kld_results_beech <- lfa::lfa_run_test_asymmetric(specie,value_column,"area",lfa::lfa_kld_from_vec)
 lfa::lfa_generate_result_table_tests(kld_results_beech,"Kullback-Leibler-Divergence between areas with beech")
@@ -57,8 +59,8 @@ colMeans(kld_results_beech, na.rm = TRUE) |> mean()
 ```{r}
 #| warning: false
 #| code-fold: true
-#| label: tbl-z-values-kld-oak
-#| tbl-cap: "Kullback-Leibler-Divergence between the researched areas which have the dominante specie oak for the atrribute z-values"
+#| label: tbl-number-of-returns-kld-oak
+#| tbl-cap: "Kullback-Leibler-Divergence between the researched areas which have the dominante specie oak for the atrribute number-of-returns"
 specie <- data[data$specie=="oak",]
 kld_results_oak <- lfa::lfa_run_test_asymmetric(specie,value_column,"area",lfa::lfa_kld_from_vec)
 lfa::lfa_generate_result_table_tests(kld_results_oak,"Kullback-Leibler-Divergence between areas with oak")
@@ -77,8 +79,8 @@ colMeans(kld_results_oak, na.rm = TRUE) |> mean()
 ```{r}
 #| warning: false
 #| code-fold: true
-#| label: tbl-z-values-kld-pine
-#| tbl-cap: "Kullback-Leibler-Divergence between the researched areas which have the dominante specie pine for the atrribute z-values"
+#| label: tbl-number-of-returns-kld-pine
+#| tbl-cap: "Kullback-Leibler-Divergence between the researched areas which have the dominante specie pine for the atrribute number-of-returns"
 specie <- data[data$specie=="pine",]
 kld_results_pine <- lfa::lfa_run_test_asymmetric(specie,value_column,"area",lfa::lfa_kld_from_vec)
 lfa::lfa_generate_result_table_tests(kld_results_pine,"Kullback-Leibler-Divergence between areas with pine")
@@ -97,8 +99,8 @@ colMeans(kld_results_pine, na.rm = TRUE) |> mean()
 ```{r}
 #| warning: false
 #| code-fold: true
-#| label: tbl-z-values-kld-spruce
-#| tbl-cap: "Kullback-Leibler-Divergence between the researched areas which have the dominante specie spruce for the atrribute z-values"
+#| label: tbl-number-of-returns-kld-spruce
+#| tbl-cap: "Kullback-Leibler-Divergence between the researched areas which have the dominante specie spruce for the atrribute number-of-returns"
 specie <- data[data$specie=="spruce",]
 kld_results_spruce <- lfa::lfa_run_test_asymmetric(specie,value_column,"area",lfa::lfa_kld_from_vec)
 lfa::lfa_generate_result_table_tests(kld_results_spruce,"Kullback-Leibler-Divergence between areas with spruce")
@@ -121,8 +123,8 @@ colMeans(kld_results_spruce, na.rm = TRUE) |> mean()
 ```{r}
 #| warning: false
 #| code-fold: true
-#| label: tbl-z-values-jsd_specie
-#| tbl-cap: "Jensen-Shannon Divergence between the researched species Beech, Oak, Pine and Spruce for the atrribute z-values" 
+#| label: tbl-number-of-returns-jsd_specie
+#| tbl-cap: "Jensen-Shannon Divergence between the researched species Beech, Oak, Pine and Spruce for the atrribute number-of-returns" 
 jsd_results_specie <- lfa::lfa_run_test_symmetric(data,value_column,"specie",lfa::lfa_jsd_from_vec)
 lfa::lfa_generate_result_table_tests(jsd_results_specie,"Jensen-Shannon Divergence between species")
 ```
@@ -140,8 +142,8 @@ colMeans(jsd_results_specie, na.rm = TRUE) |> mean()
 ```{r}
 #| warning: false
 #| code-fold: true
-#| label: tbl-z-values-jsd-beech
-#| tbl-cap: "Jensen-Shannon Divergence between the researched areas which have the dominante specie beech for the atrribute z-values"
+#| label: tbl-number-of-returns-jsd-beech
+#| tbl-cap: "Jensen-Shannon Divergence between the researched areas which have the dominante specie beech for the atrribute number-of-returns"
 specie <- data[data$specie=="beech",]
 jsd_results_beech <- lfa::lfa_run_test_symmetric(specie,value_column,"area",lfa::lfa_jsd_from_vec)
 lfa::lfa_generate_result_table_tests(jsd_results_beech,"Jensen-Shannon Divergence between areas with beech")
@@ -160,8 +162,8 @@ colMeans(jsd_results_beech, na.rm = TRUE) |> mean()
 ```{r}
 #| warning: false
 #| code-fold: true
-#| label: tbl-z-values-jsd-oak
-#| tbl-cap: "Jensen-Shannon Divergence between the researched areas which have the dominante specie oak for the atrribute z-values"
+#| label: tbl-number-of-returns-jsd-oak
+#| tbl-cap: "Jensen-Shannon Divergence between the researched areas which have the dominante specie oak for the atrribute number-of-returns"
 specie <- data[data$specie=="oak",]
 jsd_results_oak <- lfa::lfa_run_test_symmetric(specie,value_column,"area",lfa::lfa_jsd_from_vec)
 lfa::lfa_generate_result_table_tests(jsd_results_oak,"Jensen-Shannon Divergence between areas with oak")
@@ -180,8 +182,8 @@ colMeans(jsd_results_oak, na.rm = TRUE) |> mean()
 ```{r}
 #| warning: false
 #| code-fold: true
-#| label: tbl-z-values-jsd-pine
-#| tbl-cap: "Jensen-Shannon Divergence between the researched areas which have the dominante specie pine for the atrribute z-values"
+#| label: tbl-number-of-returns-jsd-pine
+#| tbl-cap: "Jensen-Shannon Divergence between the researched areas which have the dominante specie pine for the atrribute number-of-returns"
 specie <- data[data$specie=="pine",]
 jsd_results_pine <- lfa::lfa_run_test_symmetric(specie,value_column,"area",lfa::lfa_jsd_from_vec)
 lfa::lfa_generate_result_table_tests(jsd_results_pine,"Jensen-Shannon Divergence between areas with pine")
@@ -200,8 +202,8 @@ colMeans(jsd_results_pine, na.rm = TRUE) |> mean()
 ```{r}
 #| warning: false
 #| code-fold: true
-#| label: tbl-z-values-jsd-spruce
-#| tbl-cap: "Jensen-Shannon Divergence between the researched areas which have the dominante specie spruce for the atrribute z-values"
+#| label: tbl-number-of-returns-jsd-spruce
+#| tbl-cap: "Jensen-Shannon Divergence between the researched areas which have the dominante specie spruce for the atrribute number-of-returns"
 specie <- data[data$specie=="spruce",]
 jsd_results_spruce <- lfa::lfa_run_test_symmetric(specie,value_column,"area",lfa::lfa_jsd_from_vec)
 lfa::lfa_generate_result_table_tests(jsd_results_spruce,"Jensen-Shannon Divergence between areas with spruce")

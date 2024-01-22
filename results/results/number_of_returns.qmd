@@ -1,0 +1,33 @@
+## Distribution of number of returns per detected tree.
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| results: hide
+data <- sf::st_read("data/tree_properties.gpkg")
+neighbors <- lfa::lfa_get_neighbor_paths() |> lfa::lfa_combine_sf_obj(lfa::lfa_get_all_areas())
+data = sf::st_join(data,neighbors, join = sf::st_within)
+```
+Examining the distribution of LiDAR returns per tree is the focus of our current investigation. Initial analysis involves the study of density graphs representing the distribution of LiDAR returns. The density curves for each species exhibit distinct peaks corresponding to their respective species, providing a clear differentiation in LiDAR return patterns. Notably, there is an exception observed in the Brilon patch (Spruce), where the curve deviates, possibly indicative of variations in forest age. A noteworthy trend is the divergent shape of density curves between coniferous and deciduous trees. Conifers exhibit steeper curves, indicating lower density for higher return values compared to deciduous trees. This disparity underscores the potential of LiDAR data to distinguish between tree types based on return density characteristics. In the case of Beech trees, the peaks' heights vary among different curves, suggesting nuanced variations within the species. Despite these differences, all species consistently peak in similar regions, emphasizing the overarching similarities in LiDAR return patterns across diverse tree species.
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| label: fig-density-number-returns
+#| fig-cap: Density of the amount of LiDAR returns per detectected tree. Splitted by the different researched areas and grouped by the dominant specie in this area. 
+lfa::lfa_create_density_plots(data, value_column = "number_of_returns", category_column1 = "area", category_column2 = "specie", title = "Density of the distribution of LiDAR returns per individual tree", xlims = c(0,10000))
+```
+
+Currently, our investigation focuses on boxplots representing each patch. We observe significant size variations among plots within the same species. Notably, numerous outliers are present above the box in each patch. For Pines, the boxes exhibit a notable similarity. However, the box for Brilon is entirely shifted from other boxes associated with patches featuring Spruce forest.
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| label: fig-boxplot-number-returns
+#| fig-cap: Boxplots of the the amount of LiDAR returns per detectected tree. Splitted by the different researched areas and grouped by the dominant specie in this area. 
+lfa::lfa_create_boxplot(data, value_column = "number_of_returns", category_column1 = "area", category_column2 = "specie", title = "Boxplots of the distribution of LiDAR returns per individual tree")
+```
+
+Overall, our analysis reveals very low results for both Kullback-Leibler Divergence (KLD) and Jensen-Shannon Divergence (JSD) metrics across different species. Within species, there is high explainability observed for the different LiDAR return curves between patches.
+
+This suggests that the number of returns alone may not be a robust predictor for identifying the dominant species in a forest. However, the curves indicate a clear potential for distinguishing between conifers (Pine and Spruce) and deciduous trees (Beech and Oak) based on the number of returns. This observation is further supported by the JSD scores, as detailed in @tbl-number-of-returns-jsd_specie.
