@@ -126,5 +126,12 @@ def main():
     content = build_quantitativ_results("z-values", "Distribution of Z-Values", '"Z"', header_size=3)
     write_file("z_values.qmd", content)
     
+    preprocessing_nearest ="data <- lfa::lfa_combine_sf_obj(lfa::lfa_get_neighbor_paths(),lfa::lfa_get_all_areas())"
+    write_file("nearest_1.qmd", build_quantitativ_results("nearest-neighbor-1", "Distribution of nearest neighbor distances", '"Neighbor_1"', header_size=4, preprocessing=preprocessing_nearest))
+    write_file("nearest_100.qmd", build_quantitativ_results("nearest-neighbor-100", "Distribution of distances to 100th nearest neighbor", '"Neighbor_100"', header_size=4, preprocessing=preprocessing_nearest))
+
+    preprocessing_nearest_avg= preprocessing_nearest+ "\n" +"""names <- paste0("Neighbor_",1:100)
+data$avg = rowMeans(dplyr::select(as.data.frame(data),names))"""
+    write_file("nearest_avg.qmd", build_quantitativ_results("nearest-neighbor-avg", "Distribution of average nearest neighbor distances", '"avg"', header_size=4, preprocessing=preprocessing_nearest_avg))
 if __name__ == "__main__":
     main()
