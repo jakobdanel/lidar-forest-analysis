@@ -1,0 +1,36 @@
+## Distribution of the tree heights
+
+```{r}
+#| code-fold: true
+#| warning: false
+detections <- lfa::lfa_get_detections()
+```
+
+In this study, we scrutinize the distribution of tree heights, focusing initially on the density distribution to unravel the nuances across various tree species. Notably, our examination reveals distinctive patterns, with Oak and Pine exhibiting significantly steeper peaks in their density curves compared to Beech and Spruce. While all species present unique density curves, a commonality emerges—each curve is characterized by a single peak, except for the intriguing exception observed in Telgte. Taking Beech as an illustrative example, our findings indicate a notable shift in the peak to a considerably higher extent. The varinace in the density curves indicating that an differencation between species only with the help oof tree height values could be difficult.
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| label: fig-density-z
+#| fig-cap: Density of the height distribitions of the detectected trees. Splitted by the different researched areas and grouped by the dominant specie in this area. 
+lfa::lfa_create_density_plots(detections, value_column = "Z", category_column1 = "area", category_column2 = "specie", title = "Density of the height distributions", xlims = c(0,50))
+```
+
+To have a deeper look into the distributions of those `Z`-values we will now also have a look into the boxplots of the height distrubutions in the different areas.
+Noteworthy observations include the presence of outliers beyond the extended range of the Whisker Antennas ($1.5*\text{IQR}$) in all datasets. Of particular interest is the Rinkerode dataset, which exhibits a higher prevalence of outliers in the upper domain. Anomalies in this dataset are attributed to potential inaccuracies, urging a critical examination of data integrity. A pairwise examination of Oak and Pine species indicates higher mean heights for Oak compared to Pine. This insight underscores the significance of species-specific attributes in shaping overall height distributions. Further exploration into the factors contributing to these mean differences enhances our understanding of the unique characteristics inherent to each species. Contrary to expectations, the spread within a particular species does not exhibit significant divergence from the spread observed between different species. This finding suggests that while species-specific traits play a crucial role in shaping height distributions, certain overarching factors may contribute to shared patterns across diverse tree populations.
+
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| label: fig-boxplot-z
+#| fig-cap: Boxplots of the height distribitions of the detectected trees. Splitted by the different researched areas and grouped by the dominant specie in this area. 
+lfa::lfa_create_boxplot(detections, value_column = "Z", category_column1 = "area", category_column2 = "specie", title = "Boxplots of the height distributions")
+```
+
+
+
+Our examination of Kullback-Leibler Divergence (KLD) and Jensen-Shannon Divergence (JSD) metrics reveals low mean values (KLD: 5.252696, JSD: 2.246663) across different species, indicating overall similarity in tree species height distributions. However, within specific species, particularly Pine, higher divergence values (see @tbl-z-values-kld-pine and @tbl-z-values-jsd-pine) suggest significant intraspecific differences.
+
+Notably, the Spruce species consistently demonstrates low divergence values across all tested areas, implying a high level of explainability. This finding highlights tree height as a reliable indicator for detecting Spruce trees, indicating its potential for accurate species identification in diverse forest ecosystems.

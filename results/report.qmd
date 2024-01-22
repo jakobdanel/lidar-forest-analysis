@@ -40,6 +40,10 @@ This report documents the analysis of forest data for different tree species.
 {{< include methods/distribution-analysis.qmd >}}
 # Results
 {{< include results/researched-areas.qmd >}}
+{{< include results/z-distribution.qmd >}}
+
+
+{{< include results/nearest-neighbors.qmd >}}
 
 
 |specie |area                |   density (1/m²)|
@@ -66,7 +70,8 @@ This report documents the analysis of forest data for different tree species.
 
 # Appendix
 {{< include appendix/preprocessing.qmd >}}
-
+## Quantitative Results
+{{< include appendix/z_values.qmd >}}
 ## Documentation
 {{< include appendix/package-docs/docs.qmd >}}
 
