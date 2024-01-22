@@ -68,6 +68,7 @@ def build_quantitativ_results(distribution_name = "detections",distribution_name
 ```{{r}}
 #| warning: false
 #| code-fold: true
+#| results: hide
 {preprocessing}
 value_column <- {value_column}
 ```
@@ -133,5 +134,13 @@ def main():
     preprocessing_nearest_avg= preprocessing_nearest+ "\n" +"""names <- paste0("Neighbor_",1:100)
 data$avg = rowMeans(dplyr::select(as.data.frame(data),names))"""
     write_file("nearest_avg.qmd", build_quantitativ_results("nearest-neighbor-avg", "Distribution of average nearest neighbor distances", '"avg"', header_size=4, preprocessing=preprocessing_nearest_avg))
+
+    
+    preprocessing_number_of_returns = """data <- sf::st_read("data/tree_properties.gpkg")
+neighbors <- lfa::lfa_get_neighbor_paths() |> lfa::lfa_combine_sf_obj(lfa::lfa_get_all_areas())
+data = sf::st_join(data,neighbors, join = sf::st_within)"""
+    
+    write_file("number_of_returns.qmd", build_quantitativ_results("number-of-returns", "Distribution of the number of returns", '"number_of_returns"', header_size=3, preprocessing=preprocessing_number_of_returns)) 
+    
 if __name__ == "__main__":
     main()
