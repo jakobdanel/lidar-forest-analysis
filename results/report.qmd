@@ -71,6 +71,11 @@ This report documents the analysis of forest data for different tree species.
 {{< include appendix/preprocessing.qmd >}}
 ## Quantitative Results
 {{< include appendix/z_values.qmd >}}
+
+### Nearest Neighbours
+{{< include appendix/nearest_1.qmd >}}
+{{< include appendix/nearest_100.qmd >}}
+{{< include appendix/nearest_avg.qmd >}}
 {{< include appendix/number_of_returns.qmd >}}
 
 

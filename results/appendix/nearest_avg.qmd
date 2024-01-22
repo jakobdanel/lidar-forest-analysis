@@ -1,0 +1,217 @@
+#### Distribution of average nearest neighbor distances
+
+
+```{r}
+#| warning: false
+#| code-fold: true
+data <- lfa::lfa_combine_sf_obj(lfa::lfa_get_neighbor_paths(),lfa::lfa_get_all_areas())
+names <- paste0("Neighbor_",1:100)
+data$avg = rowMeans(dplyr::select(as.data.frame(data),names))
+value_column <- "avg"
+```
+
+
+
+##### Kullback-Leibler-Divergence
+
+
+
+```{r}
+#| warning: false
+#| code-fold: true
+#| label: tbl-nearest-neighbor-avg-kld_specie
+#| tbl-cap: "Kullback-Leibler-Divergence between the researched species Beech, Oak, Pine and Spruce for the atrribute nearest-neighbor-avg" 
+kld_results_specie <- lfa::lfa_run_test_asymmetric(data,value_column,"specie",lfa::lfa_kld_from_vec)
+lfa::lfa_generate_result_table_tests(kld_results_specie,"Kullback-Leibler-Divergence between species")
+```
+
+
+
+```{r}
+#| warning: false
+colMeans(kld_results_specie, na.rm = TRUE) |> mean()
+```
+
+
+
+
+```{r}
+#| warning: false
+#| code-fold: true
+#| label: tbl-nearest-neighbor-avg-kld-beech
+#| tbl-cap: "Kullback-Leibler-Divergence between the researched areas which have the dominante specie beech for the atrribute nearest-neighbor-avg"
+specie <- data[data$specie=="beech",]
+kld_results_beech <- lfa::lfa_run_test_asymmetric(specie,value_column,"area",lfa::lfa_kld_from_vec)
+lfa::lfa_generate_result_table_tests(kld_results_beech,"Kullback-Leibler-Divergence between areas with beech")
+```
+
+
+
+```{r}
+#| warning: false
+colMeans(kld_results_beech, na.rm = TRUE) |> mean()
+```
+
+
+
+
+```{r}
+#| warning: false
+#| code-fold: true
+#| label: tbl-nearest-neighbor-avg-kld-oak
+#| tbl-cap: "Kullback-Leibler-Divergence between the researched areas which have the dominante specie oak for the atrribute nearest-neighbor-avg"
+specie <- data[data$specie=="oak",]
+kld_results_oak <- lfa::lfa_run_test_asymmetric(specie,value_column,"area",lfa::lfa_kld_from_vec)
+lfa::lfa_generate_result_table_tests(kld_results_oak,"Kullback-Leibler-Divergence between areas with oak")
+```
+
+
+
+```{r}
+#| warning: false
+colMeans(kld_results_oak, na.rm = TRUE) |> mean()
+```
+
+
+
+
+```{r}
+#| warning: false
+#| code-fold: true
+#| label: tbl-nearest-neighbor-avg-kld-pine
+#| tbl-cap: "Kullback-Leibler-Divergence between the researched areas which have the dominante specie pine for the atrribute nearest-neighbor-avg"
+specie <- data[data$specie=="pine",]
+kld_results_pine <- lfa::lfa_run_test_asymmetric(specie,value_column,"area",lfa::lfa_kld_from_vec)
+lfa::lfa_generate_result_table_tests(kld_results_pine,"Kullback-Leibler-Divergence between areas with pine")
+```
+
+
+
+```{r}
+#| warning: false
+colMeans(kld_results_pine, na.rm = TRUE) |> mean()
+```
+
+
+
+
+```{r}
+#| warning: false
+#| code-fold: true
+#| label: tbl-nearest-neighbor-avg-kld-spruce
+#| tbl-cap: "Kullback-Leibler-Divergence between the researched areas which have the dominante specie spruce for the atrribute nearest-neighbor-avg"
+specie <- data[data$specie=="spruce",]
+kld_results_spruce <- lfa::lfa_run_test_asymmetric(specie,value_column,"area",lfa::lfa_kld_from_vec)
+lfa::lfa_generate_result_table_tests(kld_results_spruce,"Kullback-Leibler-Divergence between areas with spruce")
+```
+
+
+
+```{r}
+#| warning: false
+colMeans(kld_results_spruce, na.rm = TRUE) |> mean()
+```
+
+
+
+
+##### Jensen-Shannon Divergence
+
+
+
+```{r}
+#| warning: false
+#| code-fold: true
+#| label: tbl-nearest-neighbor-avg-jsd_specie
+#| tbl-cap: "Jensen-Shannon Divergence between the researched species Beech, Oak, Pine and Spruce for the atrribute nearest-neighbor-avg" 
+jsd_results_specie <- lfa::lfa_run_test_symmetric(data,value_column,"specie",lfa::lfa_jsd_from_vec)
+lfa::lfa_generate_result_table_tests(jsd_results_specie,"Jensen-Shannon Divergence between species")
+```
+
+
+
+```{r}
+#| warning: false
+colMeans(jsd_results_specie, na.rm = TRUE) |> mean()
+```
+
+
+
+
+```{r}
+#| warning: false
+#| code-fold: true
+#| label: tbl-nearest-neighbor-avg-jsd-beech
+#| tbl-cap: "Jensen-Shannon Divergence between the researched areas which have the dominante specie beech for the atrribute nearest-neighbor-avg"
+specie <- data[data$specie=="beech",]
+jsd_results_beech <- lfa::lfa_run_test_symmetric(specie,value_column,"area",lfa::lfa_jsd_from_vec)
+lfa::lfa_generate_result_table_tests(jsd_results_beech,"Jensen-Shannon Divergence between areas with beech")
+```
+
+
+
+```{r}
+#| warning: false
+colMeans(jsd_results_beech, na.rm = TRUE) |> mean()
+```
+
+
+
+
+```{r}
+#| warning: false
+#| code-fold: true
+#| label: tbl-nearest-neighbor-avg-jsd-oak
+#| tbl-cap: "Jensen-Shannon Divergence between the researched areas which have the dominante specie oak for the atrribute nearest-neighbor-avg"
+specie <- data[data$specie=="oak",]
+jsd_results_oak <- lfa::lfa_run_test_symmetric(specie,value_column,"area",lfa::lfa_jsd_from_vec)
+lfa::lfa_generate_result_table_tests(jsd_results_oak,"Jensen-Shannon Divergence between areas with oak")
+```
+
+
+
+```{r}
+#| warning: false
+colMeans(jsd_results_oak, na.rm = TRUE) |> mean()
+```
+
+
+
+
+```{r}
+#| warning: false
+#| code-fold: true
+#| label: tbl-nearest-neighbor-avg-jsd-pine
+#| tbl-cap: "Jensen-Shannon Divergence between the researched areas which have the dominante specie pine for the atrribute nearest-neighbor-avg"
+specie <- data[data$specie=="pine",]
+jsd_results_pine <- lfa::lfa_run_test_symmetric(specie,value_column,"area",lfa::lfa_jsd_from_vec)
+lfa::lfa_generate_result_table_tests(jsd_results_pine,"Jensen-Shannon Divergence between areas with pine")
+```
+
+
+
+```{r}
+#| warning: false
+colMeans(jsd_results_pine, na.rm = TRUE) |> mean()
+```
+
+
+
+
+```{r}
+#| warning: false
+#| code-fold: true
+#| label: tbl-nearest-neighbor-avg-jsd-spruce
+#| tbl-cap: "Jensen-Shannon Divergence between the researched areas which have the dominante specie spruce for the atrribute nearest-neighbor-avg"
+specie <- data[data$specie=="spruce",]
+jsd_results_spruce <- lfa::lfa_run_test_symmetric(specie,value_column,"area",lfa::lfa_jsd_from_vec)
+lfa::lfa_generate_result_table_tests(jsd_results_spruce,"Jensen-Shannon Divergence between areas with spruce")
+```
+
+
+
+```{r}
+#| warning: false
+colMeans(jsd_results_spruce, na.rm = TRUE) |> mean()
+```
+
