@@ -126,6 +126,273 @@ lfa_check_flag(flag_name)
 
 
 
+### `lfa_combine_sf_obj`
+
+Combine Spatial Feature Objects from Multiple GeoPackage Files
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`paths`     |     A character vector containing file paths to GeoPackage files with neighbor information.
+`area_infos`     |     A data frame or list containing information about the corresponding detection areas, including "area" and "specie" columns.
+
+
+#### Description
+
+This function reads spatial feature objects (sf) from multiple GeoPackage files and combines them into a single sf object.
+ Each GeoPackage file is assumed to contain neighbor information for a specific detection area, and the resulting sf object
+ includes additional columns indicating the corresponding area and species information.
+
+
+#### Value
+
+A combined sf object with additional columns for area and specie information.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Assuming paths and area_infos are defined
+combined_sf <- lfa_combine_sf_obj(paths, area_infos)
+
+# Print the combined sf object
+print(combined_sf)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_combine_sf_obj(paths, area_infos)
+```
+
+
+
+### `lfa_count_returns_all_areas`
+
+Count tree returns for all species and areas, returning a consolidated data frame.
+
+
+#### Description
+
+This function iterates through all species and areas obtained from the function
+ [`lfa_get_all_areas`](#lfagetallareas) . For each combination of species and area, it reads
+ the corresponding area as a catalog, counts the returns per tree using
+ [`lfa_count_returns_per_tree`](#lfacountreturnspertree) , and consolidates the results into a data frame.
+ The resulting data frame includes columns for the species, area, and return counts per tree.
+
+
+#### Keyword
+
+counting
+
+
+#### Seealso
+
+[`lfa_get_all_areas`](#lfagetallareas) , [`lfa_read_area_as_catalog`](#lfareadareaascatalog) ,
+ [`lfa_count_returns_per_tree`](#lfacountreturnspertree)
+
+
+#### Value
+
+A data frame with columns for species, area, and return counts per tree.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Count tree returns for all species and areas
+returns_counts <- lfa_count_returns_all_areas()
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_count_returns_all_areas()
+```
+
+
+
+### `lfa_count_returns_per_tree`
+
+Count returns per tree for a given lidR catalog.
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`ctg`     |     A lidR catalog object containing LAS files to be processed.
+
+
+#### Description
+
+This function takes a lidR catalog as input and counts the returns per tree.
+ It uses the lidR package to read LAS files from the catalog and performs the counting
+ operation on each tree. The result is a data frame containing the counts of returns
+ for each unique tree ID within the lidR catalog.
+
+
+#### Keyword
+
+counting
+
+
+#### Seealso
+
+[`lidR::readLAS`](#lidr::readlas) , [`lidR::is.empty`](#lidr::is.empty) ,
+ [`base::table`](#base::table) , [`dplyr::bind_rows`](#dplyr::bindrows)
+
+
+#### Value
+
+A data frame with columns for tree ID and the corresponding count of returns.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Count returns per tree for a lidR catalog
+ctg <- lfa_read_area_as_catalog("SpeciesA", "Area1")
+returns_counts_per_tree <- lfa_count_returns_per_tree(ctg)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_count_returns_per_tree(ctg)
+```
+
+
+
+### `lfa_create_boxplot`
+
+Create a box plot from a data frame
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`data`     |     A data frame containing the data.
+`value_column`     |     The name of the column containing the values for the box plot.
+`category_column1`     |     The name of the column containing the first categorical variable.
+`category_column2`     |     The name of the column containing the second categorical variable.
+`title`     |     An optional title for the plot. If not provided, a default title is generated based on the data frame name.
+
+
+#### Description
+
+This function generates a box plot using ggplot2 based on the specified data frame and columns.
+
+
+#### Details
+
+The function creates a box plot where the x-axis is based on the second categorical variable,
+ the y-axis is based on the specified value column, and the box plots are colored based on the first
+ categorical variable. The grouping of box plots is done based on the unique values in the second categorical variable.
+
+
+#### Value
+
+A ggplot object representing the box plot.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Assuming you have a data frame 'your_data' with columns 'value', 'category1', and 'category2'
+create_boxplot(your_data, "value", "category1", "category2")
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_create_boxplot(
+  data,
+  value_column,
+  category_column1,
+  category_column2,
+  title = NULL
+)
+```
+
+
+
+### `lfa_create_density_plots`
+
+Create density plots for groups in a data frame
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`data`     |     A data frame containing the data.
+`value_column`     |     The name of the column containing the values for the density plot.
+`category_column1`     |     The name of the column containing the categorical variable for grouping.
+`category_column2`     |     The name of the column containing the categorical variable for arranging plots.
+`title`     |     An optional title for the plot. If not provided, a default title is generated based on the data frame name.
+`xlims`     |     Optional limits for the x-axis. Should be a numeric vector with two elements (lower and upper bounds).
+`ylims`     |     Optional limits for the y-axis. Should be a numeric vector with two elements (lower and upper bounds).
+
+
+#### Description
+
+This function generates density plots using ggplot2 based on the specified data frame and columns.
+
+
+#### Details
+
+The function creates density plots where the x-axis is based on the specified value column,
+ and the density plots are colored based on the first categorical variable. The arrangement of plots
+ is done based on the unique values in the second categorical variable. The plots are arranged in a 2x2 grid.
+
+
+#### Value
+
+A ggplot object representing the density plots arranged in a 2x2 grid.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Assuming you have a data frame 'your_data' with columns 'value', 'category1', and 'category2'
+create_density_plots(your_data, "value", "category1", "category2", title = "Density Plots", xlims = c(0, 10), ylims = c(0, 0.5))
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_create_density_plots(
+  data,
+  value_column,
+  category_column1,
+  category_column2,
+  title = NULL,
+  xlims = NULL,
+  ylims = NULL
+)
+```
+
+
+
 ### `lfa_create_stacked_distributions_plot`
 
 Create a stacked distribution plot for tree detections, visualizing the distribution
@@ -196,6 +463,76 @@ lfa_create_stacked_distributions_plot(
   ylim = c(0, 1000),
   title =
     "Histograms of height distributions between species 'beech', 'oak', 'pine' and 'spruce' divided by the different areas of Interest"
+)
+```
+
+
+
+### `lfa_create_stacked_histogram`
+
+Create a stacked histogram for tree detections, summing up the values for each species.
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`trees`     |     A data frame containing tree detection data.
+`x_value`     |     A character string specifying the column name used for finding the values on the x-axis of the histogram.
+`fill_value`     |     A character string specifying the column name by which the data are differentiated in the plot.
+`bin`     |     An integer specifying the number of bins for the histogram. Default is 30.
+`ylab`     |     A character string specifying the y-axis label. Default is "Frequency."
+`xlim`     |     A numeric vector of length 2 specifying the x-axis limits. Default is c(0, 100).
+`ylim`     |     A numeric vector of length 2 specifying the y-axis limits. Default is NULL.
+
+
+#### Description
+
+This function generates a stacked histogram using the ggplot2 package,
+ summing up the values for each species and visualizing the distribution of
+ a specified variable ( `x_value` ) on the x-axis, differentiated by another
+ variable ( `fill_value` ). The data for the plot are derived from the provided
+ `trees` data frame.
+
+
+#### Keyword
+
+data
+
+
+#### Seealso
+
+[`ggplot2::geom_histogram`](#ggplot2::geomhistogram) , [`ggplot2::ylab`](#ggplot2::ylab) ,
+ [`ggplot2::scale_fill_brewer`](#ggplot2::scalefillbrewer) , [`ggplot2::coord_cartesian`](#ggplot2::coordcartesian)
+
+
+#### Value
+
+A ggplot object representing the stacked histogram.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Create a stacked histogram for variable "Z," differentiated by "area"
+trees <- lfa_get_detections()
+lfa_create_stacked_histogram(trees, "Z", "area")
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_create_stacked_histogram(
+  trees,
+  x_value,
+  fill_value,
+  bin = 30,
+  ylab = "Frequency",
+  xlim = c(0, 100),
+  ylim = NULL
 )
 ```
 
@@ -393,6 +730,106 @@ lfa_download(species, name, location)
 
 
 
+### `lfa_find_n_nearest_trees`
+
+Find n Nearest Trees
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`trees`     |     A sf object containing tree coordinates.
+`n`     |     The number of nearest trees to find for each tree (default is 100).
+
+
+#### Description
+
+This function calculates the distances to the n nearest trees for each tree in the input dataset.
+
+
+#### Value
+
+A data frame with additional columns representing the distances to the n nearest trees.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Load tree data using lfa_get_detections() (not provided)
+tree_data <- lfa_get_detections()
+
+# Filter tree data for a specific species and area
+tree_data = tree_data[tree_data$specie == "pine" & tree_data$area == "greffen", ]
+
+# Find the 100 nearest trees for each tree in the filtered dataset
+tree_data <- lfa_find_n_nearest_trees(tree_data)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_find_n_nearest_trees(trees, n = 100)
+```
+
+
+
+### `lfa_generate_result_table_tests`
+
+Generate Result Table for Tests
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`table`     |     A data frame representing the result table.
+
+
+#### Description
+
+This function generates a result table for tests using the knitr::kable function.
+
+
+#### Details
+
+This function uses the knitr::kable function to create a formatted table, making it suitable for HTML output.
+ The input table is expected to be a data frame with test results, and the resulting table will have capitalized
+ row and column names with lines between columns and rows.
+
+
+#### Value
+
+A formatted table suitable for HTML output with lines between columns and rows.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Generate a result table for tests
+result_table <- data.frame(
+Test1 = c(0.05, 0.10, 0.03),
+Test2 = c(0.02, 0.08, 0.01),
+Test3 = c(0.08, 0.12, 0.05)
+)
+formatted_table <- lfa_generate_result_table_tests(result_table)
+print(formatted_table)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_generate_result_table_tests(table, caption = "Table Caption")
+```
+
+
+
 ### `lfa_get_all_areas`
 
 Retrieve a data frame containing all species and corresponding areas.
@@ -558,6 +995,64 @@ lfa_get_detections_species(species)
 
 
 
+### `lfa_get_detections`
+
+Retrieve aggregated detection data for multiple species.
+
+
+#### Concept
+
+data retrieval functions
+
+
+#### Description
+
+This function obtains aggregated detection data for multiple species by iterating
+ through the list of species obtained from [`lfa_get_species`](#lfagetspecies) . For each
+ species, it calls [`lfa_get_detections_species`](#lfagetdetectionsspecies) to retrieve the
+ corresponding detection data and aggregates the results into a single data frame.
+ The resulting data frame includes columns for the species, tree detection data,
+ and the area in which the detections occurred.
+
+
+#### Keyword
+
+aggregation
+
+
+#### Seealso
+
+[`lfa_get_species`](#lfagetspecies) , [`lfa_get_detections_species`](#lfagetdetectionsspecies) 
+ 
+ Other data retrieval functions:
+ [`lfa_get_species`](#lfagetspecies)
+
+
+#### Value
+
+A data frame containing aggregated detection data for multiple species.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+lfa_get_detections()
+
+# Retrieve aggregated detection data for multiple species
+detections_data <- lfa_get_detections()
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_get_detections()
+```
+
+
+
 ### `lfa_get_flag_path`
 
 Get the path to a flag file indicating the completion of a specific process.
@@ -594,6 +1089,100 @@ lfa_get_flag_path("data_processing")
 ```{r}
 #| eval: false
 lfa_get_flag_path(flag_name)
+```
+
+
+
+### `lfa_get_neighbor_paths`
+
+Get Paths to Neighbor GeoPackage Files
+
+
+#### Description
+
+This function retrieves the file paths to GeoPackage files containing neighbor information for each detection area.
+ The GeoPackage files are assumed to be named "neighbours.gpkg" and organized in a directory structure under the "data" folder.
+
+
+#### Value
+
+A character vector containing file paths to GeoPackage files for each detection area's neighbors.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Get paths to neighbor GeoPackage files for all areas
+paths <- lfa_get_neighbor_paths()
+
+# Print the obtained file paths
+print(paths)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_get_neighbor_paths()
+```
+
+
+
+### `lfa_get_species`
+
+Get a list of species from the data directory.
+
+
+#### Concept
+
+data retrieval functions
+
+
+#### Description
+
+This function retrieves a list of species by scanning the "data" directory
+ located in the current working directory.
+
+
+#### Keyword
+
+data
+
+
+#### References
+
+This function relies on the [`list.dirs`](#list.dirs) function for directory listing.
+
+
+#### Seealso
+
+[`list.dirs`](#list.dirs) 
+ 
+ Other data retrieval functions:
+ [`lfa_get_detections`](#lfagetdetections)
+
+
+#### Value
+
+A character vector containing the names of species found in the "data" directory.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Retrieve the list of species
+species_list <- lfa_get_species()
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_get_species()
 ```
 
 
@@ -851,6 +1440,263 @@ lfa_intersect_areas(ctg, tile_location, areas_sf)
 
 
 
+### `lfa_jsd_from_vec`
+
+Compute Jensen-Shannon Divergence from Vectors
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`x`     |     A numeric vector.
+`y`     |     A numeric vector.
+
+
+#### Description
+
+This function calculates the Jensen-Shannon Divergence (JSD) between two vectors.
+
+
+#### Value
+
+Jensen-Shannon Divergence between the density distributions of x and y.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+x <- rnorm(100)
+y <- rnorm(100, mean = 2)
+lfa_jsd_from_vec(x, y)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_jsd_from_vec(x, y)
+```
+
+
+
+### `lfa_jsd`
+
+Jensen-Shannon Divergence Calculation
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`p`     |     A numeric vector representing the probability distribution P.
+`q`     |     A numeric vector representing the probability distribution Q.
+`epsilon`     |     A small positive constant added to both P and Q to avoid logarithm of zero. Default is 1e-10.
+
+
+#### Description
+
+This function calculates the Jensen-Shannon Divergence (JSD) between two probability distributions P and Q.
+
+
+#### Details
+
+The JSD is computed using the Kullback-Leibler Divergence (KLD) as follows:
+ `sum((p * log((p + epsilon) / (m + epsilon)) + q * log((q + epsilon) / (m + epsilon))) / 2)` 
+ where `m = (p + q) / 2` .
+
+
+#### Seealso
+
+[`kld`](#kld) , [`sum`](#sum) , [`log`](#log)
+
+
+#### Value
+
+A numeric value representing the Jensen-Shannon Divergence between P and Q.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Calculate JSD between two probability distributions
+p_distribution <- c(0.2, 0.3, 0.5)
+q_distribution <- c(0.1, 0, 0.9)
+jsd_result <- jsd(p_distribution, q_distribution)
+print(jsd_result)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_jsd(p, q, epsilon = 1e-10)
+```
+
+
+
+### `lfa_kld_from_vec`
+
+Compute Kullback-Leibler Divergence from Vectors
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`x`     |     A numeric vector.
+`y`     |     A numeric vector.
+
+
+#### Description
+
+This function calculates the Kullback-Leibler Divergence (KLD) between two vectors.
+
+
+#### Value
+
+Kullback-Leibler Divergence between the density distributions of x and y.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+x <- rnorm(100)
+y <- rnorm(100, mean = 2)
+lfa_kld_from_vec(x, y)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_kld_from_vec(x, y)
+```
+
+
+
+### `lfa_kld`
+
+Kullback-Leibler Divergence Calculation
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`p`     |     A numeric vector representing the probability distribution P.
+`q`     |     A numeric vector representing the probability distribution Q.
+`epsilon`     |     A small positive constant added to both P and Q to avoid logarithm of zero. Default is 1e-10.
+
+
+#### Description
+
+This function calculates the Kullback-Leibler Divergence (KLD) between two probability distributions P and Q.
+
+
+#### Details
+
+The KLD is computed using the formula:
+ `sum(p * log((p + epsilon) / (q + epsilon)))` 
+ This avoids issues when the denominator (Q) contains zero probabilities.
+
+
+#### Seealso
+
+[`sum`](#sum) , [`log`](#log)
+
+
+#### Value
+
+A numeric value representing the Kullback-Leibler Divergence between P and Q.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Calculate KLD between two probability distributions
+p_distribution <- c(0.2, 0.3, 0.5)
+q_distribution <- c(0.1, 0, 0.9)
+kld_result <- kld(p_distribution, q_distribution)
+print(kld_result)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_kld(p, q, epsilon = 1e-10)
+```
+
+
+
+### `lfa_ks_test`
+
+Kolmogorov-Smirnov Test Wrapper Function
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`x`     |     A numeric vector representing the first sample.
+`y`     |     A numeric vector representing the second sample.
+`output_variable`     |     A character string specifying the output variable to extract from the ks.test result. Default is "p.value". Other possible values include "statistic" and "alternative".
+`...`     |     Additional arguments to be passed to the ks.test function.
+
+
+#### Description
+
+This function serves as a wrapper for the Kolmogorov-Smirnov (KS) test between two samples.
+
+
+#### Details
+
+The function uses the ks.test function to perform a two-sample KS test and returns the specified output variable.
+ The default output variable is the p-value. Other possible output variables include "statistic" and "alternative".
+
+
+#### Seealso
+
+[`ks.test`](#ks.test)
+
+
+#### Value
+
+A numeric value representing the specified output variable from the KS test result.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Perform KS test and extract the p-value
+result <- lfa_ks_test(sample1, sample2)
+print(result)
+
+# Perform KS test and extract the test statistic
+result_statistic <- lfa_ks_test(sample1, sample2, output_variable = "statistic")
+print(result_statistic)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_ks_test(x, y, output_variable = "p.value", ...)
+```
+
+
+
 ### `lfa_load_ctg_if_not_present`
 
 Loading the catalog if it is not present
@@ -1006,6 +1852,72 @@ lfa_merge_and_save("data_files", "merged_output")
 ```{r}
 #| eval: false
 lfa_merge_and_save(input_directory, output_name)
+```
+
+
+
+### `lfa_random_forest`
+
+Random Forest Classifier with Leave-One-Out Cross-Validation
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`tree_data`     |     A data frame containing the tree data, including the response variable ("specie") and predictor variables.
+`excluded_input_columns`     |     A character vector specifying columns to be excluded from predictor variables.
+`response_variable`     |     The response variable to be predicted (default is "specie").
+`seed`     |     An integer to set the seed for reproducibility (default is 123).
+`...`     |     Additional parameters to be passed to the randomForest function.
+
+
+#### Description
+
+This function performs a random forest classification using leave-one-out cross-validation for each area in the input tree data.
+ It returns a list containing various results, including predicted species, confusion matrix, accuracy, and the formula used for modeling.
+
+
+#### Value
+
+A list containing the following elements:
+  
+
+*   `predicted_species_absolute` : A data frame with observed and predicted species for each area. 
+
+*   `predicted_species_relative` : A data frame wit the relative precictions per speices and areas, normalized by the total predictions in each area. 
+
+*   `confusion_matrix` : A confusion matrix showing the counts of predicted vs. observed species. 
+
+*   `accuracy` : The accuracy of the model, calculated as the sum of diagonal elements in the confusion matrix divided by the total count. 
+
+*   `formula` : The formula used for modeling.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Assuming tree_data is defined
+results <- lfa_random_forest(tree_data, excluded_input_columns = c("column1", "column2"))
+
+# Print the list of results
+print(results)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_random_forest(
+  tree_data,
+  excluded_input_columns,
+  response_variable = "specie",
+  ntree = 100,
+  seed = 123,
+  ...
+)
 ```
 
 
@@ -1189,6 +2101,171 @@ lfa_read_area_as_catalog("beech", "location1")
 ```{r}
 #| eval: false
 lfa_read_area_as_catalog(specie, location_name)
+```
+
+
+
+### `lfa_run_test_asymmetric`
+
+Asymmetric Pairwise Test for Categories
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`data`     |     A data frame containing the relevant columns.
+`data_column`     |     A character string specifying the column containing the numerical data.
+`category_column`     |     A character string specifying the column containing the categorical variable.
+`test_function`     |     A function used to perform the pairwise test between two sets of data. It should accept two vectors of numeric data and additional parameters specified by `...` . The function should return a numeric value representing the test result.
+`...`     |     Additional parameters to be passed to the `test_function` .
+
+
+#### Description
+
+This function performs an asymmetric pairwise test for categories using a user-defined `test_function` .
+
+
+#### Details
+
+The function calculates the test results for each unique combination of categories using the specified
+ `test_function` . The resulting table is asymmetric, containing the test results for comparisons
+ from the rows to the columns.
+
+
+#### Seealso
+
+[`outer`](#outer) , [`Vectorize`](#vectorize)
+
+
+#### Value
+
+A data frame representing the results of the asymmetric pairwise tests between categories.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Define a custom test function
+custom_test_function <- function(x, y) {
+# Your test logic here
+# Return a numeric result
+return(mean(x) - mean(y))
+}
+
+# Perform an asymmetric pairwise test
+result <- lfa_run_test_asymmetric(your_data, "numeric_column", "category_column", custom_test_function)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_run_test_asymmetric(data, data_column, category_column, test_function, ...)
+```
+
+
+
+### `lfa_run_test_symmetric`
+
+Symmetric Pairwise Test for Categories
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`data`     |     A data frame containing the relevant columns.
+`data_column`     |     A character string specifying the column containing the numerical data.
+`category_column`     |     A character string specifying the column containing the categorical variable.
+`test_function`     |     A function used to perform the pairwise test between two sets of data. It should accept two vectors of numeric data and additional parameters specified by `...` . The function should return a numeric value representing the test result.
+`...`     |     Additional parameters to be passed to the `test_function` .
+
+
+#### Description
+
+This function performs a symmetric pairwise test for categories using a user-defined `test_function` .
+
+
+#### Details
+
+The function calculates the test results for each unique combination of categories using the specified
+ `test_function` . The resulting table is symmetric, containing the test results for comparisons
+ from the rows to the columns. The upper triangle of the matrix is filled with `NA` to avoid duplicate results.
+
+
+#### Seealso
+
+[`outer`](#outer) , [`Vectorize`](#vectorize)
+
+
+#### Value
+
+A data frame representing the results of the symmetric pairwise tests between categories.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Define a custom test function
+custom_test_function <- function(x, y) {
+# Your test logic here
+# Return a numeric result
+return(mean(x) - mean(y))
+}
+
+# Perform a symmetric pairwise test
+result <- lfa_run_test_symmetric(your_data, "numeric_column", "category_column", custom_test_function)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_run_test_symmetric(data, data_column, category_column, test_function, ...)
+```
+
+
+
+### `lfa_save_all_neighbours`
+
+Save Neighbors for All Areas
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`n`     |     The number of nearest trees to find for each tree (default is 100).
+
+
+#### Description
+
+This function iterates through all detection areas, finds the n nearest trees for each tree,
+ and saves the result to a GeoPackage file for each area.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Save neighbors for all areas with default value (n=100)
+lfa_save_all_neighbours()
+
+# Save neighbors for all areas with a specific value of n (e.g., n=50)
+lfa_save_all_neighbours(n = 50)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_save_all_neighbours(n = 100)
 ```
 
 
