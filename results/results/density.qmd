@@ -1,0 +1,17 @@
+## Density of forest patches
+Examining densities provides valuable insights into identifying the dominant species within patches. Spruce stands out as the densest species, surpassing all other patches. Following closely in density is Pine, as depicted in Figure 1 (@fig-density-bar).
+
+Beech and Oak exhibit similar density levels, with Beech consistently denser across all patches. When comparing the highest density patches for each species, Beech consistently outpaces Oak. While Oak is slightly less dense overall ($8.354499 \times 10^{-3} \frac{1}{m^2}$) than Beech ($8.727781 \times 10^{-3} \frac{1}{m^2}$), the distinction in density remains noticeable.
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| results: hide
+#| fig-cap: Barplot of the densitys of all patches (#detected trees/area of patch). Colorized by the dominant tree species of each patch.
+#| label: fig-density-bar
+library(units)
+lfa::lfa_calculate_patch_density() |>
+  lfa::lfa_create_grouped_bar_plot(grouping_var = "species", value_col = "density", label_col = "name")
+```
+In summary, our findings indicate that the density of each patch proves highly effective in distinguishing dominant species. Furthermore, the differentiation between conifers (Pine and Spruce) and deciduous trees (Beech and Oak) based on density aligns with patterns observed in the number of return points per detected tree. While distinguishing within conifers is straightforward, discerning between the deciduous tree species Beech and Oak, is possible but poses a moderate challenge.
