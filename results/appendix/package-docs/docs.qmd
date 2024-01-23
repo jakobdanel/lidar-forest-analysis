@@ -1,3 +1,53 @@
+### `lfa_calculate_patch_density`
+
+Calculate patch density for specified areas based on detection data
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`areas_location`     |     The file path to a shapefile containing spatial polygons representing the areas for which patch density needs to be calculated. Default is "research_areas.shp".
+`detections`     |     A data frame containing detection information, where each row represents a detection and includes the 'area' column specifying the corresponding area. Default is obtained using lfa_get_detections().
+
+
+#### Description
+
+This function calculates patch density for specified areas using detection data.
+ It reads the spatial polygons from a shapefile, computes the area size for each patch,
+ counts the number of detections in each patch, and calculates the patch density.
+
+
+#### Value
+
+A data frame with patch density information for each specified area.
+ Columns include 'name' (area name), 'geometry' (polygon geometry), 'area_size' (patch area size),
+ 'detections' (number of detections in the patch), and 'density' (computed patch density).
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Assuming you have a shapefile 'your_research_areas.shp' and detection data
+# from lfa_get_detections()
+density_data <- lfa_calculate_patch_density(areas_location = "your_research_areas.shp")
+print(density_data)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_calculate_patch_density(
+  areas_location = "research_areas.shp",
+  detections = lfa::lfa_get_detections()
+)
+```
+
+
+
 ### `lfa_capitalize_first_char`
 
 Capitalize First Character of a String
@@ -389,6 +439,141 @@ lfa_create_density_plots(
   xlims = NULL,
   ylims = NULL
 )
+```
+
+
+
+### `lfa_create_grouped_bar_plot`
+
+Create a barplot using ggplot2
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`df`     |     A data frame containing the relevant columns for the barplot.
+`value_column`     |     The column containing the values to be plotted.
+`label_column`     |     The column used for labeling the bars on the x-axis. Default is "name".
+`grouping_column`     |     The column used for grouping the bars. Default is "species".
+
+
+#### Description
+
+This function generates a barplot using ggplot2 based on the specified data frame columns.
+ The barplot displays the values from the specified column, grouped by another column.
+ The grouping can be further differentiated by color if desired.
+
+
+#### Value
+
+A ggplot2 barplot.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Assuming you have a data frame 'your_data_frame' with columns "name", "species", and "value"
+lfa_create_barplot(your_data_frame, value_column = "value", label_column = "name", grouping_column = "species")
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_create_grouped_bar_plot(data, grouping_var, value_col, label_col)
+```
+
+
+
+### `lfa_create_neighbor_mean_curves`
+
+Create neighbor mean curves for specified areas
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`neighbors`     |     A data frame containing information about neighbors, where each column represents a specific neighbor, and each row corresponds to an area.
+`use_avg`     |     Logical. If TRUE, the function computes average curves across all neighbors. If FALSE, it computes curves for individual neighbors.
+
+
+#### Description
+
+This function generates mean curves for a specified set of areas based on neighbor data.
+ The user can choose to compute mean curves for individual neighbors or averages across neighbors.
+
+
+#### Value
+
+A data frame with mean curves for each specified area.
+ Columns represent areas, and rows represent index values.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Assuming you have a data frame 'your_neighbors_data' with neighbor information
+mean_curves <- lfa_create_neighbor_mean_curves(your_neighbors_data, use_avg = TRUE)
+print(mean_curves)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_create_neighbor_mean_curves(neighbors, use_avg = FALSE)
+```
+
+
+
+### `lfa_create_plot_per_area`
+
+Create a line plot per area with one color per specie
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`data`     |     A data frame with numeric columns and a column named 'specie' for species information.
+
+
+#### Description
+
+This function takes a data frame containing numeric columns and creates a line plot
+ using ggplot2. Each line in the plot represents a different area, with one color per specie.
+
+
+#### Value
+
+A ggplot2 line plot.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+data <- data.frame(
+specie = rep(c("Species1", "Species2", "Species3"), each = 10),
+column1 = rnorm(30),
+column2 = rnorm(30),
+column3 = rnorm(30)
+)
+lfa_create_plot_per_area(data)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_create_plot_per_area(data)
 ```
 
 
