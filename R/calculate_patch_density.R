@@ -37,7 +37,7 @@ lfa_calculate_patch_density <- function(areas_location = "research_areas.shp",
 
   # Count the number of detections in each patch
   for (i in 1:nrow(patch_data)) {
-    patch_data[i, "detections"] <- nrow(detections[detections$area == patch_data[i, "name"], ])
+    patch_data[i, "detections"]$detections <- nrow(detections[detections$area == patch_data[i, "name"]$name, ])
   }
 
   # Calculate patch density
