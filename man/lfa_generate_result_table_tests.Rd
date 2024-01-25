@@ -30,4 +30,5 @@ result_table <- data.frame(
 formatted_table <- lfa_generate_result_table_tests(result_table)
 print(formatted_table)
 
+
 }

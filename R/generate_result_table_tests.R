@@ -20,7 +20,6 @@
 #' formatted_table <- lfa_generate_result_table_tests(result_table)
 #' print(formatted_table)
 #'
-#' @importFrom knitr kable
 #'
 #' @export
 lfa_generate_result_table_tests <- function(table, caption = "Table Caption") {
