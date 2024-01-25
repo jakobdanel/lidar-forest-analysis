@@ -18,10 +18,6 @@
 #' # Generate CHM and save it to a file
 #' chm <- lfa_chm(specie = "ExampleSpecies", area = "ExampleArea", res = 1.0, save_to_file = TRUE)
 #'
-#' @import lfa
-#' @importFrom lidR catalog_map
-#' @importFrom terra rast writeRaster
-#'
 #' @details
 #' The behavior of the function with different input parameters is as follows:
 #' - When a CHM file already exists at the specified path and `overwrite` is FALSE, the function loads the existing CHM and returns it.
