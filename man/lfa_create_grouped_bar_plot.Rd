@@ -4,9 +4,23 @@
 \alias{lfa_create_grouped_bar_plot}
 \title{Create a barplot using ggplot2}
 \usage{
-lfa_create_grouped_bar_plot(data, grouping_var, value_col, label_col)
+lfa_create_grouped_bar_plot(
+  data,
+  grouping_var,
+  value_col,
+  label_col,
+  xlab = "Name of Patch",
+  ylab = "Density",
+  title = "Tree density across the different patches, grouped by specie"
+)
 }
 \arguments{
+\item{xlab}{Label for x-Axis.}
+
+\item{ylab}{Label for y-Axis.}
+
+\item{title}{Title of the plot.}
+
 \item{df}{A data frame containing the relevant columns for the barplot.}
 
 \item{value_column}{The column containing the values to be plotted.}
