@@ -14,4 +14,4 @@ jobs:
         uses: githubocto/repo-visualizer@main
         with:
           excluded_paths: "results/_freeze"
-          file_colors: '{"R":"blue","Rd":"red","qmd":"red"}'
+          file_colors: '{"R":"#a6cee3","Rd":"#1f78b4","bib":"#b2df8a","gitignore":"#33a02c","man":"#fb9a99","md":"#e31a1c","py":"#fdbf6f","qmd":"#ff7f00","sh":"#cab2d6","svg":"#6a3d9a","xml":"#ffff99","yml":"#b15928"}'
