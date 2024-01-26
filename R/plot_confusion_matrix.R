@@ -49,7 +49,7 @@ lfa_plot_confusion_matrix <- function(conf_matrix) {
       plot.title = element_text(size = 14, face = "bold")
     ) +
     scale_x_discrete(limits = levels(factor(conf_matrix_df$Var1))) +
-    scale_y_discrete(limits = levels(factor(conf_matrix_df$Var2))) +
+    scale_y_discrete(limits = rev(levels(factor(conf_matrix_df$Var2)))) +
     theme(legend.position = "none")
 
   return(plot)
