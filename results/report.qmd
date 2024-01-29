@@ -4,7 +4,7 @@ output:
   pdf_document:
     latex_engine: xelatex
 toc: true
-toc-depth: 2
+toc-depth: 3
 toc-title: Contents
 number-sections: true
 number-depth: 3
@@ -42,9 +42,15 @@ This report documents the analysis of forest data for different tree species.
 {{< include results/researched-areas.qmd >}}
 {{< include results/z-distribution.qmd >}}
 {{< include results/number_of_returns.qmd >}}
+{{< include results/nearest-neighbors.qmd >}}
 {{< include results/density.qmd >}}
+{{< include results/chm.qmd >}}
 
 
+{{< include results/rf/height.qmd >}}
+{{< include results/rf/neighbors.qmd >}}
+{{< include results/rf/returns_per_tree.qmd >}}
+{{< include results/rf/patch-level.qmd >}}
 
 
 
