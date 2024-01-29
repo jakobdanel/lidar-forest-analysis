@@ -48,6 +48,58 @@ lfa_calculate_patch_density(
 
 
 
+### `lfa_calculate_rf_metrics`
+
+Calculate Precision and Recall Metrics for Random Forest Classification
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`conf_matrix`     |     Confusion matrix obtained from a Random Forest classification.
+
+
+#### Description
+
+This function calculates precision and recall metrics for each class based on the provided confusion matrix from a Random Forest classification.
+
+
+#### Details
+
+The function calculates precision and recall metrics for each class based on the confusion matrix obtained from a Random Forest classification.
+
+
+#### Seealso
+
+[`lfa_precision_per_class`](#lfaprecisionperclass) , [`lfa_recall_per_class`](#lfarecallperclass)
+
+
+#### Value
+
+A data frame containing precision and recall metrics for each class.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Example confusion matrix from a Random Forest classification
+rf_cm <- table(predicted = c("A", "B", "A", "B"), actual = c("A", "A", "B", "B"))
+# Calculate precision and recall metrics
+rf_metrics_df <- lfa_calculate_rf_metrics(rf_cm)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_calculate_rf_metrics(conf_matrix)
+```
+
+
+
 ### `lfa_capitalize_first_char`
 
 Capitalize First Character of a String
@@ -172,6 +224,73 @@ lfa_check_flag("data_processing")
 ```{r}
 #| eval: false
 lfa_check_flag(flag_name)
+```
+
+
+
+### `lfa_chm`
+
+Create Canopy Height Model (CHM) from Lidar Data
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`specie`     |     Character string indicating the species name.
+`area`     |     Character string indicating the specific area or location.
+`res`     |     Numeric value indicating the spatial resolution of the CHM. Default is 0.5.
+`save_to_file`     |     Logical. If TRUE, the generated CHM will be saved to a GeoTIFF file. Default is TRUE.
+`overwrite`     |     Logical. If TRUE, existing CHM file will be overwritten. Default is FALSE.
+`...`     |     Additional arguments to be passed to the underlying functions, such as lidR::catalog_map.
+
+
+#### Description
+
+This function generates a Canopy Height Model (CHM) from Lidar data using the lidR package.
+
+
+#### Details
+
+The behavior of the function with different input parameters is as follows:
+  
+
+*  When a CHM file already exists at the specified path and `overwrite` is FALSE, the function loads the existing CHM and returns it. 
+
+*  If the CHM file does not exist or `overwrite` is TRUE, the function processes Lidar data using `lfa_rasterize_chunk` and creates a CHM. 
+
+*  The spatial resolution of the CHM can be controlled with the `res` parameter. 
+
+*  If `save_to_file` is TRUE, the generated CHM will be saved to a GeoTIFF file.
+
+
+#### Seealso
+
+[`lfa_read_area_as_catalog`](#lfareadareaascatalog) , [`catalog_map`](#catalogmap) , [`terra::rast`](#terra::rast) , [`terra::writeRaster`](#terra::writeraster)
+
+
+#### Value
+
+A raster layer representing the Canopy Height Model (CHM).
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Generate CHM for a specific species and area
+chm <- lfa_chm(specie = "ExampleSpecies", area = "ExampleArea", res = 1.0)
+
+# Generate CHM and save it to a file
+chm <- lfa_chm(specie = "ExampleSpecies", area = "ExampleArea", res = 1.0, save_to_file = TRUE)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_chm(specie, area, res = 0.5, save_to_file = TRUE, overwrite = FALSE, ...)
 ```
 
 
@@ -452,6 +571,9 @@ Create a barplot using ggplot2
 
 Argument      |Description
 ------------- |----------------
+`xlab`     |     Label for x-Axis.
+`ylab`     |     Label for y-Axis.
+`title`     |     Title of the plot.
 `df`     |     A data frame containing the relevant columns for the barplot.
 `value_column`     |     The column containing the values to be plotted.
 `label_column`     |     The column used for labeling the bars on the x-axis. Default is "name".
@@ -483,7 +605,15 @@ lfa_create_barplot(your_data_frame, value_column = "value", label_column = "name
 
 ```{r}
 #| eval: false
-lfa_create_grouped_bar_plot(data, grouping_var, value_col, label_col)
+lfa_create_grouped_bar_plot(
+  data,
+  grouping_var,
+  value_col,
+  label_col,
+  xlab = "Name of Patch",
+  ylab = "Density",
+  title = "Tree density across the different patches, grouped by specie"
+)
 ```
 
 
@@ -574,6 +704,65 @@ lfa_create_plot_per_area(data)
 ```{r}
 #| eval: false
 lfa_create_plot_per_area(data)
+```
+
+
+
+### `lfa_create_ppp_from_area`
+
+Create a point pattern from tree detections in a specified area for a given species.
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`species_identifier`     |     A character string specifying the target species for which the point pattern is to be generated.
+`area_identifier`     |     A character string specifying the target area for which the point pattern is to be generated.
+
+
+#### Description
+
+This function generates a point pattern from tree detections for a specific species
+ within a defined area. It filters the detections using the provided `species_identifier` 
+ and `area_identifier` parameters. The area is defined by a shapefile named
+ "research_areas.shp," and the resulting point pattern is created within the specified area.
+
+
+#### Keyword
+
+data
+
+
+#### Seealso
+
+[`lfa_get_detections`](#lfagetdetections) , [`sf::st_transform`](#sf::sttransform) ,
+ [`sf::st_union`](#sf::stunion) , [`spatstat.geom::as.owin`](#spatstat.geom::as.owin) ,
+ [`spatstat.geom::as.ppp`](#spatstat.geom::as.ppp)
+
+
+#### Value
+
+A point pattern representing tree detections for the specified species
+ within the defined area.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+lfa_create_ppp_from_area(species_identifier = "SpeciesA", area_identifier = "Area1")
+
+# Create a point pattern for a specific species in a given area
+pp <- lfa_create_ppp_from_area(species_identifier = "SpeciesA", area_identifier = "Area1")
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_create_ppp_from_area(species_identifier, area_identifier)
 ```
 
 
@@ -2041,6 +2230,107 @@ lfa_merge_and_save(input_directory, output_name)
 
 
 
+### `lfa_plot_confusion_matrix`
+
+Plot Confusion Matrix
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`conf_matrix`     |     Confusion matrix, typically obtained from classification evaluation.
+
+
+#### Description
+
+This function generates a heatmap plot of a confusion matrix using ggplot2.
+
+
+#### Details
+
+The function takes a confusion matrix as input and generates a heatmap plot using ggplot2.
+ The plot represents the relationship between the predicted and actual classes, with cell colors indicating the frequency of each combination.
+ Additionally, the plot includes labels for accuracy and kappa statistics based on the confusion matrix.
+
+
+#### Value
+
+A ggplot object representing the confusion matrix heatmap plot.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Example confusion matrix
+cm <- table(predicted = c("A", "B", "A", "B"), actual = c("A", "A", "B", "B"))
+# Plot confusion matrix
+lfa_plot_confusion_matrix(cm)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_plot_confusion_matrix(conf_matrix)
+```
+
+
+
+### `lfa_precision_per_class`
+
+Calculate Precision per Class from Confusion Matrix
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`confusion_matrix`     |     Confusion matrix obtained from a classification evaluation.
+
+
+#### Description
+
+This function calculates precision for each class based on the provided confusion matrix.
+
+
+#### Details
+
+Precision is a measure of the accuracy of the positive predictions for a specific class. It is calculated as the ratio of true positives to the sum of true positives and false positives.
+
+
+#### Seealso
+
+[`lfa_recall_per_class`](#lfarecallperclass) , [`lfa_f1_score_per_class`](#lfaf1scoreperclass)
+
+
+#### Value
+
+A numeric vector representing precision for each class.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Example confusion matrix
+cm <- table(predicted = c("A", "B", "A", "B"), actual = c("A", "A", "B", "B"))
+# Calculate precision per class
+precision_vector <- lfa_precision_per_class(cm)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_precision_per_class(confusion_matrix)
+```
+
+
+
 ### `lfa_random_forest`
 
 Random Forest Classifier with Leave-One-Out Cross-Validation
@@ -2103,6 +2393,55 @@ lfa_random_forest(
   seed = 123,
   ...
 )
+```
+
+
+
+### `lfa_rasterize_chunk`
+
+Rasterize Lidar Chunk
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`chunk`     |     Lidar chunk object to be rasterized.
+`...`     |     Additional arguments to be passed to the underlying lidR::rasterize_canopy function.
+
+
+#### Description
+
+This function rasterizes a Lidar chunk to generate a raster representation of the canopy.
+
+
+#### Details
+
+The function takes a Lidar chunk as input and uses lidR::rasterize_canopy to generate a raster representation of the canopy.
+ Additional arguments can be passed to customize the rasterization process.
+
+
+#### Value
+
+A raster layer representing the rasterized canopy.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Example Lidar chunk
+lidar_chunk <- readLAS("lidar_data.las", select = "xyz")
+# Rasterize Lidar chunk
+rasterized_canopy <- lfa_rasterize_chunk(lidar_chunk)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_rasterize_chunk(chunk, ...)
 ```
 
 
@@ -2286,6 +2625,58 @@ lfa_read_area_as_catalog("beech", "location1")
 ```{r}
 #| eval: false
 lfa_read_area_as_catalog(specie, location_name)
+```
+
+
+
+### `lfa_recall_per_class`
+
+Calculate Recall per Class from Confusion Matrix
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`confusion_matrix`     |     Confusion matrix obtained from a classification evaluation.
+
+
+#### Description
+
+This function calculates recall for each class based on the provided confusion matrix.
+
+
+#### Details
+
+Recall (Sensitivity or True Positive Rate) is a measure of the ability of a classification model to identify all relevant instances. It is calculated as the ratio of true positives to the sum of true positives and false negatives.
+
+
+#### Seealso
+
+[`lfa_precision_per_class`](#lfaprecisionperclass)
+
+
+#### Value
+
+A numeric vector representing recall for each class.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Example confusion matrix
+cm <- table(predicted = c("A", "B", "A", "B"), actual = c("A", "A", "B", "B"))
+# Calculate recall per class
+recall_vector <- lfa_recall_per_class(cm)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_recall_per_class(confusion_matrix)
 ```
 
 
@@ -2533,6 +2924,122 @@ lfa_set_flag("data_processing")
 ```{r}
 #| eval: false
 lfa_set_flag(flag_name)
+```
+
+
+
+### `lfa_visit_all_areas`
+
+Visit All Areas and Apply Preprocessing Function
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`preprocessing_function`     |     The preprocessing function to be applied to each area. It should take specie, area, and additional parameters as inputs.
+`areas`     |     Data frame containing information about different areas, including columns "specie" and "area."
+`...`     |     Additional arguments to be passed to the preprocessing function.
+
+
+#### Description
+
+This function iterates over all specified areas and applies a preprocessing function to each one.
+
+
+#### Details
+
+The function iterates over all areas specified in the 'areas' parameter, and for each area, it applies the provided preprocessing function.
+ The 'areas' parameter is expected to be a data frame with columns "specie" and "area," containing information about different areas to visit.
+ Additional arguments passed via '...' are forwarded to the preprocessing function.
+
+
+#### Seealso
+
+[`lfa_get_all_areas`](#lfagetallareas)
+
+
+#### Value
+
+A list containing the results of applying the preprocessing function to each area.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Example preprocessing function
+my_preprocessing_function <- function(specie, area, ...) {
+# Your preprocessing logic here
+# Return the result
+return(result)
+}
+# Visit all areas and apply the preprocessing function
+results_list <- lfa_visit_all_areas(my_preprocessing_function)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_visit_all_areas(preprocessing_function, areas = lfa_get_all_areas(), ...)
+```
+
+
+
+### `lfa_visualize_rf_metrics`
+
+Visualize Precision and Recall Metrics for Random Forest Classification
+
+
+#### Arguments
+
+Argument      |Description
+------------- |----------------
+`metrics_df`     |     Data frame containing precision and recall metrics for each class.
+
+
+#### Description
+
+This function creates a bar plot to visualize precision and recall metrics for each class obtained from a Random Forest classification.
+
+
+#### Details
+
+The function creates a bar plot to visualize precision and recall metrics for each class obtained from a Random Forest classification.
+
+
+#### Seealso
+
+[`lfa_calculate_rf_metrics`](#lfacalculaterfmetrics)
+
+
+#### Value
+
+A ggplot object representing the bar plot of precision and recall metrics.
+
+
+#### Examples
+
+```{r}
+#| eval: false
+# Example data frame containing precision and recall metrics
+example_metrics_df <- data.frame(
+Class = c("ClassA", "ClassB"),
+Precision = c(0.85, 0.92),
+Recall = c(0.78, 0.88)
+)
+# Visualize precision and recall metrics
+lfa_visualize_rf_metrics(example_metrics_df)
+```
+
+
+#### Usage
+
+```{r}
+#| eval: false
+lfa_visualize_rf_metrics(metrics_df)
 ```
 
 
