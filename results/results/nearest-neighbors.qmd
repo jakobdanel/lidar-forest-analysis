@@ -93,7 +93,7 @@ Despite the uniformity in average results, the issue of outliers persists, as ev
 #| label: fig-density-avg-nearest
 #| code-fold: true
 #| fig-cap: Density plot of the average distance to the nearest neighbor (n=100) distribution across all patches grouped by the dominant species.
-lfa::lfa_create_density_plots(neighbors,value_column = "avg",category_column1 = "area",category_column2 = "specie", title = "Density plots for the avergae of 100 nearest neighbors across species and areas", xlims = c(25,60))
+lfa::lfa_create_density_plots(neighbors,value_column = "avg",category_column1 = "area",category_column2 = "specie", title = "Density plots for the average of 100 nearest neighbors", xlims = c(25,60))
 ```
 
 
