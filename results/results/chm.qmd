@@ -1,0 +1,57 @@
+## Canopy Height Model
+
+```{r}
+#| warning: false
+#| results: hide
+#| code-fold: true
+chms <- lfa::lfa_visit_all_areas(lfa::lfa_chm)
+```
+
+```{r}
+#| warning: false
+#| results: hide
+#| code-fold: true
+patches <- lfa::lfa_get_all_areas()
+patches$chm_mean = NA
+patches$chm_var = NA
+patches$chm_median = NA
+for (area_key in names(chms)) {
+  area <- chms[area_key]
+  area[[area_key]] |> as.vector() -> vec
+  patches[patches$area == area_key, "chm_mean"] <-
+    mean(vec, na.rm = T)
+  patches[patches$area == area_key, "chm_var"] <-
+    var(vec, na.rm = T)
+  patches[patches$area == area_key, "chm_median"] <-
+    median(vec, na.rm = T)
+  
+}
+```
+
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Mean Canopy Height across all patches colored by the dominant specie of each patch.
+#| label: fig-chm-mean
+lfa::lfa_create_grouped_bar_plot(patches,"specie","chm_mean","area",ylab = "Mean", title = "Mean Canopy Height")
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Variance Canopy Height across all patches colored by the dominant specie of each patch.
+#| label: fig-chm-var
+lfa::lfa_create_grouped_bar_plot(patches,"specie","chm_var","area",ylab = "Variance", title = "Variance of Canopy Height")
+```
+
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Median Canopy Height across all patches colored by the dominant specie of each patch.
+#| label: fig-chm-median
+lfa::lfa_create_grouped_bar_plot(patches,"specie","chm_median","area",ylab = "Median", title = "Median Canopy Height")
+```
