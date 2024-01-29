@@ -1,0 +1,26 @@
+## Predicting species with random forest
+
+### Use height
+
+```{r}
+detections <- lfa::lfa_get_detections()
+density <- lfa::lfa_calculate_patch_density(detections = detections)
+colnames(density) <- c("id","specie","area","geometry","area_size","detections","density") 
+detections <- dplyr::left_join(detections,density |> as.data.frame(), by= c("area","specie"))
+excluded_cols <- c("treeID","geom","area","specie","id","geometry","area_size","detections", "density")
+```
+
+```{r, cache=TRUE}
+
+data <- lfa::lfa_random_forest(tree_data = detections, excluded_input_columns = excluded_cols)
+```
+
+```{r}
+cm <- data$confusion_matrix |> caret::confusionMatrix()
+lfa::lfa_plot_confusion_matrix(cm)
+```
+
+```{r}
+data$confusion_matrix |> lfa::lfa_calculate_rf_metrics() |> lfa::lfa_visualize_rf_metrics()
+```
+

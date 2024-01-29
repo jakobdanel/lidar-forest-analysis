@@ -1,0 +1,35 @@
+
+### LiDAR point cloud returns per Tree
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| results: hide
+returns <- lfa::lfa_count_returns_all_areas()
+excluded_cols = c("Var1","specie","area")
+```
+
+```{r, cache=TRUE}
+#| code-fold: true
+#| warning: false
+#| results: hide
+data <- lfa::lfa_random_forest(tree_data = returns, excluded_input_columns = excluded_cols,response_variable = "specie")
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| label: fig-cm-returns
+#| fig-cap: Confusion Matrix of randomForest on returns per Tree.
+cm <- data$confusion_matrix |> caret::confusionMatrix()
+lfa::lfa_plot_confusion_matrix(cm)
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| label: fig-pr-returns
+#| fig-cap: Class wise precision and recall for randomForest-Classification with LiDAR returns per tree. 
+data$confusion_matrix |> lfa::lfa_calculate_rf_metrics() |> lfa::lfa_visualize_rf_metrics()
+```
+

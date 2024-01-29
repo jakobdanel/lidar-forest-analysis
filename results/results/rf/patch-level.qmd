@@ -1,0 +1,84 @@
+
+### Train with patch level information
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| results: hide
+chms <- lfa::lfa_visit_all_areas(lfa::lfa_chm)
+patches <- lfa::lfa_get_all_areas()
+patches$chm_mean = NA
+patches$chm_var = NA
+patches$chm_median = NA
+for (area_key in names(chms)) {
+  area <- chms[area_key]
+  area[[area_key]] |> as.vector() -> vec
+  patches[patches$area == area_key, "chm_mean"] <-
+    mean(vec, na.rm = T)
+  patches[patches$area == area_key, "chm_var"] <-
+    var(vec, na.rm = T)
+  patches[patches$area == area_key, "chm_median"] <-
+    median(vec, na.rm = T)
+  
+}
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| results: hide
+neighbors <- lfa::lfa_get_neighbor_paths() |> lfa::lfa_combine_sf_obj(lfa::lfa_get_all_areas())
+```
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| results: hide
+detections <- lfa::lfa_get_detections()
+density <- lfa::lfa_calculate_patch_density(detections = detections)
+colnames(density) <- c("id","specie","area","geometry","area_size","detections","density")
+detections <- dplyr::left_join(detections,density |> as.data.frame(),by=c("area","specie"))
+detections <- dplyr::left_join(detections,patches, by = c("area","specie"))
+
+detections <- sf::st_join(detections, neighbors, join = sf::st_within)
+
+detections$treeID.x = NULL
+names(detections)[names(detections) == 'treeID.y'] <- 'treeID'
+
+detections$Z.x = NULL
+names(detections)[names(detections) == 'Z.y'] <- 'Z'
+
+detections$area.x = NULL
+names(detections)[names(detections) == 'area.y'] <- 'area'
+
+detections$specie.x = NULL
+names(detections)[names(detections) == 'specie.y'] <- 'specie'
+
+excluded_cols = c("treeID","geom","area","specie","id","geometry","area_size","detections","geometry")
+```
+
+```{r, cache=TRUE}
+#| code-fold: true
+#| warning: false
+#| results: hide
+data <- lfa::lfa_random_forest(tree_data = detections, excluded_input_columns = excluded_cols,response_variable = "specie")
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| label: fig-cm-patch
+#| fig-cap: Confusion Matrix of randomForest on returns per Tree.
+cm <- data$confusion_matrix |> caret::confusionMatrix()
+lfa::lfa_plot_confusion_matrix(cm)
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| label: fig-pr-patch
+#| fig-cap: Class wise precision and recall for randomForest-Classification with LiDAR returns per tree. 
+data$confusion_matrix |> lfa::lfa_calculate_rf_metrics() |> lfa::lfa_visualize_rf_metrics()
+```
+

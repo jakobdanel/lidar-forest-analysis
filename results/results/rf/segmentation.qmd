@@ -1,0 +1,64 @@
+
+### Segmentation
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| results: hide
+data <- sf::st_read("data/tree_properties.gpkg")
+detections <- lfa::lfa_get_detections()
+neighbors <- lfa::lfa_get_neighbor_paths() |> lfa::lfa_combine_sf_obj(lfa::lfa_get_all_areas())
+```
+```{r}
+#| code-fold: true
+#| warning: false
+#| results: hide
+combined <- sf::st_join(data,detections,join = sf::st_within)
+
+combined$Z.x = NULL
+names(combined)[names(combined) == 'Z.y'] <- 'Z'
+
+combined$treeID.segmentation <- NULL
+
+combined[["density"]][is.na(combined[["density"]])] <- -1
+combined[["Z.mean"]][is.na(combined[["Z.mean"]])] <- -1
+combined[["Z.var"]][is.na(combined[["Z.var"]])] <- -1
+combined[["Intensity.mean"]][is.na(combined[["Intensity.mean"]])] <- -1
+combined[["Intensity.var"]][is.na(combined[["Intensity.var"]])] <- -1
+combined[["number_of_returns"]][is.na(combined[["number_of_returns"]])] <- -1
+combined[["tree_area"]][is.na(combined[["tree_area"]])] <- -1
+
+neighbors$treeID = NULL
+neighbors$Z = NULL
+neighbors$area = NULL
+neighbors$specie = NULL
+
+combined = sf::st_join(combined, neighbors, sf::st_within)
+excluded_cols <- c("Z.x", "treeID.detection","treeID.segmentation","name_las_file","treeID","area","specie","geom")
+
+```
+
+```{r, cache=TRUE}
+#| code-fold: true
+#| warning: false
+#| results: hide
+data <- lfa::lfa_random_forest(tree_data = combined, excluded_input_columns = excluded_cols,response_variable = "specie")
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Confusion Matrix of randomForest with all parameters derived from tree level.
+#| label: fig-cm-tree-level
+cm <- data$confusion_matrix |> caret::confusionMatrix()
+lfa::lfa_plot_confusion_matrix(cm)
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Precsion and Recall of randomForest with all parameters derived from tree level.
+#| label: fig-pr-tree-level
+data$confusion_matrix |> lfa::lfa_calculate_rf_metrics() |> lfa::lfa_visualize_rf_metrics()
+```
+

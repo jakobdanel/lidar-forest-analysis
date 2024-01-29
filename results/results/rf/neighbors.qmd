@@ -1,0 +1,39 @@
+
+### Use neighbors and height
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| results: hide
+detections <- lfa::lfa_get_detections()
+neighbors <- lfa::lfa_get_neighbor_paths() |> lfa::lfa_combine_sf_obj(lfa::lfa_get_all_areas())
+neighbors <- sf::st_join(neighbors,detections, join = sf::st_within)
+names(neighbors)[names(neighbors) == 'specie.x'] <- 'specie'
+names(neighbors)[names(neighbors) == 'area.x'] <- 'area'
+excluded_cols <- c("area.x","specie.x","treeID.y","Z.y","area.y","specie.y","geom","treeID.x","Z.x")
+```
+
+```{r, cache=TRUE}
+#| code-fold: true
+#| warning: false
+#| results: hide
+data <- lfa::lfa_random_forest(tree_data = neighbors, excluded_input_columns = excluded_cols,response_variable = "specie")
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| label: fig-cm-neighbors
+#| fig-cap: Confusion Matrix of randomForest on the distance to 100 nearest neighbors.
+cm <- data$confusion_matrix |> caret::confusionMatrix()
+lfa::lfa_plot_confusion_matrix(cm)
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| label: fig-pr-neighbors
+#| fig-cap: Class wise precision and recall for randomForest-Classification with distance to the 100 nearest neighbors. 
+data$confusion_matrix |> lfa::lfa_calculate_rf_metrics() |> lfa::lfa_visualize_rf_metrics()
+```
+
