@@ -7,13 +7,18 @@ knitr::opts_knit$set(root.dir = "/home/jakob/gi-master/project-courses/lidar-for
 
 
 Load the file with the research areas
+
+
+
 ```{r}
-sf <- sf::read_sf(here::here("research_areas.shp"))
-print(sf)
+sf <- sf::read_sf(here::here("research_areas.shp"), quiet = TRUE)
 ```
 
 
 Init the project
+
+
+
 ```{r}
 #| output: false
 library(lfa)
@@ -21,11 +26,24 @@ sf::sf_use_s2(FALSE)
 locations <- lfa_init("research_areas.shp")
 ```
 
-Do all of the prprocessing steps
+
+
+Do all of the preprocessing steps
+
+
+
 ```{r}
-lfa_map_tile_locations(locations,retile,check_flag = "retile")
-lfa_map_tile_locations(locations, lfa_intersect_areas, ctg = NULL, areas_sf = sf,check_flag = "intersect")
-lfa_map_tile_locations(locations, lfa_ground_correction, ctg = NULL,check_flag = "z_correction")
-lfa_map_tile_locations(locations, lfa_segmentation, ctg = NULL,check_flag = "segmentation")
-lfa_map_tile_locations(locations, lfa_detection, catalog = NULL, write_to_file = TRUE,check_flag = "detection")
+#| warning: false
+#| label: preprocessing-retile
+#lfa::lfa_map_tile_locations(locations, lfa::retile,check_flag = "retile")
 ```
+
+```{r}
+#| warning: false
+#| results: hide
+lfa::lfa_map_tile_locations(locations, lfa::lfa_intersect_areas, ctg = NULL, areas_sf = sf,check_flag = "intersect")
+lfa::lfa_map_tile_locations(locations, lfa::lfa_ground_correction, ctg = NULL,check_flag = "z_correction")
+lfa::lfa_map_tile_locations(locations, lfa::lfa_segmentation, ctg = NULL,check_flag = "segmentation")
+lfa::lfa_map_tile_locations(locations, lfa::lfa_detection, catalog = NULL, write_to_file = TRUE,check_flag = "detection")
+```
+
