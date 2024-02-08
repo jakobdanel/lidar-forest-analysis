@@ -1,8 +1,13 @@
 Package: lfa
 Title: LiDAR Forest Analysis: Diversity of Tree Species in an oecosystem
-Version: 0.0.0.9000
-Authors@R: person("Jakob", "Danel",email ="jakob.danel@uni-muenster.com", role = c("aut", "cre"))
+Date: 2024-02-01
+Version: 1.0.0
+Authors@R: 
+    c(person("Jakob", "Danel",email ="jakob.danel@uni-muenster.de", role = c("aut", "cre")),
+      person("Frederick", "Bruch",email ="f_bruc03@uni-muenster.de", role = c("aut")))
 Description: Access, preprocess and analyse LiDAR data from monocultural forest areas to analyze and define parameters, for differencation of tree species.
+URL: https://github.com/jakobdanel/lidar-forest-analysis
+BugReports: https://gtihub.com/jakobdanel/lidar-forest-analysis/issues  
 License: `use_mit_license()`
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
