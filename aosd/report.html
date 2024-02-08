@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jakob Danel">
+<meta name="dcterms.date" content="2024-02-01">
+
+<title>Spatial Point Pattern Analysis with tree detections generated from LiDAR data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="report_files/libs/clipboard/clipboard.min.js"></script>
+<script src="report_files/libs/quarto-html/quarto.js"></script>
+<script src="report_files/libs/quarto-html/popper.min.js"></script>
+<script src="report_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="report_files/libs/quarto-html/anchor.min.js"></script>
+<link href="report_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="report_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="report_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">1</span> Overview</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">2</span> Data</a></li>
+  <li><a href="#research-question-and-hypothesis" id="toc-research-question-and-hypothesis" class="nav-link" data-scroll-target="#research-question-and-hypothesis"><span class="header-section-number">3</span> Research Question and Hypothesis</a>
+  <ul class="collapse">
+  <li><a href="#hypothesis" id="toc-hypothesis" class="nav-link" data-scroll-target="#hypothesis"><span class="header-section-number">3.1</span> Hypothesis</a></li>
+  </ul></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods"><span class="header-section-number">4</span> Methods</a>
+  <ul class="collapse">
+  <li><a href="#workflow" id="toc-workflow" class="nav-link" data-scroll-target="#workflow"><span class="header-section-number">4.1</span> Workflow</a></li>
+  <li><a href="#total-comparisions" id="toc-total-comparisions" class="nav-link" data-scroll-target="#total-comparisions"><span class="header-section-number">4.2</span> Total Comparisions</a></li>
+  </ul></li>
+  <li><a href="#example-worklflow" id="toc-example-worklflow" class="nav-link" data-scroll-target="#example-worklflow"><span class="header-section-number">5</span> Example worklflow</a>
+  <ul class="collapse">
+  <li><a href="#creating-spatstatppp-object-from-geoppackage-with-detections-and-aoi-with-respect-to-reference-systems" id="toc-creating-spatstatppp-object-from-geoppackage-with-detections-and-aoi-with-respect-to-reference-systems" class="nav-link" data-scroll-target="#creating-spatstatppp-object-from-geoppackage-with-detections-and-aoi-with-respect-to-reference-systems"><span class="header-section-number">5.1</span> Creating <code>spatstat::ppp</code> object from geoppackage with detections and AOI (with respect to reference systems)</a></li>
+  <li><a href="#select-to-samples-and-look-if-their-upper-the-monte-carlo-band-or-not." id="toc-select-to-samples-and-look-if-their-upper-the-monte-carlo-band-or-not." class="nav-link" data-scroll-target="#select-to-samples-and-look-if-their-upper-the-monte-carlo-band-or-not."><span class="header-section-number">5.2</span> Select to samples and look if their upper the Monte-Carlo band or not.</a></li>
+  <li><a href="#plot-the-samples-bands" id="toc-plot-the-samples-bands" class="nav-link" data-scroll-target="#plot-the-samples-bands"><span class="header-section-number">5.3</span> Plot the samples bands</a></li>
+  <li><a href="#calculate-the-mc-nemar-test-for-both-bands" id="toc-calculate-the-mc-nemar-test-for-both-bands" class="nav-link" data-scroll-target="#calculate-the-mc-nemar-test-for-both-bands"><span class="header-section-number">5.4</span> Calculate the MC Nemar test for both bands</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Spatial Point Pattern Analysis with tree detections generated from LiDAR data</h1>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author"><a href="https://github.com/jakobdanel">Jakob Danel</a> </p>
+  </div>
+    <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Universität Münster
+          </p>
+      </div>
+    </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 1, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="overview" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Overview</h1>
+<p>In this research investigation, our objective is to assess the utility of spatial Point Patterns in monocultural forest tree detection as a parameter for distinguishing between different species within monocultural forest areas. The study focuses on four prevalent species in the NRW, DE region, namely beech, oak, pine, and spruce, based on their common occurrence <span class="citation" data-cites="Blickensdoerfer2022">(<a href="#ref-Blickensdoerfer2022" role="doc-biblioref">Blickensdoerfer 2022</a>)</span>. Three areas exhibiting predominantly monocultural tree structures were selected for each species. Utilizing LiDAR data for the designated areas, a tree detection algorithm was applied through <code>lidR::locate_trees</code> with default settings, as outlined in <span class="citation" data-cites="lidRManual">(<a href="#ref-lidRManual" role="doc-biblioref">Roussel and Auty 2024</a>)</span>. The resulting detection data (exemplified in <a href="#fig-detections">Figure&nbsp;1</a>) serve as the foundation for examining point patterns within these areas. Specifically, the investigation delves into the behavior of Ripley’s reduced second moment function K(r) <span class="citation" data-cites="ripley1977modelling">(<a href="#ref-ripley1977modelling" role="doc-biblioref">Ripley 1977</a>)</span> and the distribution of `r values beyond a significance threshold, determined through Monte Carlo simulations—a widely used technique in addressing spatial problems <span class="citation" data-cites="zhou2003spatial">(<a href="#ref-zhou2003spatial" role="doc-biblioref">Zhou et al. 2003</a>)</span>.</p>
+<p>For details on data acquisition and preprocessing, please refer to <span class="citation" data-cites="lfa">(<a href="#ref-lfa" role="doc-biblioref">Danel and Bruch 2024</a>)</span>.</p>
+<div class="cell" data-hash="report_cache/html/fig-detections_8a35c5ee1004ac0522c0814d906be7c3">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">sf_use_s2</span>(<span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Spherical geometry (s2) switched off</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>areas <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">"research_areas.shp"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>detections <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">"detection.gpkg"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>sample_area <span class="ot">&lt;-</span> areas[<span class="dv">1</span>,]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>sample_specie <span class="ot">&lt;-</span> sample_area<span class="sc">$</span>species</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>sample_name <span class="ot">&lt;-</span> sample_area<span class="sc">$</span>name</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>sample_detections <span class="ot">&lt;-</span> detections <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(specie <span class="sc">==</span> sample_specie <span class="sc">&amp;</span> area <span class="sc">==</span> sample_name)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_sf</span>(<span class="at">data =</span> sample_area) <span class="sc">+</span> <span class="fu">geom_sf</span>(<span class="at">data =</span> sample_detections)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-detections" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="report_files/figure-html/fig-detections-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: All tree detections with the corrosponding area of interest for an sample area in Bielefeld-Brackewede (with dominantn specie beech).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Data</h1>
+<ol type="1">
+<li>Detections of trees based on LiDAR in particular areas of interest: <code>detection.gpkg</code></li>
+<li>Areas of interests where detection-algorithm was used: <code>research_areas.shp</code></li>
+<li>Data frame mapping from area to specie: <code>patches.csv</code></li>
+</ol>
+</section>
+<section id="research-question-and-hypothesis" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Research Question and Hypothesis</h1>
+<p>Is the comparision of the probability that the curve of Ripleys K function is under or above a significance band created via Monte-Carlo simulation a valid method to distinguish between the point patterns of trees for forests with monoculteral vegetation for sample areas with the most common species of NRW?</p>
+<section id="hypothesis" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="hypothesis"><span class="header-section-number">3.1</span> Hypothesis</h2>
+<ol type="1">
+<li>Between species the probability that the <code>K(r)</code> value is over the Monte-Carlo band significantly differs.</li>
+<li>Between species the probability that the <code>K(r)</code> value is under the Monte-Carlo band significantly differs.</li>
+<li>Between samples of the same species the probability that the <code>K(r)</code> value is over the Monte-Carlo band is not significantly different.</li>
+<li>Between samples of the same species the probability that the <code>K(r)</code> value is under the Monte-Carlo band is not significantly different.</li>
+</ol>
+</section>
+</section>
+<section id="methods" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Methods</h1>
+<section id="workflow" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="workflow"><span class="header-section-number">4.1</span> Workflow</h2>
+<ul>
+<li>Create Monte-Carlo simulations of each area.</li>
+<li>Calculate if the values for different <code>r</code> are above (under) the envelope or not (boolean)</li>
+<li>Use a McNemar-Test to understand if their is difference in the samples:
+<ul>
+<li><span class="math inline">\(H_0\)</span>: The probability that a value is above/under or inside the envelope is for both samples the same:</li>
+<li><span class="math inline">\(H_A\)</span>: The probability that a value is above/under or inside the envelope signifanctly differs from each other.</li>
+</ul></li>
+<li>Calculate this test statistics pairwise between all samples from the same species, to see if the samples are representive for their species.</li>
+<li>Calculate pairwise McNemar tests for each pair of species.</li>
+</ul>
+</section>
+<section id="total-comparisions" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="total-comparisions"><span class="header-section-number">4.2</span> Total Comparisions</h2>
+<ul>
+<li>Specie intern: 3 Lower, 3 Higher (4 comparisions total)</li>
+<li>Specie extern: 9 Lower, 9 Higher (6 comparisions total)</li>
+</ul>
+</section>
+</section>
+<section id="example-worklflow" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Example worklflow</h1>
+<section id="creating-spatstatppp-object-from-geoppackage-with-detections-and-aoi-with-respect-to-reference-systems" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="creating-spatstatppp-object-from-geoppackage-with-detections-and-aoi-with-respect-to-reference-systems"><span class="header-section-number">5.1</span> Creating <code>spatstat::ppp</code> object from geoppackage with detections and AOI (with respect to reference systems)</h2>
+<div class="cell" data-hash="report_cache/html/unnamed-chunk-2_9c35c703b4aafd7633df8c417ed07567">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spatstat)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>detections <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_read</span>(<span class="st">"detection.gpkg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `detection' from data source 
+  `/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/aosd/detection.gpkg' 
+  using driver `GPKG'
+Simple feature collection with 28839 features and 4 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 365546.3 ymin: 5660096 xmax: 467996.9 ymax: 5790950
+Projected CRS: ETRS89 / UTM zone 32N</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>create_ppp <span class="ot">&lt;-</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(species_identifier,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>           area_identifier,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">det =</span> detections) {</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    trees <span class="ot">&lt;-</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      det <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(specie <span class="sc">==</span> species_identifier <span class="sc">&amp;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                             area <span class="sc">==</span> area_identifier)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    area <span class="ot">&lt;-</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>      sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">"research_areas.shp"</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(species <span class="sc">==</span> species_identifier <span class="sc">&amp;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                                                           name <span class="sc">==</span> area_identifier) <span class="sc">|&gt;</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(sf<span class="sc">::</span><span class="fu">st_crs</span>(trees))</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    sf<span class="sc">::</span><span class="fu">st_union</span>(sf<span class="sc">::</span><span class="fu">st_geometry</span>(area)) <span class="sc">|&gt;</span> spatstat.geom<span class="sc">::</span><span class="fu">as.owin</span>() <span class="ot">-&gt;</span> w</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    pp <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_geometry</span>(trees) <span class="sc">|&gt;</span> spatstat.geom<span class="sc">::</span><span class="fu">as.ppp</span>(<span class="at">W =</span> w)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(pp)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>patches <span class="ot">&lt;-</span> <span class="fu">read.csv2</span>(<span class="at">file =</span> <span class="st">"patches.csv"</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>pps <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(patches)) {</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  area <span class="ot">&lt;-</span> patches[i, <span class="st">"area"</span>]</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  specie <span class="ot">&lt;-</span> patches[i, <span class="st">"specie"</span>]</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  pps[[i]] <span class="ot">&lt;-</span> <span class="fu">create_ppp</span>(specie, area, detections)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="select-to-samples-and-look-if-their-upper-the-monte-carlo-band-or-not." class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="select-to-samples-and-look-if-their-upper-the-monte-carlo-band-or-not."><span class="header-section-number">5.2</span> Select to samples and look if their upper the Monte-Carlo band or not.</h2>
+<div class="cell" data-hash="report_cache/html/unnamed-chunk-3_f9b6c488285493d4a810de58bca8bbc2">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fixed r values for all Kest functions calculated</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>rng <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by =</span> .<span class="dv">1</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>is_upper <span class="ot">&lt;-</span> <span class="cf">function</span>(envelope) {</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(envelope<span class="sc">$</span>hi <span class="sc">&lt;</span> envelope<span class="sc">$</span>obs)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>env <span class="ot">&lt;-</span> <span class="fu">envelope</span>(pps[[<span class="dv">1</span>]], Kest, <span class="at">r =</span> rng)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generating 99 simulations of CSR  ...
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
+61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
+81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 
+99.
+
+Done.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>upper <span class="ot">&lt;-</span> <span class="fu">is_upper</span>(env)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>env2 <span class="ot">&lt;-</span> <span class="fu">envelope</span>(pps[[<span class="dv">4</span>]], Kest, <span class="at">r =</span> rng)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generating 99 simulations of CSR  ...
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
+61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
+81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 
+99.
+
+Done.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>upper2 <span class="ot">&lt;-</span> <span class="fu">is_upper</span>(env2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="plot-the-samples-bands" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="plot-the-samples-bands"><span class="header-section-number">5.3</span> Plot the samples bands</h2>
+<div class="cell" data-hash="report_cache/html/unnamed-chunk-4_2214c8425aee75e41b0497b7cf77bd21">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(env)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="report_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Monte-Carlo Simulation arround the <code>K(r)</code> function of the point pattern in Bielefeld Brackwede (Beech)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-hash="report_cache/html/unnamed-chunk-5_f71ad010c0c9dfffcd142c254af3f3f9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(env2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="report_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Monte-Carlo Simulation arround the <code>K(r)</code> function of the point pattern in Hamm (Oak)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="calculate-the-mc-nemar-test-for-both-bands" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="calculate-the-mc-nemar-test-for-both-bands"><span class="header-section-number">5.4</span> Calculate the MC Nemar test for both bands</h2>
+<div class="cell" data-hash="report_cache/html/unnamed-chunk-6_0e6a109b365cf443b8fac74bbfa9696c">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>calculate_mcnemar_test <span class="ot">&lt;-</span> <span class="cf">function</span>(vector1, vector2) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Check if vectors have the same length</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(vector1) <span class="sc">!=</span> <span class="fu">length</span>(vector2)) {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Vectors must have the same length."</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure vectors are logical</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">all</span>(<span class="fu">is.logical</span>(vector1)) <span class="sc">||</span> <span class="sc">!</span><span class="fu">all</span>(<span class="fu">is.logical</span>(vector2))) {</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Vectors must contain only boolean values."</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  tbl <span class="ot">&lt;-</span> <span class="fu">table</span>(vector1, vector2)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(tbl)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Perform McNemar test</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  result <span class="ot">&lt;-</span> <span class="fu">mcnemar.test</span>(tbl)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(result)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="fu">calculate_mcnemar_test</span>(upper, upper2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       vector2
+vector1 FALSE TRUE
+  FALSE   281  715
+  TRUE      0    5</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    McNemar's Chi-squared test with continuity correction
+
+data:  tbl
+McNemar's chi-squared = 713, df = 1, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Blickensdoerfer2022" class="csl-entry" role="listitem">
+Blickensdoerfer, Lukas. 2022. <span>“Dominant Tree Species for Germany (2017/2018).”</span> <em>Waldatlas- Wald Und Waldnutzung</em>. Thünen Atlas. <a href="https://atlas.thuenen.de/layers/geonode:Dominant_Species_Class">https://atlas.thuenen.de/layers/geonode:Dominant_Species_Class</a>.
+</div>
+<div id="ref-lfa" class="csl-entry" role="listitem">
+Danel, Jakob, and Frederick Bruch. 2024. <em>Lfa: LiDAR Forest Analysis: Diversity of Tree Species in an Oecosystem</em>. <a href="https://gtihub.com/jakobdanel/lidar-forest-analysis">https://gtihub.com/jakobdanel/lidar-forest-analysis</a>.
+</div>
+<div id="ref-ripley1977modelling" class="csl-entry" role="listitem">
+Ripley, Brian D. 1977. <span>“Modelling Spatial Patterns.”</span> <em>Journal of the Royal Statistical Society: Series B (Methodological)</em> 39 (2): 172–92.
+</div>
+<div id="ref-lidRManual" class="csl-entry" role="listitem">
+Roussel, Jean-Romain, and David Auty. 2024. <em>Airborne LiDAR Data Manipulation and Visualization for Forestry Applications</em>. <a href="https://cran.r-project.org/package=lidR">https://cran.r-project.org/package=lidR</a>.
+</div>
+<div id="ref-zhou2003spatial" class="csl-entry" role="listitem">
+Zhou, G, T Esaki, Y Mitani, M Xie, and J Mori. 2003. <span>“Spatial Probabilistic Modeling of Slope Failure Using an Integrated GIS Monte Carlo Simulation Approach.”</span> <em>Engineering Geology</em> 68 (3-4): 373–86.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

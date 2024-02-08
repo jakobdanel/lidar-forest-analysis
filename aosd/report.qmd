@@ -1,0 +1,197 @@
+---
+title: "Spatial Point Pattern Analysis with tree detections generated from LiDAR data"
+output:
+  pdf_document:
+    latex_engine: xelatex
+toc: true
+toc-depth: 3
+toc-title: Contents
+number-sections: true
+number-depth: 3
+date: today
+author:
+    - name: Jakob Danel
+      email: jakob.danel@uni-muenster.de
+      url: https://github.com/jakobdanel
+      affiliations:
+      - name: Universität Münster
+        city: Münster
+        country: Germany
+bibliography: references.bib
+execute:
+  freeze: auto  # re-render only when source changes
+  cache: true
+prefer-html: true
+---
+
+# Overview
+In this research investigation, our objective is to assess the utility of spatial Point Patterns in monocultural forest tree detection as a parameter for distinguishing between different species within monocultural forest areas. The study focuses on four prevalent species in the NRW, DE region, namely beech, oak, pine, and spruce, based on their common occurrence [@Blickensdoerfer2022]. Three areas exhibiting predominantly monocultural tree structures were selected for each species. Utilizing LiDAR data for the designated areas, a tree detection algorithm was applied through `lidR::locate_trees` with default settings, as outlined in [@lidRManual]. The resulting detection data (exemplified in [@fig-detections]) serve as the foundation for examining point patterns within these areas. Specifically, the investigation delves into the behavior of Ripley's reduced second moment function K(r) [@ripley1977modelling] and the distribution of `r` values beyond a significance threshold, determined through Monte Carlo simulations—a widely used technique in addressing spatial problems [@zhou2003spatial].
+
+For details on data acquisition and preprocessing, please refer to [@lfa].
+
+```{r}
+#| fig-cap: All tree detections with the corrosponding area of interest for an sample area in Bielefeld-Brackewede (with dominantn specie beech).
+#| label: fig-detections
+library(ggplot2)
+sf::sf_use_s2(FALSE)
+
+areas <- sf::read_sf("research_areas.shp")
+detections <- sf::read_sf("detection.gpkg")
+
+sample_area <- areas[1,]
+sample_specie <- sample_area$species
+sample_name <- sample_area$name
+sample_detections <- detections |> dplyr::filter(specie == sample_specie & area == sample_name)
+
+ggplot() + geom_sf(data = sample_area) + geom_sf(data = sample_detections)
+```
+
+# Data
+
+1. Detections of trees based on LiDAR in particular areas of interest: `detection.gpkg`
+2. Areas of interests where detection-algorithm was used: `research_areas.shp`
+3. Data frame mapping from area to specie: `patches.csv`
+
+
+# Research Question and Hypothesis
+
+
+Is the comparision of the probability that the curve of Ripleys K function is under or above a significance band created via Monte-Carlo simulation a valid method to distinguish between the point patterns of trees for forests with monoculteral vegetation for sample areas with the most common species of NRW?
+
+## Hypothesis
+
+1. Between species the probability that the `K(r)` value is over the Monte-Carlo band significantly differs.
+2. Between species the probability that the `K(r)` value is under the Monte-Carlo band significantly differs.
+3. Between samples of the same species the probability that the `K(r)` value is over the Monte-Carlo band is not significantly different.
+3. Between samples of the same species the probability that the `K(r)` value is under the Monte-Carlo band is not significantly different.
+
+# Methods
+
+## Workflow
+
+- Create Monte-Carlo simulations of each area.
+- Calculate if the values for different `r` are above (under) the envelope or not (boolean)
+- Use a McNemar-Test to understand if their is difference in the samples:
+    - $H_0$: The probability that a value is above/under or inside the envelope is for both samples the same: 
+    - $H_A$: The probability that a value is above/under or inside the envelope signifanctly differs from each other.
+- Calculate this test statistics pairwise between all samples from the same species, to see if the samples are representive for their species.
+- Calculate pairwise McNemar tests for each pair of species.
+
+
+## Total Comparisions
+- Specie intern: 3 Lower, 3 Higher (4 comparisions total)
+- Specie extern: 9 Lower, 9 Higher (6 comparisions total)
+
+
+# Example worklflow
+
+
+## Creating `spatstat::ppp` object from geoppackage with detections and AOI (with respect to reference systems)
+
+
+```{r}
+library(spatstat)
+detections <- sf::st_read("detection.gpkg")
+
+
+create_ppp <-
+  function(species_identifier,
+           area_identifier,
+           det = detections) {
+    trees <-
+      det |> dplyr::filter(specie == species_identifier &
+                             area == area_identifier)
+    area <-
+      sf::read_sf("research_areas.shp") |> dplyr::filter(species == species_identifier &
+                                                           name == area_identifier) |> sf::st_transform(sf::st_crs(trees))
+    sf::st_union(sf::st_geometry(area)) |> spatstat.geom::as.owin() -> w
+    pp <- sf::st_geometry(trees) |> spatstat.geom::as.ppp(W = w)
+    return(pp)
+  }
+
+
+
+patches <- read.csv2(file = "patches.csv")
+
+
+pps <- list()
+for (i in 1:nrow(patches)) {
+  area <- patches[i, "area"]
+  specie <- patches[i, "specie"]
+  pps[[i]] <- create_ppp(specie, area, detections)
+}
+
+```
+
+
+
+
+## Select to samples and look if their upper the Monte-Carlo band or not.
+
+
+
+
+```{r}
+# Fixed r values for all Kest functions calculated
+
+rng <- seq(0, 100, by = .1)
+
+is_upper <- function(envelope) {
+  return(envelope$hi < envelope$obs)
+}
+
+env <- envelope(pps[[1]], Kest, r = rng)
+upper <- is_upper(env)
+
+env2 <- envelope(pps[[4]], Kest, r = rng)
+upper2 <- is_upper(env2)
+```
+
+
+
+
+## Plot the samples bands
+
+
+
+```{r}
+#| fig-cap: Monte-Carlo Simulation arround the `K(r)` function of the point pattern in Bielefeld Brackwede (Beech)
+plot(env)
+```
+
+
+
+
+```{r}
+#| fig-cap: Monte-Carlo Simulation arround the `K(r)` function of the point pattern in Hamm (Oak)
+plot(env2)
+```
+
+
+
+## Calculate the MC Nemar test for both bands
+
+
+
+```{r}
+calculate_mcnemar_test <- function(vector1, vector2) {
+  # Check if vectors have the same length
+  if (length(vector1) != length(vector2)) {
+    stop("Vectors must have the same length.")
+  }
+  
+  # Ensure vectors are logical
+  if (!all(is.logical(vector1)) || !all(is.logical(vector2))) {
+    stop("Vectors must contain only boolean values.")
+  }
+  
+  tbl <- table(vector1, vector2)
+  print(tbl)
+  # Perform McNemar test
+  result <- mcnemar.test(tbl)
+  return(result)
+}
+
+calculate_mcnemar_test(upper, upper2)
+```
+
