@@ -24,11 +24,12 @@ lfa_plot_confusion_matrix <- function(conf_matrix) {
   library(ggplot2)
   library(caret)
   conf_matrix_df <- as.data.frame(as.table(conf_matrix))
+  cm <- confusionMatrix(conf_matrix)
   max_count <- max(conf_matrix_df$Freq)
   max_combination <-
     conf_matrix_df[conf_matrix_df$Freq == max_count, c("Var1", "Var2")]
   plot <-
-    ggplot(conf_matrix_df, aes(x = Var1, y = Var2, fill = Freq)) +
+    ggplot(conf_matrix_df, aes(x = Var2, y = Var1, fill = Freq)) +
     geom_tile(color = "white", size = 0.5) +
     scale_fill_gradient(low = "white", high = "blue") +
     geom_text(aes(label = Freq), vjust = 1) +
