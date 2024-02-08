@@ -1,4 +1,4 @@
-## Canopy Height Model
+### Canopy Height Model
 
 ```{r}
 #| warning: false

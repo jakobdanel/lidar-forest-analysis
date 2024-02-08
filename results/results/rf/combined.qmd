@@ -22,7 +22,6 @@ for (area_key in names(chms)) {
   
 }
 density <- lfa::lfa_calculate_patch_density(detections = detections)
-
 ```
 
 
@@ -63,14 +62,14 @@ neighbors$specie = NULL
 combined = sf::st_join(combined, neighbors, sf::st_within)
 combined = dplyr::left_join(combined,patches, c("specie","area"))
 density <- density |> as.data.frame()
+
 density$id = NULL
 density$geometry = NULL
 density$area_size = NULL
 density$detections = NULL
 colnames(density) = c("specie","area","density")
 combined <- dplyr::left_join(combined, density, c("specie","area"))
-excluded_cols <- c("Z.x", "treeID.detection","treeID.segmentation","name_las_file","treeID","area","specie","geom")
-
+excluded_cols <- c("Z.x", "treeID.detection","treeID.segmentation","name_las_file","treeID","area","specie","geom","density.x")
 ```
 
 
@@ -87,7 +86,7 @@ data <- lfa::lfa_random_forest(tree_data = combined, excluded_input_columns = ex
 #| warning: false
 #| fig-cap: Confusion Matrix of randomForest with all parameters derived from tree level.
 #| label: fig-cm-tree-level
-cm <- data$confusion_matrix |> caret::confusionMatrix()
+cm <- data$confusion_matrix
 lfa::lfa_plot_confusion_matrix(cm)
 ```
 

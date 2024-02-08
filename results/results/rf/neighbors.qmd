@@ -1,10 +1,16 @@
+## Random Forest Predictions
+This section  outlines the presentation of Random Forest results, encompassing three models, each trained on different parameters. Each chapter provides an explanation for the selection of a particular model, offering insights into the reasoning behind our choices.
+
 
 ### Use neighbors and height
+A Random Forest model was trained on tree heights (z-values) and the distance to the nearest 100 neighbors. Despite achieving only medium results, this straightforward model clearly demonstrates the feasibility of distinguishing between tree species.
+
 
 ```{r}
 #| code-fold: true
 #| warning: false
 #| results: hide
+#| label: preprocess-rf-neighbors
 detections <- lfa::lfa_get_detections()
 neighbors <- lfa::lfa_get_neighbor_paths() |> lfa::lfa_combine_sf_obj(lfa::lfa_get_all_areas())
 neighbors <- sf::st_join(neighbors,detections, join = sf::st_within)
@@ -19,15 +25,30 @@ excluded_cols <- c("area.x","specie.x","treeID.y","Z.y","area.y","specie.y","geo
 #| results: hide
 data <- lfa::lfa_random_forest(tree_data = neighbors, excluded_input_columns = excluded_cols,response_variable = "specie")
 ```
+```{r}
+#| code-fold: true
+#| warning: false
+model.rf_neighbors <- data
+save(model.rf_neighbors, file = "./models/neighbors.rData")
+```
+
+
+The classifier exhibits notable performance variations across different classes. Precision for the "Beech" class is high, indicating accurate positive predictions, but the lower recall suggests the possibility of missing some instances of "Beech." In contrast, both precision and recall for the "Oak" and "Pine" classes are extremely low, highlighting challenges in accurately classifying instances. The "Spruce" class shows moderate precision and high recall, indicating comparatively better performance.
+
+
 
 ```{r}
 #| code-fold: true
 #| warning: false
 #| label: fig-cm-neighbors
 #| fig-cap: Confusion Matrix of randomForest on the distance to 100 nearest neighbors.
-cm <- data$confusion_matrix |> caret::confusionMatrix()
+cm <- data$confusion_matrix
 lfa::lfa_plot_confusion_matrix(cm)
 ```
+
+
+The model's predictions for "Beech" are frequent but vary significantly, leading to substantial differences between Precision and Recall (see [@fig-pr-neighbors]). The model tends to make predictions that are either mostly correct or mostly incorrect, resulting in a homogenous prediction pattern, as illustrated in the confusion matrix (see [@fig-cm-neighbors]).
+
 
 ```{r}
 #| code-fold: true

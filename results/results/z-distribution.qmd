@@ -1,4 +1,8 @@
-## Distribution of the tree heights
+## Distribution of tree characteristics
+
+The following subsections describe the distributions of different tree characterestics across the different species and patches.
+
+### Tree Heights
 
 ```{r}
 #| code-fold: true

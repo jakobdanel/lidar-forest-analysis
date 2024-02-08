@@ -1,4 +1,4 @@
-## Distribution of number of returns per detected tree.
+### Number of returns
 
 ```{r}
 #| code-fold: true

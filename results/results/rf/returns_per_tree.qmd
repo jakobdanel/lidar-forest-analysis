@@ -21,7 +21,7 @@ data <- lfa::lfa_random_forest(tree_data = returns, excluded_input_columns = exc
 #| warning: false
 #| label: fig-cm-returns
 #| fig-cap: Confusion Matrix of randomForest on returns per Tree.
-cm <- data$confusion_matrix |> caret::confusionMatrix()
+cm <- data$confusion_matrix
 lfa::lfa_plot_confusion_matrix(cm)
 ```
 

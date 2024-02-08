@@ -1,4 +1,4 @@
-## n-nearest Neighbours
+### n-nearest Neighbours
 
 ```{r}
 #| code-fold: true
@@ -6,7 +6,7 @@
 neighbors <- lfa::lfa_combine_sf_obj(lfa::lfa_get_neighbor_paths(),lfa::lfa_get_all_areas())
 ```
 
-### Overview
+#### Overview
 To initiate our analysis, we first establish a framework for selecting neighbors by examining the distance development with different n, as illustrated in @fig-n-nearest-overview. The curves share a similar design, but the actual values vary. Notably, as n increases, the distance between all patches also increases, indicating a broader spatial context.
 
 Considering this trend, we extend our investigation beyond the nearest neighbor to include the 100th nearest neighbor. The $\Delta$distance shows a consistent decrease with each increment in n, reinforcing our decision to limit exploration beyond n of a hundred. Additionally, the constraint is driven by practical considerations, as our sample size occasionally lacks the capacity to explore larger n values, resulting in inaccurate values due to the absence of the true nearest neighbor within the sample area.
@@ -20,7 +20,7 @@ lfa::lfa_create_neighbor_mean_curves(neighbors) |> lfa::lfa_create_plot_per_area
 ```
 
 
-### The Nearest Neighbour
+#### The Nearest Neighbour
 Our initial focus centers on examining the distance to the nearest neighbor for each tree. Notably, the curve representing Spruce exhibits distinct characteristics compared to the three other curves—displaying a steeper profile with less variance, as depicted in @fig-density-1-nearest.
 
 Further analysis of all patches reveals similar distributions, as evident in the boxplot shown in Figure 2 (@fig-boxplot-1-nearest), where mean and variance demonstrate consistency across patches. However, these graphical statistics present challenges in effectively distinguishing between different tree species based on the distance to the nearest neighbor.
@@ -45,7 +45,7 @@ lfa::lfa_create_boxplot(neighbors,value_column = "Neighbor_1",category_column1 =
 ```
 
 
-### The 100th nearest Neighbor
+#### The 100th nearest Neighbor
 Moving on to the analysis of the 100th nearest neighbor, intriguing patterns emerge. Peaks in the curves display varying heights and positions, with a notable example being the complete shift between Oak and Spruce, as illustrated in @fig-density-100-nearest.
 
 However, it is essential to acknowledge the high variance observed between curves within a species, such as Pine or Beech. While this variance could serve as a potential indicator, it comes with the caveat that the sample size must be substantial for reliable conclusions.

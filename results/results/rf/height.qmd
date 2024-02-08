@@ -16,7 +16,7 @@ data <- lfa::lfa_random_forest(tree_data = detections, excluded_input_columns = 
 ```
 
 ```{r}
-cm <- data$confusion_matrix |> caret::confusionMatrix()
+cm <- data$confusion_matrix
 lfa::lfa_plot_confusion_matrix(cm)
 ```
 

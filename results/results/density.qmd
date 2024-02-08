@@ -1,5 +1,5 @@
-## Density of forest patches
-Examining densities provides valuable insights into identifying the dominant species within patches. Spruce stands out as the densest species, surpassing all other patches. Following closely in density is Pine, as depicted in Figure 1 (@fig-density-bar).
+### Density of forest patches
+Examining densities provides valuable insights into identifying the dominant species within patches. Spruce stands out as the densest species, surpassing all other patches. Following closely in density is Pine, as depicted in [@fig-density-bar].
 
 Beech and Oak exhibit similar density levels, with Beech consistently denser across all patches. When comparing the highest density patches for each species, Beech consistently outpaces Oak. While Oak is slightly less dense overall ($8.354499 \times 10^{-3} \frac{1}{m^2}$) than Beech ($8.727781 \times 10^{-3} \frac{1}{m^2}$), the distinction in density remains noticeable.
 

@@ -1,11 +1,19 @@
 
-### Segmentation
+### Enrich Neighbors with segmentation data
+
+This model employs the same parameters as the preceding one, while incorporating additional features derived from the segmentation of each tree in the point cloud. The expanded feature set includes density of returns per tree, mean and variance of Z values of return points, mean and variance of intensity of LiDAR returns, number of LiDAR returns per tree, and the area in square meters of each tree. The aim is to compare the results obtained with this augmented feature set against those based solely on tree detection characteristics.
+
+```{r}
+#| echo: false
+knitr::opts_knit$set(root.dir = "/home/jakob/gi-master/project-courses/lidar-forest-analysis/src/")
+```
+
 
 ```{r}
 #| code-fold: true
 #| warning: false
 #| results: hide
-data <- sf::st_read("data/tree_properties.gpkg")
+data <- sf::st_read("./data/tree_properties.gpkg")
 detections <- lfa::lfa_get_detections()
 neighbors <- lfa::lfa_get_neighbor_paths() |> lfa::lfa_combine_sf_obj(lfa::lfa_get_all_areas())
 ```
@@ -48,11 +56,25 @@ data <- lfa::lfa_random_forest(tree_data = combined, excluded_input_columns = ex
 ```{r}
 #| code-fold: true
 #| warning: false
+model.rf_segmentation_detection_params <- data
+save(model.rf_segmentation_detection_params, file = "./models/segmentation_detection_params.rData")
+```
+
+
+```{r}
+#| code-fold: true
+#| warning: false
 #| fig-cap: Confusion Matrix of randomForest with all parameters derived from tree level.
 #| label: fig-cm-tree-level
-cm <- data$confusion_matrix |> caret::confusionMatrix()
+cm <- data$confusion_matrix
 lfa::lfa_plot_confusion_matrix(cm)
 ```
+
+The classifier exhibits suboptimal performance for the "Beech" and "Oak" classes, with low precision and recall values, indicative of challenges in accurately classifying instances for these categories. In contrast, the "Pine" class demonstrates higher precision and recall, suggesting improved performance in capturing true instances while minimizing false positives. The "Spruce" class displays moderate precision and high recall, indicating relatively better performance in capturing true instances with fewer false positives.
+
+Notably, the overall accuracy (0.44) and Kappa (0.23) have significantly improved compared to the previous model (Accuracy = 0.35, Kappa = 0.14). The model demonstrates effectiveness for conifers but shows limitations for deciduous trees, as depicted in the confusion matrix at the tree-level (@fig-cm-tree-level). Specifically, "Oak" and "Beech" ground truth predictions are distributed among all classes, while "Pine" exhibits false negatives, especially for the "Spruce" class.
+
+Additionally, this model achieves a more balanced distribution between Precision and Recall differences across classes, as illustrated in the Precision-Recall curve at the tree-level (@fig-pr-tree-level).
 
 ```{r}
 #| code-fold: true

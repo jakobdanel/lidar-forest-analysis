@@ -1,6 +1,8 @@
 
 ### Train with patch level information
 
+In this phase of our study, we examined the impact of patch-level information on the model. The model training incorporated Z-Values, distance to the 100 nearest neighbors, density of trees within a patch, as well as statistics related to the canopy height, including mean, variance, and median.
+
 ```{r}
 #| code-fold: true
 #| warning: false
@@ -68,11 +70,25 @@ data <- lfa::lfa_random_forest(tree_data = detections, excluded_input_columns = 
 ```{r}
 #| code-fold: true
 #| warning: false
+model.rf_patch <- data
+save(model.rf_patch, file = "./models/patch.rData")
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
 #| label: fig-cm-patch
 #| fig-cap: Confusion Matrix of randomForest on returns per Tree.
-cm <- data$confusion_matrix |> caret::confusionMatrix()
+cm <- data$confusion_matrix
 lfa::lfa_plot_confusion_matrix(cm)
 ```
+The model yields favorable overall results, with an accuracy of 0.63 and a Kappa value of 0.49. Notably, predictions appear to be predominantly influenced by patch-level information, resulting in largely homogeneous predictions within most patches.
+
+For the "Beech" and "Oak" classes, the classifier performs moderately well, exhibiting moderate precision and recall values. These values are within the same domain, with an equal balance between recall and precision for both classes.
+
+In the case of the "Pine" class, high precision is accompanied by lower recall, indicating a conservative prediction approach. However, the classifier successfully captures a substantial portion of actual "Pine" instances. Noteworthy is the presence of outliers where "Pine" is falsely predicted as "Oak" (see @fig-cm-patch). These false predictions are concentrated in the Greffen patch, which contains a total of 513 detections. Notably, all significant Pine patches yield accurate predictions.
+
+The "Spruce" class exhibits a good balance between precision and recall, with slightly better recall values. The deciduous vs. conifers comparison is notably successful, with conifers predicted mostly as true positives and false predictions for deciduous tree species predominantly leaning towards predicting deciduous trees.
 
 ```{r}
 #| code-fold: true
