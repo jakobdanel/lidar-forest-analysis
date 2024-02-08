@@ -1,0 +1,28 @@
+## Random Forest for predicting species
+
+The aim of our research is to investigate the feasibility of developing a predictive model for tree species classification based on derived parameters. To accomplish this objective, we employed the Random Forest algorithm, as introduced by [@breiman2001random], which leverages multiple decision trees to predict the species of a given tree based on its characteristics.
+
+The dataset utilized in our study consists of identified trees, and our primary goal is to predict the species of each tree. To establish ground truth for training and validation of the model, we assigned the dominant species to each distinct patch.
+
+For validation purposes, we adopted a spatial cross-validation methodology, specifically implementing the leave-one-out principle. This technique systematically excludes a particular portion of the dataset in each iteration [@brovelli2008accuracy]. In our spatial cross-validation, the group left out is determined based on their spatial characteristics  [@valavi2018blockcv].
+
+Our combined approach entails designating the patches with tree detections as the left-out group. The model is trained on the training split and validated using the left-out (validation) split of the data. Ground truth and predictions from each iteration are stored, and the results from all iterations are aggregated into a confusion matrix for a comprehensive analysis.
+
+In our evaluation of results, we utilized various statistical measurements. The *accuracy*, defined as the ratio of correct predictions to all predictions [@alvarez2002exact], is calculated using the formula
+$$\text{Accuracy} = \frac{\text{Correct Predictions}}{\text{All Predictions}}$$
+This metric provides insight into the percentage of correct predictions.
+
+To normalize accuracy in the context of a small number of classes ($n = 4$), Kohen's Kappa Index was employed [@fleiss1969large]. The formula is given by
+$$\kappa = \frac{P_o - P_e}{1 - P_e}$$
+where $P_o$ represents the observed agreement between raters, and $P_e$ is the expected agreement, accounting for the probability of chance agreement.
+
+Another crucial metric, *precision*, commonly used in binary classification, measures the accuracy of positive predictions [@cleverdon1967cranfield]. It is calculated as
+$$\text{Precision} = \frac{\text{True Positives}}{\text{True Positives + False Positives}}$$
+
+Similarly, *recall*, also known as sensitivity or true positive rate, is essential in binary classification to assess the model's ability to identify all relevant instances [@sparck1972statistical]. The formula for recall is
+$$\text{Recall} = \frac{\text{True Positives}}{\text{True Positives + False Negatives}}$$
+
+These statistical measures collectively provide a comprehensive evaluation of the model's performance, taking into account both overall accuracy and class-specific performance metrics.
+
+
+
