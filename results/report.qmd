@@ -6,6 +6,8 @@ output:
 toc: true
 toc-depth: 3
 toc-title: Contents
+toc-expand: 2
+toc-location: right
 number-sections: true
 number-depth: 3
 date: today
@@ -26,19 +28,33 @@ author:
         country: Germany
 bibliography: references.bib
 execute-dir: .. 
+execute:
+  freeze: auto  # re-render only when source changes
 prefer-html: true
+format:
+  wordcount-html: default
 ---
 
-# Introduction
 
-This report documents the analysis of forest data for different tree species.
+
+
+{{< include introduction/intro.qmd >}}
 
 # Methods
+
+We first describe the processes of data acquisition and data preprocessing. Then we will propose how we analyse the distributions and how we utilize random forest predictions for species distinguishing. 
+
 
 {{< include methods/data-aquisition.qmd >}}
 {{< include methods/preprocessing.qmd >}}
 {{< include methods/distribution-analysis.qmd >}}
+{{< include methods/randomForest.qmd >}}
+
 # Results
+
+First we present the researched areas, after that we look into distribution characterics. Lastly we present a set of generated random forest models and their accuracy.
+
+
 {{< include results/researched-areas.qmd >}}
 {{< include results/z-distribution.qmd >}}
 {{< include results/number_of_returns.qmd >}}
@@ -46,12 +62,16 @@ This report documents the analysis of forest data for different tree species.
 {{< include results/density.qmd >}}
 {{< include results/chm.qmd >}}
 
-
-{{< include results/rf/height.qmd >}}
 {{< include results/rf/neighbors.qmd >}}
-{{< include results/rf/returns_per_tree.qmd >}}
+{{< include results/rf/segmentation.qmd >}}
 {{< include results/rf/patch-level.qmd >}}
 
+
+
+{{< include discussion/findings.qmd >}}
+{{< include discussion/limitations.qmd >}}
+{{< include discussion/further-work.qmd >}}
+{{< include discussion/conclusion.qmd >}}
 
 
 
