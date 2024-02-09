@@ -113,74 +113,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="sec-appendix-preprocessing">Script which can be used to do all preprocessing</h2>
 <p>Load the file with the research areas</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sf <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"research_areas.shp"</span>))</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Simple feature collection with 12 features and 3 fields
-Geometry type: POLYGON
-Dimension:     XY
-Bounding box:  xmin: 7.071625 ymin: 51.08151 xmax: 8.539877 ymax: 52.25983
-Geodetic CRS:  WGS 84
-# A tibble: 12 × 4
-      id species name                                                   geometry
-   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                                             &lt;POLYGON [°]&gt;
- 1     1 oak     rinkerode           ((7.678922 51.85789, 7.675446 51.85752, 7.…
- 2     2 oak     hamm                ((7.858955 51.66699, 7.866444 51.66462, 7.…
- 3     3 oak     muenster            ((7.618908 51.9154, 7.617384 51.9172, 7.61…
- 4     4 pine    greffen             ((8.168691 51.98965, 8.167178 51.99075, 8.…
- 5     5 pine    telgte              ((7.779728 52.00662, 7.781616 52.00662, 7.…
- 6     6 pine    mesum               ((7.534424 52.25499, 7.53378 52.25983, 7.5…
- 7     7 beech   bielefeld_brackwede ((8.524749 51.9921, 8.528418 51.99079, 8.5…
- 8     8 beech   wuelfenrath         ((7.071625 51.29256, 7.072311 51.29334, 7.…
- 9     9 beech   billerbeck          ((7.324729 51.99783, 7.323548 51.99923, 7.…
-10    10 spruce  marienheide         ((7.558102 51.08358, 7.558317 51.08527, 7.…
-11    11 spruce  brilon              ((8.532195 51.41029, 8.535027 51.41064, 8.…
-12    12 spruce  osterwald           ((8.369328 51.21693, 8.371238 51.21718, 8.…</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sf <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"research_areas.shp"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Init the project</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lfa)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">sf_use_s2</span>(<span class="cn">FALSE</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>locations <span class="ot">&lt;-</span> <span class="fu">lfa_init</span>(<span class="st">"research_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lfa)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">sf_use_s2</span>(<span class="cn">FALSE</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>locations <span class="ot">&lt;-</span> <span class="fu">lfa_init</span>(<span class="st">"research_areas.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Do all of the prprocessing steps</p>
+<p>Do all of the preprocessing steps</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations,retile,<span class="at">check_flag =</span> <span class="st">"retile"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>No further processing: flag retile is set!Function is already computed, no further computings here</code></pre>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lfa::lfa_map_tile_locations(locations, lfa::retile,check_flag = "retile")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code>NULL</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_intersect_areas, <span class="at">ctg =</span> <span class="cn">NULL</span>, <span class="at">areas_sf =</span> sf,<span class="at">check_flag =</span> <span class="st">"intersect"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>No further processing: flag intersect is set!Function is already computed, no further computings here</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>NULL</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_ground_correction, <span class="at">ctg =</span> <span class="cn">NULL</span>,<span class="at">check_flag =</span> <span class="st">"z_correction"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>No further processing: flag z_correction is set!Function is already computed, no further computings here</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>NULL</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_segmentation, <span class="at">ctg =</span> <span class="cn">NULL</span>,<span class="at">check_flag =</span> <span class="st">"segmentation"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>No further processing: flag segmentation is set!Function is already computed, no further computings here</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>NULL</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lfa_map_tile_locations</span>(locations, lfa_detection, <span class="at">catalog =</span> <span class="cn">NULL</span>, <span class="at">write_to_file =</span> <span class="cn">TRUE</span>,<span class="at">check_flag =</span> <span class="st">"detection"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>No further processing: flag detection is set!Function is already computed, no further computings here</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>NULL</code></pre>
-</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>lfa<span class="sc">::</span><span class="fu">lfa_map_tile_locations</span>(locations, lfa<span class="sc">::</span>lfa_intersect_areas, <span class="at">ctg =</span> <span class="cn">NULL</span>, <span class="at">areas_sf =</span> sf,<span class="at">check_flag =</span> <span class="st">"intersect"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>lfa<span class="sc">::</span><span class="fu">lfa_map_tile_locations</span>(locations, lfa<span class="sc">::</span>lfa_ground_correction, <span class="at">ctg =</span> <span class="cn">NULL</span>,<span class="at">check_flag =</span> <span class="st">"z_correction"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>lfa<span class="sc">::</span><span class="fu">lfa_map_tile_locations</span>(locations, lfa<span class="sc">::</span>lfa_segmentation, <span class="at">ctg =</span> <span class="cn">NULL</span>,<span class="at">check_flag =</span> <span class="st">"segmentation"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>lfa<span class="sc">::</span><span class="fu">lfa_map_tile_locations</span>(locations, lfa<span class="sc">::</span>lfa_detection, <span class="at">catalog =</span> <span class="cn">NULL</span>, <span class="at">write_to_file =</span> <span class="cn">TRUE</span>,<span class="at">check_flag =</span> <span class="st">"detection"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
