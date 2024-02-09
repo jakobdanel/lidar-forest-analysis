@@ -1,0 +1,22 @@
+## Implementation
+In the implementation of our project aimed at utilizing LiDAR data for distinguishing tree species in monocultural forests, we chose R as our programming language. This decision was driven by the robust and well-maintained package infrastructure offered by R, providing a solid foundation for our work. Additionally, R's inherent capability to handle large data structures efficiently proved advantageous for our project, where processing LiDAR point clouds required a scalable and effective solution.
+
+Our implementation relied on four key R packages, each serving a crucial role in the project's success:
+
+- **lidR:** This package played a fundamental role in handling and processing LiDAR point clouds. Its capabilities were essential for the core management of LiDAR data throughout our analysis [@lidR].
+
+- **sf:** Used for managing spatial vector data and conducting spatial operations, the sf package enriched our analysis with essential spatial components, enhancing the geographical dimension of our research [@sf].
+
+- **dplyr:** As a package specialized in data manipulation, dplyr provided indispensable tools for shaping and organizing our data to meet the specific requirements of our analysis [@dplyr].
+
+- **ggplot2:** Renowned for its proficiency in creating high-quality visualizations, ggplot2 was employed to present our results in a manner that is not only informative but also reproducible [@ggplot2].
+
+To streamline the implementation process and make our work accessible to others, we encapsulated these functionalities into a comprehensive R package. This package handles various aspects of the project seamlessly:
+
+- **Automated Data Management:** The R package takes care of organizing and saving data in a predefined directory structure, ensuring a systematic and orderly approach.
+
+- **Meta Information Generation:** It automatically generates meta-information based on the structure of the data, providing vital context and documentation for our analyses.
+
+- **Analytic Function Application:** Analytic functions are applied automatically to specified data subsets, streamlining the analytical process and enhancing the reproducibility of our results.
+
+For those interested in exploring or contributing to our work, the GitHub repository containing the implementations can be accessed [here](https://github.com/jakobdanel/lidar-forest-analysis). This centralized repository serves as a collaborative hub, inviting further development and utilization of our LiDAR forest analysis package [@lfa]. For further investigation you can find the package Documentation here: @sec-documentation

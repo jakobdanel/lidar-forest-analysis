@@ -49,6 +49,7 @@ We first describe the processes of data acquisition and data preprocessing. Then
 {{< include methods/preprocessing.qmd >}}
 {{< include methods/distribution-analysis.qmd >}}
 {{< include methods/randomForest.qmd >}}
+{{< include methods/implementation.qmd >}}
 
 # Results
 
@@ -92,6 +93,6 @@ First we present the researched areas, after that we look into distribution char
 {{< include appendix/number_of_returns.qmd >}}
 
 
-## Documentation
+## Documentation {#sec-documentation}
 {{< include appendix/package-docs/docs.qmd >}}
 
