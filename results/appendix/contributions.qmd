@@ -1,6 +1,6 @@
 ## Contributions
 
--   General: Most of the work was done in pair programming
+Most of the work was done in pair programming. In the following sections we highlight, our key contributions to the project.
 
 ### Frederick
 
@@ -29,8 +29,14 @@ Developing a canopy height model involved integrating data from various sources 
 In summary, my contributions to the project encompassed a range of tasks, each presenting its own set of challenges and learning opportunities. From data acquisition to model implementation, I gained valuable experience in ecological research methods and data analysis techniques.
 
 ### Jakob
+In the broader context of a comprehensive lidar data analysis project, my contributions were instrumental in advancing key components. The preprocessing phase saw enhancements in Intersection, Detection, and Segmentation processes. I played a pivotal role in refining Intersection by overlaying lidar data onto shapefiles, ensuring a coherent file structure. Additionally, my efforts in Detection focused on optimizing tree identification within the intersected data. I developed the tree Segmentation too.
 
--   Preprocessing: Intersection/Detection/Segmentation
--   Visualization: Random Forest/Maps
--   KLD and JSD
--   Interface for LidAR data.
+In terms of visualization, my contributions elevated the understanding of lidar data. The presentation of the confusion matrix as a colored table provided a comprehensive view of classification performance. Through the implementation of bar plots for patch-level data, I contributed to insights into the distribution of features. Precision and recall metrics were effectively communicated via bar plots, offering a nuanced evaluation of the model's performance. The integration of Canopy Height Plots further enriched the visual representation of canopy structures.
+
+Within the tree-level distribution analysis, my role extended to Data Preparation and the application of KLD and JSD. I ensured that the dataset was well-structured and prepared for analysis. Moreover, my involvement in researching methods, implementing calculations, and dynamically building result tables for KLD and JSD significantly contributed to the depth of the analysis.
+
+In the development of an interface for Lidar data, I played a crucial role in designing a structured file system for efficient data storage. The implementation of various functions, including `lfa::map_tile_locations`, `lfa::visit_all_areas`, and `lfa::combine_sf_object`, showcased my commitment to enhancing data iteration and combination processes.
+
+Throughout the project, my contributions led to valuable learnings for the team. I actively addressed challenges associated with handling big data in R and underscored the importance of structured data storage. The development of an R-package was a testament to my commitment to enhancing functionality and promoting reusability. Additionally, my insights deepened the team's understanding of package workflows in R.
+
+Despite encountering challenges with lidR mapping functions, my proactive approach to debugging, including the development of a custom mapping solution, showcased my resilience and commitment to overcoming obstacles. In summary, my contributions significantly shaped the success and advancement of the broader lidar data analysis project.

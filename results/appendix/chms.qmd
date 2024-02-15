@@ -1,4 +1,4 @@
-## Canopy Height Models
+## Canopy Height Models {#sec-appendix-chms}
 
 The following section contains all canopy height models of the researched patches, plotted.
 

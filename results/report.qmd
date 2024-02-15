@@ -1,5 +1,5 @@
 ---
-title: "Forest Data Analysis Report"
+title: "Evaluating Tree Species Diversity in Forest Ecosystems Using LiDAR Data: A Exploration in NRW"
 output:
   pdf_document:
     latex_engine: xelatex
@@ -82,6 +82,9 @@ First we present the researched areas, after that we look into distribution char
 :::
 
 # Appendix
+
+{{< include appendix/contributions.qmd >}}
+
 {{< include appendix/preprocessing.qmd >}}
 {{< include appendix/chms.qmd >}}
 
