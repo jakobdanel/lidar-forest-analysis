@@ -1,6 +1,15 @@
 ## Contributions
+- General: Most of the work was done in pair programming
 
 ### Frederick
-
+- data acquisition
+- Preprocessing: Tiling/Height Normalization
+- visualization: Density and Boxplot
+- randomForest: Scores and Confusion Matrix
+- canopy height model
 
 ### Jakob
+- Preprocessing: Intersection/Detection/Segmentation
+- Visualization: Random Forest/Maps
+- KLD and JSD
+- Interface for LidAR data.
