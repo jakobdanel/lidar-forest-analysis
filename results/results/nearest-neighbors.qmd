@@ -7,9 +7,9 @@ neighbors <- lfa::lfa_combine_sf_obj(lfa::lfa_get_neighbor_paths(),lfa::lfa_get_
 ```
 
 #### Overview
-To initiate our analysis, we first establish a framework for selecting neighbors by examining the distance development with different n, as illustrated in @fig-n-nearest-overview. The curves share a similar design, but the actual values vary. Notably, as n increases, the distance between all patches also increases, indicating a broader spatial context.
+To initiate our analysis, we first establish a framework for selecting neighbors by examining the distance development with different $n$, as illustrated in @fig-n-nearest-overview. The curves share a similar design, but the actual values vary. Notably, as $n$ increases, the distance between all patches also increases, indicating a broader spatial context.
 
-Considering this trend, we extend our investigation beyond the nearest neighbor to include the 100th nearest neighbor. The $\Delta$distance shows a consistent decrease with each increment in n, reinforcing our decision to limit exploration beyond n of a hundred. Additionally, the constraint is driven by practical considerations, as our sample size occasionally lacks the capacity to explore larger n values, resulting in inaccurate values due to the absence of the true nearest neighbor within the sample area.
+Considering this trend, we extend our investigation beyond the nearest neighbor to include the 100th nearest neighbor. The $\Delta$distance shows a consistent decrease with each increment in $n$, reinforcing our decision to limit exploration beyond $n$ of a hundred. Additionally, the constraint is driven by practical considerations, as our sample size occasionally lacks the capacity to explore larger $n$ values, resulting in inaccurate values due to the absence of the true nearest neighbor within the sample area.
 
 
 ```{r}

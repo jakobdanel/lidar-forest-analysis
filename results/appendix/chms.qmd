@@ -1,0 +1,101 @@
+## Canopy Height Models
+
+The following section contains all canopy height models of the researched patches, plotted.
+
+```{r}
+library(raster)
+chms <- lfa::lfa_visit_all_areas(lfa::lfa_chm)
+chms$rinkerode[chms$rinkerode > 50] <- NA
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Canopy Height Model of the patch Bielefeld Brackwede (Beech) colorized by the canopy height.
+chms$bielefeld_brackwede |> plot(main = "Canopy Height Model: Bielefeld Brackwede (Beech")
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Canopy Height Model of the patch Billerbeck (Beech) colorized by the canopy height.
+chms$billerbeck |> plot(main = "Canopy Height Model: Billerbeck (Beech")
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Canopy Height Model of the patch Wülfenrath (Beech) colorized by the canopy height.
+chms$wuelfenrath |> plot(main = "Canopy Height Model: Wülfenrath (Beech")
+```
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Canopy Height Model of the patch Hamm (Oak) colorized by the canopy height.
+chms$hamm |> plot(main = "Canopy Height Model: Hamm (Oak)")
+```
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Canopy Height Model of the patch Münster (Oak) colorized by the canopy height.
+chms$muenster |> plot(main = "Canopy Height Model: Münster (Oak)")
+```
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Canopy Height Model of the patch Rinkerode (Oak) colorized by the canopy height.
+chms$rinkerode |> plot(main = "Canopy Height Model: Rinkerode (Oak)")
+```
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Canopy Height Model of the patch Greffen (Pine) colorized by the canopy height.
+chms$greffen |> plot(main = "Canopy Height Model: Greffen (Pine)")
+```
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Canopy Height Model of the patch Mesum (Pine) colorized by the canopy height.
+chms$mesum |> plot(main = "Canopy Height Model: Mesum (Pine)")
+```
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Canopy Height Model of the patch Telgte (Pine) colorized by the canopy height.
+chms$telgte |> plot(main = "Canopy Height Model: Telgte (Pine)")
+```
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Canopy Height Model of the patch Brilon (Spruce) colorized by the canopy height.
+chms$brilon |> plot(main = "Canopy Height Model: Brilon (Spruce)")
+```
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Canopy Height Model of the patch Oberhundem (Spruce) colorized by the canopy height.
+chms$oberhundem |> plot(main = "Canopy Height Model: Oberhundem (Spruce)")
+```
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| fig-cap: Canopy Height Model of the patch Osterwald (Spruce) colorized by the canopy height.
+chms$osterwald |> plot(main = "Canopy Height Model: Osterwald (Spruce)")
+```

@@ -83,6 +83,8 @@ First we present the researched areas, after that we look into distribution char
 
 # Appendix
 {{< include appendix/preprocessing.qmd >}}
+{{< include appendix/chms.qmd >}}
+
 ## Quantitative Results
 {{< include appendix/z_values.qmd >}}
 

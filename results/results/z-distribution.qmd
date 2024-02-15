@@ -10,7 +10,7 @@ The following subsections describe the distributions of different tree character
 detections <- lfa::lfa_get_detections()
 ```
 
-In this study, we scrutinize the distribution of tree heights, focusing initially on the density distribution to unravel the nuances across various tree species. Notably, our examination reveals distinctive patterns, with Oak and Pine exhibiting significantly steeper peaks in their density curves compared to Beech and Spruce. While all species present unique density curves, a commonality emerges—each curve is characterized by a single peak, except for the intriguing exception observed in Telgte. Taking Beech as an illustrative example, our findings indicate a notable shift in the peak to a considerably higher extent. The varinace in the density curves indicating that an differencation between species only with the help oof tree height values could be difficult.
+In this study, we scrutinize the distribution of tree heights, focusing initially on the density distribution to unravel the nuances across various tree species. Notably, our examination reveals distinctive patterns, with Oak and Pine exhibiting significantly steeper peaks in their density curves compared to Beech and Spruce. While all species present unique density curves, a commonality emerges—each curve is characterized by a single peak, except for the intriguing exception observed in Telgte. Taking Beech as an illustrative example, our findings indicate a notable shift in the peak to a considerably higher extent. The varinace in the density curves indicating that an differentiation between species only with the help of tree height values could be difficult.
 
 ```{r}
 #| code-fold: true
