@@ -1,15 +1,36 @@
 ## Contributions
-- General: Most of the work was done in pair programming
+
+-   General: Most of the work was done in pair programming
 
 ### Frederick
-- data acquisition
-- Preprocessing: Tiling/Height Normalization
-- visualization: Density and Boxplot
-- randomForest: Scores and Confusion Matrix
-- canopy height model
+
+My contributions to the project encompassed several key areas: data acquisition, preprocessing, visualization, random forest implementation, and canopy height modeling. Each of these tasks presented unique challenges and learning opportunities.
+
+#### Data Acquisition
+
+My role in data acquisition involved sourcing relevant datasets for our study, particularly focusing on obtaining patches where one tree species exhibited dominance. This process involved navigating through existing datasets such as the *Waldmonitor* dataset and utilizing maps indicating dominant tree species in Nordrhein-Westfalia (NRW). One of the challenges encountered was ensuring the validity of the selected patches, considering factors such as patch size, species diversity, and the absence of human-made structures. Through this process, I learned the importance of meticulous data selection and validation to ensure the integrity of subsequent analyses.
+
+#### Preprocessing: Tiling/Height Normalization
+
+Preprocessing the acquired data was essential to derive meaningful variables for analysis. Tiling and height normalization were particularly crucial steps to standardize the data and facilitate further analysis. Tiling involved partitioning the patches into smaller, manageable units, while height normalization ensured consistency in height measurements across different patches. This process taught me the importance of data standardization and the impact it can have on downstream analyses.
+
+#### Visualization: Density and Boxplot
+
+Visualizing the data through density plots and boxplots was instrumental in gaining insights into the distribution and characteristics of the variables under study. Creating informative visualizations required careful selection of plotting parameters and consideration of the audience's interpretation. Balancing clarity and complexity posed a challenge, but it also provided an opportunity to enhance my visualization skills and effectively communicate key findings.
+
+#### Random Forest: Scores and Confusion Matrix
+
+Implementing the Random Forest algorithm for species classification involved several steps, including model training, validation, and performance evaluation. Generating scores and confusion matrices allowed us to assess the model's accuracy and identify areas for improvement.
+
+#### Canopy Height Model
+
+Developing a canopy height model involved integrating data from various sources to estimate the height of forest canopies. Overcoming technical challenges and refining the model parameters provided valuable insights into remote sensing techniques and their applicability in forestry research.
+
+In summary, my contributions to the project encompassed a range of tasks, each presenting its own set of challenges and learning opportunities. From data acquisition to model implementation, I gained valuable experience in ecological research methods and data analysis techniques.
 
 ### Jakob
-- Preprocessing: Intersection/Detection/Segmentation
-- Visualization: Random Forest/Maps
-- KLD and JSD
-- Interface for LidAR data.
+
+-   Preprocessing: Intersection/Detection/Segmentation
+-   Visualization: Random Forest/Maps
+-   KLD and JSD
+-   Interface for LidAR data.
