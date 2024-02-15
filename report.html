@@ -10,7 +10,7 @@
 <meta name="author" content="Federick Bruch">
 <meta name="dcterms.date" content="2024-02-15">
 
-<title>Forest Data Analysis Report</title>
+<title>Evaluating Tree Species Diversity in Forest Ecosystems Using LiDAR Data: A Exploration in NRW</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -172,72 +172,77 @@ div.csl-indent {
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">5</span> References</a></li>
   <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix"><span class="header-section-number">6</span> Appendix</a>
   <ul class="collapse">
-  <li><a href="#sec-appendix-preprocessing" id="toc-sec-appendix-preprocessing" class="nav-link" data-scroll-target="#sec-appendix-preprocessing"><span class="header-section-number">6.1</span> Script which can be used to do all preprocessing</a></li>
-  <li><a href="#canopy-height-models" id="toc-canopy-height-models" class="nav-link" data-scroll-target="#canopy-height-models"><span class="header-section-number">6.2</span> Canopy Height Models</a></li>
-  <li><a href="#quantitative-results" id="toc-quantitative-results" class="nav-link" data-scroll-target="#quantitative-results"><span class="header-section-number">6.3</span> Quantitative Results</a>
+  <li><a href="#contributions" id="toc-contributions" class="nav-link" data-scroll-target="#contributions"><span class="header-section-number">6.1</span> Contributions</a>
   <ul class="collapse">
-  <li><a href="#distribution-of-z-values" id="toc-distribution-of-z-values" class="nav-link" data-scroll-target="#distribution-of-z-values"><span class="header-section-number">6.3.1</span> Distribution of Z-Values</a></li>
-  <li><a href="#nearest-neighbours" id="toc-nearest-neighbours" class="nav-link" data-scroll-target="#nearest-neighbours"><span class="header-section-number">6.3.2</span> Nearest Neighbours</a></li>
-  <li><a href="#distribution-of-the-number-of-returns" id="toc-distribution-of-the-number-of-returns" class="nav-link" data-scroll-target="#distribution-of-the-number-of-returns"><span class="header-section-number">6.3.3</span> Distribution of the number of returns</a></li>
+  <li><a href="#frederick" id="toc-frederick" class="nav-link" data-scroll-target="#frederick"><span class="header-section-number">6.1.1</span> Frederick</a></li>
+  <li><a href="#jakob" id="toc-jakob" class="nav-link" data-scroll-target="#jakob"><span class="header-section-number">6.1.2</span> Jakob</a></li>
   </ul></li>
-  <li><a href="#sec-documentation" id="toc-sec-documentation" class="nav-link" data-scroll-target="#sec-documentation"><span class="header-section-number">6.4</span> Documentation</a>
+  <li><a href="#sec-appendix-preprocessing" id="toc-sec-appendix-preprocessing" class="nav-link" data-scroll-target="#sec-appendix-preprocessing"><span class="header-section-number">6.2</span> Script which can be used to do all preprocessing</a></li>
+  <li><a href="#sec-appendix-chms" id="toc-sec-appendix-chms" class="nav-link" data-scroll-target="#sec-appendix-chms"><span class="header-section-number">6.3</span> Canopy Height Models</a></li>
+  <li><a href="#quantitative-results" id="toc-quantitative-results" class="nav-link" data-scroll-target="#quantitative-results"><span class="header-section-number">6.4</span> Quantitative Results</a>
   <ul class="collapse">
-  <li><a href="#lfa_calculate_patch_density" id="toc-lfa_calculate_patch_density" class="nav-link" data-scroll-target="#lfa_calculate_patch_density"><span class="header-section-number">6.4.1</span> <code>lfa_calculate_patch_density</code></a></li>
-  <li><a href="#lfa_calculate_rf_metrics" id="toc-lfa_calculate_rf_metrics" class="nav-link" data-scroll-target="#lfa_calculate_rf_metrics"><span class="header-section-number">6.4.2</span> <code>lfa_calculate_rf_metrics</code></a></li>
-  <li><a href="#lfa_capitalize_first_char" id="toc-lfa_capitalize_first_char" class="nav-link" data-scroll-target="#lfa_capitalize_first_char"><span class="header-section-number">6.4.3</span> <code>lfa_capitalize_first_char</code></a></li>
-  <li><a href="#lfa_check_flag" id="toc-lfa_check_flag" class="nav-link" data-scroll-target="#lfa_check_flag"><span class="header-section-number">6.4.4</span> <code>lfa_check_flag</code></a></li>
-  <li><a href="#lfa_chm" id="toc-lfa_chm" class="nav-link" data-scroll-target="#lfa_chm"><span class="header-section-number">6.4.5</span> <code>lfa_chm</code></a></li>
-  <li><a href="#lfa_combine_sf_obj" id="toc-lfa_combine_sf_obj" class="nav-link" data-scroll-target="#lfa_combine_sf_obj"><span class="header-section-number">6.4.6</span> <code>lfa_combine_sf_obj</code></a></li>
-  <li><a href="#lfa_count_returns_all_areas" id="toc-lfa_count_returns_all_areas" class="nav-link" data-scroll-target="#lfa_count_returns_all_areas"><span class="header-section-number">6.4.7</span> <code>lfa_count_returns_all_areas</code></a></li>
-  <li><a href="#lfa_count_returns_per_tree" id="toc-lfa_count_returns_per_tree" class="nav-link" data-scroll-target="#lfa_count_returns_per_tree"><span class="header-section-number">6.4.8</span> <code>lfa_count_returns_per_tree</code></a></li>
-  <li><a href="#lfa_create_boxplot" id="toc-lfa_create_boxplot" class="nav-link" data-scroll-target="#lfa_create_boxplot"><span class="header-section-number">6.4.9</span> <code>lfa_create_boxplot</code></a></li>
-  <li><a href="#lfa_create_density_plots" id="toc-lfa_create_density_plots" class="nav-link" data-scroll-target="#lfa_create_density_plots"><span class="header-section-number">6.4.10</span> <code>lfa_create_density_plots</code></a></li>
-  <li><a href="#lfa_create_grouped_bar_plot" id="toc-lfa_create_grouped_bar_plot" class="nav-link" data-scroll-target="#lfa_create_grouped_bar_plot"><span class="header-section-number">6.4.11</span> <code>lfa_create_grouped_bar_plot</code></a></li>
-  <li><a href="#lfa_create_neighbor_mean_curves" id="toc-lfa_create_neighbor_mean_curves" class="nav-link" data-scroll-target="#lfa_create_neighbor_mean_curves"><span class="header-section-number">6.4.12</span> <code>lfa_create_neighbor_mean_curves</code></a></li>
-  <li><a href="#lfa_create_plot_per_area" id="toc-lfa_create_plot_per_area" class="nav-link" data-scroll-target="#lfa_create_plot_per_area"><span class="header-section-number">6.4.13</span> <code>lfa_create_plot_per_area</code></a></li>
-  <li><a href="#lfa_create_ppp_from_area" id="toc-lfa_create_ppp_from_area" class="nav-link" data-scroll-target="#lfa_create_ppp_from_area"><span class="header-section-number">6.4.14</span> <code>lfa_create_ppp_from_area</code></a></li>
-  <li><a href="#lfa_create_stacked_distributions_plot" id="toc-lfa_create_stacked_distributions_plot" class="nav-link" data-scroll-target="#lfa_create_stacked_distributions_plot"><span class="header-section-number">6.4.15</span> <code>lfa_create_stacked_distributions_plot</code></a></li>
-  <li><a href="#lfa_create_stacked_histogram" id="toc-lfa_create_stacked_histogram" class="nav-link" data-scroll-target="#lfa_create_stacked_histogram"><span class="header-section-number">6.4.16</span> <code>lfa_create_stacked_histogram</code></a></li>
-  <li><a href="#lfa_create_tile_location_objects" id="toc-lfa_create_tile_location_objects" class="nav-link" data-scroll-target="#lfa_create_tile_location_objects"><span class="header-section-number">6.4.17</span> <code>lfa_create_tile_location_objects</code></a></li>
-  <li><a href="#lfa_detection" id="toc-lfa_detection" class="nav-link" data-scroll-target="#lfa_detection"><span class="header-section-number">6.4.18</span> <code>lfa_detection</code></a></li>
-  <li><a href="#lfa_download_areas" id="toc-lfa_download_areas" class="nav-link" data-scroll-target="#lfa_download_areas"><span class="header-section-number">6.4.19</span> <code>lfa_download_areas</code></a></li>
-  <li><a href="#lfa_download" id="toc-lfa_download" class="nav-link" data-scroll-target="#lfa_download"><span class="header-section-number">6.4.20</span> <code>lfa_download</code></a></li>
-  <li><a href="#lfa_find_n_nearest_trees" id="toc-lfa_find_n_nearest_trees" class="nav-link" data-scroll-target="#lfa_find_n_nearest_trees"><span class="header-section-number">6.4.21</span> <code>lfa_find_n_nearest_trees</code></a></li>
-  <li><a href="#lfa_generate_result_table_tests" id="toc-lfa_generate_result_table_tests" class="nav-link" data-scroll-target="#lfa_generate_result_table_tests"><span class="header-section-number">6.4.22</span> <code>lfa_generate_result_table_tests</code></a></li>
-  <li><a href="#lfa_get_all_areas" id="toc-lfa_get_all_areas" class="nav-link" data-scroll-target="#lfa_get_all_areas"><span class="header-section-number">6.4.23</span> <code>lfa_get_all_areas</code></a></li>
-  <li><a href="#lfa_get_detection_area" id="toc-lfa_get_detection_area" class="nav-link" data-scroll-target="#lfa_get_detection_area"><span class="header-section-number">6.4.24</span> <code>lfa_get_detection_area</code></a></li>
-  <li><a href="#lfa_get_detections_species" id="toc-lfa_get_detections_species" class="nav-link" data-scroll-target="#lfa_get_detections_species"><span class="header-section-number">6.4.25</span> <code>lfa_get_detections_species</code></a></li>
-  <li><a href="#lfa_get_detections" id="toc-lfa_get_detections" class="nav-link" data-scroll-target="#lfa_get_detections"><span class="header-section-number">6.4.26</span> <code>lfa_get_detections</code></a></li>
-  <li><a href="#lfa_get_flag_path" id="toc-lfa_get_flag_path" class="nav-link" data-scroll-target="#lfa_get_flag_path"><span class="header-section-number">6.4.27</span> <code>lfa_get_flag_path</code></a></li>
-  <li><a href="#lfa_get_neighbor_paths" id="toc-lfa_get_neighbor_paths" class="nav-link" data-scroll-target="#lfa_get_neighbor_paths"><span class="header-section-number">6.4.28</span> <code>lfa_get_neighbor_paths</code></a></li>
-  <li><a href="#lfa_get_species" id="toc-lfa_get_species" class="nav-link" data-scroll-target="#lfa_get_species"><span class="header-section-number">6.4.29</span> <code>lfa_get_species</code></a></li>
-  <li><a href="#lfa_ground_correction" id="toc-lfa_ground_correction" class="nav-link" data-scroll-target="#lfa_ground_correction"><span class="header-section-number">6.4.30</span> <code>lfa_ground_correction</code></a></li>
-  <li><a href="#lfa_init_data_structure" id="toc-lfa_init_data_structure" class="nav-link" data-scroll-target="#lfa_init_data_structure"><span class="header-section-number">6.4.31</span> <code>lfa_init_data_structure</code></a></li>
-  <li><a href="#lfa_init" id="toc-lfa_init" class="nav-link" data-scroll-target="#lfa_init"><span class="header-section-number">6.4.32</span> <code>lfa_init</code></a></li>
-  <li><a href="#lfa_intersect_areas" id="toc-lfa_intersect_areas" class="nav-link" data-scroll-target="#lfa_intersect_areas"><span class="header-section-number">6.4.33</span> <code>lfa_intersect_areas</code></a></li>
-  <li><a href="#lfa_jsd_from_vec" id="toc-lfa_jsd_from_vec" class="nav-link" data-scroll-target="#lfa_jsd_from_vec"><span class="header-section-number">6.4.34</span> <code>lfa_jsd_from_vec</code></a></li>
-  <li><a href="#lfa_jsd" id="toc-lfa_jsd" class="nav-link" data-scroll-target="#lfa_jsd"><span class="header-section-number">6.4.35</span> <code>lfa_jsd</code></a></li>
-  <li><a href="#lfa_kld_from_vec" id="toc-lfa_kld_from_vec" class="nav-link" data-scroll-target="#lfa_kld_from_vec"><span class="header-section-number">6.4.36</span> <code>lfa_kld_from_vec</code></a></li>
-  <li><a href="#lfa_kld" id="toc-lfa_kld" class="nav-link" data-scroll-target="#lfa_kld"><span class="header-section-number">6.4.37</span> <code>lfa_kld</code></a></li>
-  <li><a href="#lfa_ks_test" id="toc-lfa_ks_test" class="nav-link" data-scroll-target="#lfa_ks_test"><span class="header-section-number">6.4.38</span> <code>lfa_ks_test</code></a></li>
-  <li><a href="#lfa_load_ctg_if_not_present" id="toc-lfa_load_ctg_if_not_present" class="nav-link" data-scroll-target="#lfa_load_ctg_if_not_present"><span class="header-section-number">6.4.39</span> <code>lfa_load_ctg_if_not_present</code></a></li>
-  <li><a href="#lfa_map_tile_locations" id="toc-lfa_map_tile_locations" class="nav-link" data-scroll-target="#lfa_map_tile_locations"><span class="header-section-number">6.4.40</span> <code>lfa_map_tile_locations</code></a></li>
-  <li><a href="#lfa_merge_and_save" id="toc-lfa_merge_and_save" class="nav-link" data-scroll-target="#lfa_merge_and_save"><span class="header-section-number">6.4.41</span> <code>lfa_merge_and_save</code></a></li>
-  <li><a href="#lfa_plot_confusion_matrix" id="toc-lfa_plot_confusion_matrix" class="nav-link" data-scroll-target="#lfa_plot_confusion_matrix"><span class="header-section-number">6.4.42</span> <code>lfa_plot_confusion_matrix</code></a></li>
-  <li><a href="#lfa_precision_per_class" id="toc-lfa_precision_per_class" class="nav-link" data-scroll-target="#lfa_precision_per_class"><span class="header-section-number">6.4.43</span> <code>lfa_precision_per_class</code></a></li>
-  <li><a href="#lfa_random_forest" id="toc-lfa_random_forest" class="nav-link" data-scroll-target="#lfa_random_forest"><span class="header-section-number">6.4.44</span> <code>lfa_random_forest</code></a></li>
-  <li><a href="#lfa_rasterize_chunk" id="toc-lfa_rasterize_chunk" class="nav-link" data-scroll-target="#lfa_rasterize_chunk"><span class="header-section-number">6.4.45</span> <code>lfa_rasterize_chunk</code></a></li>
-  <li><a href="#lfa_rd_to_qmd" id="toc-lfa_rd_to_qmd" class="nav-link" data-scroll-target="#lfa_rd_to_qmd"><span class="header-section-number">6.4.46</span> <code>lfa_rd_to_qmd</code></a></li>
-  <li><a href="#lfa_rd_to_results" id="toc-lfa_rd_to_results" class="nav-link" data-scroll-target="#lfa_rd_to_results"><span class="header-section-number">6.4.47</span> <code>lfa_rd_to_results</code></a></li>
-  <li><a href="#lfa_read_area_as_catalog" id="toc-lfa_read_area_as_catalog" class="nav-link" data-scroll-target="#lfa_read_area_as_catalog"><span class="header-section-number">6.4.48</span> <code>lfa_read_area_as_catalog</code></a></li>
-  <li><a href="#lfa_recall_per_class" id="toc-lfa_recall_per_class" class="nav-link" data-scroll-target="#lfa_recall_per_class"><span class="header-section-number">6.4.49</span> <code>lfa_recall_per_class</code></a></li>
-  <li><a href="#lfa_run_test_asymmetric" id="toc-lfa_run_test_asymmetric" class="nav-link" data-scroll-target="#lfa_run_test_asymmetric"><span class="header-section-number">6.4.50</span> <code>lfa_run_test_asymmetric</code></a></li>
-  <li><a href="#lfa_run_test_symmetric" id="toc-lfa_run_test_symmetric" class="nav-link" data-scroll-target="#lfa_run_test_symmetric"><span class="header-section-number">6.4.51</span> <code>lfa_run_test_symmetric</code></a></li>
-  <li><a href="#lfa_save_all_neighbours" id="toc-lfa_save_all_neighbours" class="nav-link" data-scroll-target="#lfa_save_all_neighbours"><span class="header-section-number">6.4.52</span> <code>lfa_save_all_neighbours</code></a></li>
-  <li><a href="#lfa_segmentation" id="toc-lfa_segmentation" class="nav-link" data-scroll-target="#lfa_segmentation"><span class="header-section-number">6.4.53</span> <code>lfa_segmentation</code></a></li>
-  <li><a href="#lfa_set_flag" id="toc-lfa_set_flag" class="nav-link" data-scroll-target="#lfa_set_flag"><span class="header-section-number">6.4.54</span> <code>lfa_set_flag</code></a></li>
-  <li><a href="#lfa_visit_all_areas" id="toc-lfa_visit_all_areas" class="nav-link" data-scroll-target="#lfa_visit_all_areas"><span class="header-section-number">6.4.55</span> <code>lfa_visit_all_areas</code></a></li>
-  <li><a href="#lfa_visualize_rf_metrics" id="toc-lfa_visualize_rf_metrics" class="nav-link" data-scroll-target="#lfa_visualize_rf_metrics"><span class="header-section-number">6.4.56</span> <code>lfa_visualize_rf_metrics</code></a></li>
+  <li><a href="#distribution-of-z-values" id="toc-distribution-of-z-values" class="nav-link" data-scroll-target="#distribution-of-z-values"><span class="header-section-number">6.4.1</span> Distribution of Z-Values</a></li>
+  <li><a href="#nearest-neighbours" id="toc-nearest-neighbours" class="nav-link" data-scroll-target="#nearest-neighbours"><span class="header-section-number">6.4.2</span> Nearest Neighbours</a></li>
+  <li><a href="#distribution-of-the-number-of-returns" id="toc-distribution-of-the-number-of-returns" class="nav-link" data-scroll-target="#distribution-of-the-number-of-returns"><span class="header-section-number">6.4.3</span> Distribution of the number of returns</a></li>
+  </ul></li>
+  <li><a href="#sec-documentation" id="toc-sec-documentation" class="nav-link" data-scroll-target="#sec-documentation"><span class="header-section-number">6.5</span> Documentation</a>
+  <ul class="collapse">
+  <li><a href="#lfa_calculate_patch_density" id="toc-lfa_calculate_patch_density" class="nav-link" data-scroll-target="#lfa_calculate_patch_density"><span class="header-section-number">6.5.1</span> <code>lfa_calculate_patch_density</code></a></li>
+  <li><a href="#lfa_calculate_rf_metrics" id="toc-lfa_calculate_rf_metrics" class="nav-link" data-scroll-target="#lfa_calculate_rf_metrics"><span class="header-section-number">6.5.2</span> <code>lfa_calculate_rf_metrics</code></a></li>
+  <li><a href="#lfa_capitalize_first_char" id="toc-lfa_capitalize_first_char" class="nav-link" data-scroll-target="#lfa_capitalize_first_char"><span class="header-section-number">6.5.3</span> <code>lfa_capitalize_first_char</code></a></li>
+  <li><a href="#lfa_check_flag" id="toc-lfa_check_flag" class="nav-link" data-scroll-target="#lfa_check_flag"><span class="header-section-number">6.5.4</span> <code>lfa_check_flag</code></a></li>
+  <li><a href="#lfa_chm" id="toc-lfa_chm" class="nav-link" data-scroll-target="#lfa_chm"><span class="header-section-number">6.5.5</span> <code>lfa_chm</code></a></li>
+  <li><a href="#lfa_combine_sf_obj" id="toc-lfa_combine_sf_obj" class="nav-link" data-scroll-target="#lfa_combine_sf_obj"><span class="header-section-number">6.5.6</span> <code>lfa_combine_sf_obj</code></a></li>
+  <li><a href="#lfa_count_returns_all_areas" id="toc-lfa_count_returns_all_areas" class="nav-link" data-scroll-target="#lfa_count_returns_all_areas"><span class="header-section-number">6.5.7</span> <code>lfa_count_returns_all_areas</code></a></li>
+  <li><a href="#lfa_count_returns_per_tree" id="toc-lfa_count_returns_per_tree" class="nav-link" data-scroll-target="#lfa_count_returns_per_tree"><span class="header-section-number">6.5.8</span> <code>lfa_count_returns_per_tree</code></a></li>
+  <li><a href="#lfa_create_boxplot" id="toc-lfa_create_boxplot" class="nav-link" data-scroll-target="#lfa_create_boxplot"><span class="header-section-number">6.5.9</span> <code>lfa_create_boxplot</code></a></li>
+  <li><a href="#lfa_create_density_plots" id="toc-lfa_create_density_plots" class="nav-link" data-scroll-target="#lfa_create_density_plots"><span class="header-section-number">6.5.10</span> <code>lfa_create_density_plots</code></a></li>
+  <li><a href="#lfa_create_grouped_bar_plot" id="toc-lfa_create_grouped_bar_plot" class="nav-link" data-scroll-target="#lfa_create_grouped_bar_plot"><span class="header-section-number">6.5.11</span> <code>lfa_create_grouped_bar_plot</code></a></li>
+  <li><a href="#lfa_create_neighbor_mean_curves" id="toc-lfa_create_neighbor_mean_curves" class="nav-link" data-scroll-target="#lfa_create_neighbor_mean_curves"><span class="header-section-number">6.5.12</span> <code>lfa_create_neighbor_mean_curves</code></a></li>
+  <li><a href="#lfa_create_plot_per_area" id="toc-lfa_create_plot_per_area" class="nav-link" data-scroll-target="#lfa_create_plot_per_area"><span class="header-section-number">6.5.13</span> <code>lfa_create_plot_per_area</code></a></li>
+  <li><a href="#lfa_create_ppp_from_area" id="toc-lfa_create_ppp_from_area" class="nav-link" data-scroll-target="#lfa_create_ppp_from_area"><span class="header-section-number">6.5.14</span> <code>lfa_create_ppp_from_area</code></a></li>
+  <li><a href="#lfa_create_stacked_distributions_plot" id="toc-lfa_create_stacked_distributions_plot" class="nav-link" data-scroll-target="#lfa_create_stacked_distributions_plot"><span class="header-section-number">6.5.15</span> <code>lfa_create_stacked_distributions_plot</code></a></li>
+  <li><a href="#lfa_create_stacked_histogram" id="toc-lfa_create_stacked_histogram" class="nav-link" data-scroll-target="#lfa_create_stacked_histogram"><span class="header-section-number">6.5.16</span> <code>lfa_create_stacked_histogram</code></a></li>
+  <li><a href="#lfa_create_tile_location_objects" id="toc-lfa_create_tile_location_objects" class="nav-link" data-scroll-target="#lfa_create_tile_location_objects"><span class="header-section-number">6.5.17</span> <code>lfa_create_tile_location_objects</code></a></li>
+  <li><a href="#lfa_detection" id="toc-lfa_detection" class="nav-link" data-scroll-target="#lfa_detection"><span class="header-section-number">6.5.18</span> <code>lfa_detection</code></a></li>
+  <li><a href="#lfa_download_areas" id="toc-lfa_download_areas" class="nav-link" data-scroll-target="#lfa_download_areas"><span class="header-section-number">6.5.19</span> <code>lfa_download_areas</code></a></li>
+  <li><a href="#lfa_download" id="toc-lfa_download" class="nav-link" data-scroll-target="#lfa_download"><span class="header-section-number">6.5.20</span> <code>lfa_download</code></a></li>
+  <li><a href="#lfa_find_n_nearest_trees" id="toc-lfa_find_n_nearest_trees" class="nav-link" data-scroll-target="#lfa_find_n_nearest_trees"><span class="header-section-number">6.5.21</span> <code>lfa_find_n_nearest_trees</code></a></li>
+  <li><a href="#lfa_generate_result_table_tests" id="toc-lfa_generate_result_table_tests" class="nav-link" data-scroll-target="#lfa_generate_result_table_tests"><span class="header-section-number">6.5.22</span> <code>lfa_generate_result_table_tests</code></a></li>
+  <li><a href="#lfa_get_all_areas" id="toc-lfa_get_all_areas" class="nav-link" data-scroll-target="#lfa_get_all_areas"><span class="header-section-number">6.5.23</span> <code>lfa_get_all_areas</code></a></li>
+  <li><a href="#lfa_get_detection_area" id="toc-lfa_get_detection_area" class="nav-link" data-scroll-target="#lfa_get_detection_area"><span class="header-section-number">6.5.24</span> <code>lfa_get_detection_area</code></a></li>
+  <li><a href="#lfa_get_detections_species" id="toc-lfa_get_detections_species" class="nav-link" data-scroll-target="#lfa_get_detections_species"><span class="header-section-number">6.5.25</span> <code>lfa_get_detections_species</code></a></li>
+  <li><a href="#lfa_get_detections" id="toc-lfa_get_detections" class="nav-link" data-scroll-target="#lfa_get_detections"><span class="header-section-number">6.5.26</span> <code>lfa_get_detections</code></a></li>
+  <li><a href="#lfa_get_flag_path" id="toc-lfa_get_flag_path" class="nav-link" data-scroll-target="#lfa_get_flag_path"><span class="header-section-number">6.5.27</span> <code>lfa_get_flag_path</code></a></li>
+  <li><a href="#lfa_get_neighbor_paths" id="toc-lfa_get_neighbor_paths" class="nav-link" data-scroll-target="#lfa_get_neighbor_paths"><span class="header-section-number">6.5.28</span> <code>lfa_get_neighbor_paths</code></a></li>
+  <li><a href="#lfa_get_species" id="toc-lfa_get_species" class="nav-link" data-scroll-target="#lfa_get_species"><span class="header-section-number">6.5.29</span> <code>lfa_get_species</code></a></li>
+  <li><a href="#lfa_ground_correction" id="toc-lfa_ground_correction" class="nav-link" data-scroll-target="#lfa_ground_correction"><span class="header-section-number">6.5.30</span> <code>lfa_ground_correction</code></a></li>
+  <li><a href="#lfa_init_data_structure" id="toc-lfa_init_data_structure" class="nav-link" data-scroll-target="#lfa_init_data_structure"><span class="header-section-number">6.5.31</span> <code>lfa_init_data_structure</code></a></li>
+  <li><a href="#lfa_init" id="toc-lfa_init" class="nav-link" data-scroll-target="#lfa_init"><span class="header-section-number">6.5.32</span> <code>lfa_init</code></a></li>
+  <li><a href="#lfa_intersect_areas" id="toc-lfa_intersect_areas" class="nav-link" data-scroll-target="#lfa_intersect_areas"><span class="header-section-number">6.5.33</span> <code>lfa_intersect_areas</code></a></li>
+  <li><a href="#lfa_jsd_from_vec" id="toc-lfa_jsd_from_vec" class="nav-link" data-scroll-target="#lfa_jsd_from_vec"><span class="header-section-number">6.5.34</span> <code>lfa_jsd_from_vec</code></a></li>
+  <li><a href="#lfa_jsd" id="toc-lfa_jsd" class="nav-link" data-scroll-target="#lfa_jsd"><span class="header-section-number">6.5.35</span> <code>lfa_jsd</code></a></li>
+  <li><a href="#lfa_kld_from_vec" id="toc-lfa_kld_from_vec" class="nav-link" data-scroll-target="#lfa_kld_from_vec"><span class="header-section-number">6.5.36</span> <code>lfa_kld_from_vec</code></a></li>
+  <li><a href="#lfa_kld" id="toc-lfa_kld" class="nav-link" data-scroll-target="#lfa_kld"><span class="header-section-number">6.5.37</span> <code>lfa_kld</code></a></li>
+  <li><a href="#lfa_ks_test" id="toc-lfa_ks_test" class="nav-link" data-scroll-target="#lfa_ks_test"><span class="header-section-number">6.5.38</span> <code>lfa_ks_test</code></a></li>
+  <li><a href="#lfa_load_ctg_if_not_present" id="toc-lfa_load_ctg_if_not_present" class="nav-link" data-scroll-target="#lfa_load_ctg_if_not_present"><span class="header-section-number">6.5.39</span> <code>lfa_load_ctg_if_not_present</code></a></li>
+  <li><a href="#lfa_map_tile_locations" id="toc-lfa_map_tile_locations" class="nav-link" data-scroll-target="#lfa_map_tile_locations"><span class="header-section-number">6.5.40</span> <code>lfa_map_tile_locations</code></a></li>
+  <li><a href="#lfa_merge_and_save" id="toc-lfa_merge_and_save" class="nav-link" data-scroll-target="#lfa_merge_and_save"><span class="header-section-number">6.5.41</span> <code>lfa_merge_and_save</code></a></li>
+  <li><a href="#lfa_plot_confusion_matrix" id="toc-lfa_plot_confusion_matrix" class="nav-link" data-scroll-target="#lfa_plot_confusion_matrix"><span class="header-section-number">6.5.42</span> <code>lfa_plot_confusion_matrix</code></a></li>
+  <li><a href="#lfa_precision_per_class" id="toc-lfa_precision_per_class" class="nav-link" data-scroll-target="#lfa_precision_per_class"><span class="header-section-number">6.5.43</span> <code>lfa_precision_per_class</code></a></li>
+  <li><a href="#lfa_random_forest" id="toc-lfa_random_forest" class="nav-link" data-scroll-target="#lfa_random_forest"><span class="header-section-number">6.5.44</span> <code>lfa_random_forest</code></a></li>
+  <li><a href="#lfa_rasterize_chunk" id="toc-lfa_rasterize_chunk" class="nav-link" data-scroll-target="#lfa_rasterize_chunk"><span class="header-section-number">6.5.45</span> <code>lfa_rasterize_chunk</code></a></li>
+  <li><a href="#lfa_rd_to_qmd" id="toc-lfa_rd_to_qmd" class="nav-link" data-scroll-target="#lfa_rd_to_qmd"><span class="header-section-number">6.5.46</span> <code>lfa_rd_to_qmd</code></a></li>
+  <li><a href="#lfa_rd_to_results" id="toc-lfa_rd_to_results" class="nav-link" data-scroll-target="#lfa_rd_to_results"><span class="header-section-number">6.5.47</span> <code>lfa_rd_to_results</code></a></li>
+  <li><a href="#lfa_read_area_as_catalog" id="toc-lfa_read_area_as_catalog" class="nav-link" data-scroll-target="#lfa_read_area_as_catalog"><span class="header-section-number">6.5.48</span> <code>lfa_read_area_as_catalog</code></a></li>
+  <li><a href="#lfa_recall_per_class" id="toc-lfa_recall_per_class" class="nav-link" data-scroll-target="#lfa_recall_per_class"><span class="header-section-number">6.5.49</span> <code>lfa_recall_per_class</code></a></li>
+  <li><a href="#lfa_run_test_asymmetric" id="toc-lfa_run_test_asymmetric" class="nav-link" data-scroll-target="#lfa_run_test_asymmetric"><span class="header-section-number">6.5.50</span> <code>lfa_run_test_asymmetric</code></a></li>
+  <li><a href="#lfa_run_test_symmetric" id="toc-lfa_run_test_symmetric" class="nav-link" data-scroll-target="#lfa_run_test_symmetric"><span class="header-section-number">6.5.51</span> <code>lfa_run_test_symmetric</code></a></li>
+  <li><a href="#lfa_save_all_neighbours" id="toc-lfa_save_all_neighbours" class="nav-link" data-scroll-target="#lfa_save_all_neighbours"><span class="header-section-number">6.5.52</span> <code>lfa_save_all_neighbours</code></a></li>
+  <li><a href="#lfa_segmentation" id="toc-lfa_segmentation" class="nav-link" data-scroll-target="#lfa_segmentation"><span class="header-section-number">6.5.53</span> <code>lfa_segmentation</code></a></li>
+  <li><a href="#lfa_set_flag" id="toc-lfa_set_flag" class="nav-link" data-scroll-target="#lfa_set_flag"><span class="header-section-number">6.5.54</span> <code>lfa_set_flag</code></a></li>
+  <li><a href="#lfa_visit_all_areas" id="toc-lfa_visit_all_areas" class="nav-link" data-scroll-target="#lfa_visit_all_areas"><span class="header-section-number">6.5.55</span> <code>lfa_visit_all_areas</code></a></li>
+  <li><a href="#lfa_visualize_rf_metrics" id="toc-lfa_visualize_rf_metrics" class="nav-link" data-scroll-target="#lfa_visualize_rf_metrics"><span class="header-section-number">6.5.56</span> <code>lfa_visualize_rf_metrics</code></a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -248,7 +253,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Forest Data Analysis Report</h1>
+<h1 class="title">Evaluating Tree Species Diversity in Forest Ecosystems Using LiDAR Data: A Exploration in NRW</h1>
 </div>
 
 
@@ -326,7 +331,7 @@ div.csl-indent {
 <p>Following the size reduction to our dataset, the next step involves correcting the <code>z</code> values. The <code>z</code> values in the data are originally relative to the ellipsoid used for referencing, but we require them to be relative to the ground. To achieve this, we utilize the <code>lidR::tin</code> function, which extrapolates a convex hull between all ground points (classified by the data provider) and calculates the z value based on this structure.</p>
 <p>Subsequently, we aim to perform segmentation for each distinct tree, marking each item of the point cloud with a tree ID. We employ the algorithm described by <span class="citation" data-cites="li2012">Li et al. (<a href="#ref-li2012" role="doc-biblioref">2012</a>)</span>, using parameters <code>li2012(dt1 = 2, dt2 = 3, R = 2, Zu = 10, hmin = 5, speed_up = 12)</code>. The meanings of these parameters are elucidated in Li et al.’s work <span class="citation" data-cites="li2012">(<a href="#ref-li2012" role="doc-biblioref">Li et al. 2012</a>)</span>.</p>
 <p>Finally, the last preprocessing step involves individual tree detection, seeking a single <code>POINT</code> object for each tree. The <code>lidR::lmf</code> function, an implementation of the tree data using a local maximum approach, is utilized for this purpose <span class="citation" data-cites="popescu2004">(<a href="#ref-popescu2004" role="doc-biblioref">Popescu and Wynne 2004</a>)</span>. The results are stored in GeoPackage files within our data structure.</p>
-<p>See <a href="#sec-appendix-preprocessing">Section&nbsp;6.1</a> for the implementation of the preprocessing.</p>
+<p>See <a href="#sec-appendix-preprocessing">Section&nbsp;6.2</a> for the implementation of the preprocessing.</p>
 </section>
 <section id="analysis-of-different-distributions" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="analysis-of-different-distributions"><span class="header-section-number">2.3</span> Analysis of different distributions</h2>
@@ -370,7 +375,7 @@ JS(P || Q) = \frac{1}{2} * KL(P || M) + \frac{1}{2} * KL(Q || M)
 <li><p><strong>Meta Information Generation:</strong> It automatically generates meta-information based on the structure of the data, providing vital context and documentation for our analyses.</p></li>
 <li><p><strong>Analytic Function Application:</strong> Analytic functions are applied automatically to specified data subsets, streamlining the analytical process and enhancing the reproducibility of our results.</p></li>
 </ul>
-<p>For those interested in exploring or contributing to our work, the GitHub repository containing the implementations can be accessed <a href="https://github.com/jakobdanel/lidar-forest-analysis">here</a>. This centralized repository serves as a collaborative hub, inviting further development and utilization of our LiDAR forest analysis package <span class="citation" data-cites="lfa">(<a href="#ref-lfa" role="doc-biblioref">Danel and Bruch 2024</a>)</span>. For further investigation you can find the package Documentation here: <a href="#sec-documentation">Section&nbsp;6.4</a></p>
+<p>For those interested in exploring or contributing to our work, the GitHub repository containing the implementations can be accessed <a href="https://github.com/jakobdanel/lidar-forest-analysis">here</a>. This centralized repository serves as a collaborative hub, inviting further development and utilization of our LiDAR forest analysis package <span class="citation" data-cites="lfa">(<a href="#ref-lfa" role="doc-biblioref">Danel and Bruch 2024</a>)</span>. For further investigation you can find the package Documentation here: <a href="#sec-documentation">Section&nbsp;6.5</a></p>
 </section>
 </section>
 <section id="results" class="level1" data-number="3">
@@ -1256,8 +1261,46 @@ Wickham, Hadley, Romain François, Lionel Henry, Kirill Müller, and Davis Vaugh
 </section>
 <section id="appendix" class="level1" data-number="6">
 <h1 data-number="6"><span class="header-section-number">6</span> Appendix</h1>
-<section id="sec-appendix-preprocessing" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="sec-appendix-preprocessing"><span class="header-section-number">6.1</span> Script which can be used to do all preprocessing</h2>
+<section id="contributions" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="contributions"><span class="header-section-number">6.1</span> Contributions</h2>
+<p>Most of the work was done in pair programming. In the following sections we highlight, our key contributions to the project.</p>
+<section id="frederick" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="frederick"><span class="header-section-number">6.1.1</span> Frederick</h3>
+<p>My contributions to the project encompassed several key areas: data acquisition, preprocessing, visualization, random forest implementation, and canopy height modeling. Each of these tasks presented unique challenges and learning opportunities.</p>
+<section id="data-acquisition-1" class="level4">
+<h4 class="anchored" data-anchor-id="data-acquisition-1">Data Acquisition</h4>
+<p>My role in data acquisition involved sourcing relevant datasets for our study, particularly focusing on obtaining patches where one tree species exhibited dominance. This process involved navigating through existing datasets such as the <em>Waldmonitor</em> dataset and utilizing maps indicating dominant tree species in Nordrhein-Westfalia (NRW). One of the challenges encountered was ensuring the validity of the selected patches, considering factors such as patch size, species diversity, and the absence of human-made structures. Through this process, I learned the importance of meticulous data selection and validation to ensure the integrity of subsequent analyses.</p>
+</section>
+<section id="preprocessing-tilingheight-normalization" class="level4">
+<h4 class="anchored" data-anchor-id="preprocessing-tilingheight-normalization">Preprocessing: Tiling/Height Normalization</h4>
+<p>Preprocessing the acquired data was essential to derive meaningful variables for analysis. Tiling and height normalization were particularly crucial steps to standardize the data and facilitate further analysis. Tiling involved partitioning the patches into smaller, manageable units, while height normalization ensured consistency in height measurements across different patches. This process taught me the importance of data standardization and the impact it can have on downstream analyses.</p>
+</section>
+<section id="visualization-density-and-boxplot" class="level4">
+<h4 class="anchored" data-anchor-id="visualization-density-and-boxplot">Visualization: Density and Boxplot</h4>
+<p>Visualizing the data through density plots and boxplots was instrumental in gaining insights into the distribution and characteristics of the variables under study. Creating informative visualizations required careful selection of plotting parameters and consideration of the audience’s interpretation. Balancing clarity and complexity posed a challenge, but it also provided an opportunity to enhance my visualization skills and effectively communicate key findings.</p>
+</section>
+<section id="random-forest-scores-and-confusion-matrix" class="level4">
+<h4 class="anchored" data-anchor-id="random-forest-scores-and-confusion-matrix">Random Forest: Scores and Confusion Matrix</h4>
+<p>Implementing the Random Forest algorithm for species classification involved several steps, including model training, validation, and performance evaluation. Generating scores and confusion matrices allowed us to assess the model’s accuracy and identify areas for improvement.</p>
+</section>
+<section id="canopy-height-model-1" class="level4">
+<h4 class="anchored" data-anchor-id="canopy-height-model-1">Canopy Height Model</h4>
+<p>Developing a canopy height model involved integrating data from various sources to estimate the height of forest canopies. Overcoming technical challenges and refining the model parameters provided valuable insights into remote sensing techniques and their applicability in forestry research.</p>
+<p>In summary, my contributions to the project encompassed a range of tasks, each presenting its own set of challenges and learning opportunities. From data acquisition to model implementation, I gained valuable experience in ecological research methods and data analysis techniques.</p>
+</section>
+</section>
+<section id="jakob" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="jakob"><span class="header-section-number">6.1.2</span> Jakob</h3>
+<p>In the broader context of a comprehensive lidar data analysis project, my contributions were instrumental in advancing key components. The preprocessing phase saw enhancements in Intersection, Detection, and Segmentation processes. I played a pivotal role in refining Intersection by overlaying lidar data onto shapefiles, ensuring a coherent file structure. Additionally, my efforts in Detection focused on optimizing tree identification within the intersected data. I developed the tree Segmentation too.</p>
+<p>In terms of visualization, my contributions elevated the understanding of lidar data. The presentation of the confusion matrix as a colored table provided a comprehensive view of classification performance. Through the implementation of bar plots for patch-level data, I contributed to insights into the distribution of features. Precision and recall metrics were effectively communicated via bar plots, offering a nuanced evaluation of the model’s performance. The integration of Canopy Height Plots further enriched the visual representation of canopy structures.</p>
+<p>Within the tree-level distribution analysis, my role extended to Data Preparation and the application of KLD and JSD. I ensured that the dataset was well-structured and prepared for analysis. Moreover, my involvement in researching methods, implementing calculations, and dynamically building result tables for KLD and JSD significantly contributed to the depth of the analysis.</p>
+<p>In the development of an interface for Lidar data, I played a crucial role in designing a structured file system for efficient data storage. The implementation of various functions, including <code>lfa::map_tile_locations</code>, <code>lfa::visit_all_areas</code>, and <code>lfa::combine_sf_object</code>, showcased my commitment to enhancing data iteration and combination processes.</p>
+<p>Throughout the project, my contributions led to valuable learnings for the team. I actively addressed challenges associated with handling big data in R and underscored the importance of structured data storage. The development of an R-package was a testament to my commitment to enhancing functionality and promoting reusability. Additionally, my insights deepened the team’s understanding of package workflows in R.</p>
+<p>Despite encountering challenges with lidR mapping functions, my proactive approach to debugging, including the development of a custom mapping solution, showcased my resilience and commitment to overcoming obstacles. In summary, my contributions significantly shaped the success and advancement of the broader lidar data analysis project.</p>
+</section>
+</section>
+<section id="sec-appendix-preprocessing" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="sec-appendix-preprocessing"><span class="header-section-number">6.2</span> Script which can be used to do all preprocessing</h2>
 <p>Load the file with the research areas</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>sf <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"research_areas.shp"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1279,8 +1322,8 @@ Wickham, Hadley, Romain François, Lionel Henry, Kirill Müller, and Davis Vaugh
 <span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>lfa<span class="sc">::</span><span class="fu">lfa_map_tile_locations</span>(locations, lfa<span class="sc">::</span>lfa_detection, <span class="at">catalog =</span> <span class="cn">NULL</span>, <span class="at">write_to_file =</span> <span class="cn">TRUE</span>,<span class="at">check_flag =</span> <span class="st">"detection"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="canopy-height-models" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="canopy-height-models"><span class="header-section-number">6.2</span> Canopy Height Models</h2>
+<section id="sec-appendix-chms" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="sec-appendix-chms"><span class="header-section-number">6.3</span> Canopy Height Models</h2>
 <p>The following section contains all canopy height models of the researched patches, plotted.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1473,10 +1516,10 @@ Wickham, Hadley, Romain François, Lionel Henry, Kirill Müller, and Davis Vaugh
 </div>
 </div>
 </section>
-<section id="quantitative-results" class="level2" data-number="6.3">
-<h2 data-number="6.3" class="anchored" data-anchor-id="quantitative-results"><span class="header-section-number">6.3</span> Quantitative Results</h2>
-<section id="distribution-of-z-values" class="level3" data-number="6.3.1">
-<h3 data-number="6.3.1" class="anchored" data-anchor-id="distribution-of-z-values"><span class="header-section-number">6.3.1</span> Distribution of Z-Values</h3>
+<section id="quantitative-results" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="quantitative-results"><span class="header-section-number">6.4</span> Quantitative Results</h2>
+<section id="distribution-of-z-values" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="distribution-of-z-values"><span class="header-section-number">6.4.1</span> Distribution of Z-Values</h3>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -2021,8 +2064,8 @@ Wickham, Hadley, Romain François, Lionel Henry, Kirill Müller, and Davis Vaugh
 </div>
 </section>
 </section>
-<section id="nearest-neighbours" class="level3" data-number="6.3.2">
-<h3 data-number="6.3.2" class="anchored" data-anchor-id="nearest-neighbours"><span class="header-section-number">6.3.2</span> Nearest Neighbours</h3>
+<section id="nearest-neighbours" class="level3" data-number="6.4.2">
+<h3 data-number="6.4.2" class="anchored" data-anchor-id="nearest-neighbours"><span class="header-section-number">6.4.2</span> Nearest Neighbours</h3>
 <section id="distribution-of-nearest-neighbor-distances" class="level4">
 <h4 class="anchored" data-anchor-id="distribution-of-nearest-neighbor-distances">Distribution of nearest neighbor distances</h4>
 <div class="cell">
@@ -3967,8 +4010,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </section>
 </section>
 </section>
-<section id="distribution-of-the-number-of-returns" class="level3" data-number="6.3.3">
-<h3 data-number="6.3.3" class="anchored" data-anchor-id="distribution-of-the-number-of-returns"><span class="header-section-number">6.3.3</span> Distribution of the number of returns</h3>
+<section id="distribution-of-the-number-of-returns" class="level3" data-number="6.4.3">
+<h3 data-number="6.4.3" class="anchored" data-anchor-id="distribution-of-the-number-of-returns"><span class="header-section-number">6.4.3</span> Distribution of the number of returns</h3>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -4516,10 +4559,10 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </section>
 </section>
 </section>
-<section id="sec-documentation" class="level2" data-number="6.4">
-<h2 data-number="6.4" class="anchored" data-anchor-id="sec-documentation"><span class="header-section-number">6.4</span> Documentation</h2>
-<section id="lfa_calculate_patch_density" class="level3" data-number="6.4.1">
-<h3 data-number="6.4.1" class="anchored" data-anchor-id="lfa_calculate_patch_density"><span class="header-section-number">6.4.1</span> <code>lfa_calculate_patch_density</code></h3>
+<section id="sec-documentation" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="sec-documentation"><span class="header-section-number">6.5</span> Documentation</h2>
+<section id="lfa_calculate_patch_density" class="level3" data-number="6.5.1">
+<h3 data-number="6.5.1" class="anchored" data-anchor-id="lfa_calculate_patch_density"><span class="header-section-number">6.5.1</span> <code>lfa_calculate_patch_density</code></h3>
 <p>Calculate patch density for specified areas based on detection data</p>
 <section id="arguments" class="level4">
 <h4 class="anchored" data-anchor-id="arguments">Arguments</h4>
@@ -4573,8 +4616,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_calculate_rf_metrics" class="level3" data-number="6.4.2">
-<h3 data-number="6.4.2" class="anchored" data-anchor-id="lfa_calculate_rf_metrics"><span class="header-section-number">6.4.2</span> <code>lfa_calculate_rf_metrics</code></h3>
+<section id="lfa_calculate_rf_metrics" class="level3" data-number="6.5.2">
+<h3 data-number="6.5.2" class="anchored" data-anchor-id="lfa_calculate_rf_metrics"><span class="header-section-number">6.5.2</span> <code>lfa_calculate_rf_metrics</code></h3>
 <p>Calculate Precision and Recall Metrics for Random Forest Classification</p>
 <section id="arguments-1" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-1">Arguments</h4>
@@ -4629,8 +4672,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_capitalize_first_char" class="level3" data-number="6.4.3">
-<h3 data-number="6.4.3" class="anchored" data-anchor-id="lfa_capitalize_first_char"><span class="header-section-number">6.4.3</span> <code>lfa_capitalize_first_char</code></h3>
+<section id="lfa_capitalize_first_char" class="level3" data-number="6.5.3">
+<h3 data-number="6.5.3" class="anchored" data-anchor-id="lfa_capitalize_first_char"><span class="header-section-number">6.5.3</span> <code>lfa_capitalize_first_char</code></h3>
 <p>Capitalize First Character of a String</p>
 <section id="arguments-2" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-2">Arguments</h4>
@@ -4705,8 +4748,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_check_flag" class="level3" data-number="6.4.4">
-<h3 data-number="6.4.4" class="anchored" data-anchor-id="lfa_check_flag"><span class="header-section-number">6.4.4</span> <code>lfa_check_flag</code></h3>
+<section id="lfa_check_flag" class="level3" data-number="6.5.4">
+<h3 data-number="6.5.4" class="anchored" data-anchor-id="lfa_check_flag"><span class="header-section-number">6.5.4</span> <code>lfa_check_flag</code></h3>
 <p>Check if a flag is set, indicating the completion of a specific process.</p>
 <section id="arguments-3" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-3">Arguments</h4>
@@ -4751,8 +4794,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_chm" class="level3" data-number="6.4.5">
-<h3 data-number="6.4.5" class="anchored" data-anchor-id="lfa_chm"><span class="header-section-number">6.4.5</span> <code>lfa_chm</code></h3>
+<section id="lfa_chm" class="level3" data-number="6.5.5">
+<h3 data-number="6.5.5" class="anchored" data-anchor-id="lfa_chm"><span class="header-section-number">6.5.5</span> <code>lfa_chm</code></h3>
 <p>Create Canopy Height Model (CHM) from Lidar Data</p>
 <section id="arguments-4" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-4">Arguments</h4>
@@ -4834,8 +4877,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_combine_sf_obj" class="level3" data-number="6.4.6">
-<h3 data-number="6.4.6" class="anchored" data-anchor-id="lfa_combine_sf_obj"><span class="header-section-number">6.4.6</span> <code>lfa_combine_sf_obj</code></h3>
+<section id="lfa_combine_sf_obj" class="level3" data-number="6.5.6">
+<h3 data-number="6.5.6" class="anchored" data-anchor-id="lfa_combine_sf_obj"><span class="header-section-number">6.5.6</span> <code>lfa_combine_sf_obj</code></h3>
 <p>Combine Spatial Feature Objects from Multiple GeoPackage Files</p>
 <section id="arguments-5" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-5">Arguments</h4>
@@ -4887,8 +4930,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_count_returns_all_areas" class="level3" data-number="6.4.7">
-<h3 data-number="6.4.7" class="anchored" data-anchor-id="lfa_count_returns_all_areas"><span class="header-section-number">6.4.7</span> <code>lfa_count_returns_all_areas</code></h3>
+<section id="lfa_count_returns_all_areas" class="level3" data-number="6.5.7">
+<h3 data-number="6.5.7" class="anchored" data-anchor-id="lfa_count_returns_all_areas"><span class="header-section-number">6.5.7</span> <code>lfa_count_returns_all_areas</code></h3>
 <p>Count tree returns for all species and areas, returning a consolidated data frame.</p>
 <section id="description-6" class="level4">
 <h4 class="anchored" data-anchor-id="description-6">Description</h4>
@@ -4920,8 +4963,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_count_returns_per_tree" class="level3" data-number="6.4.8">
-<h3 data-number="6.4.8" class="anchored" data-anchor-id="lfa_count_returns_per_tree"><span class="header-section-number">6.4.8</span> <code>lfa_count_returns_per_tree</code></h3>
+<section id="lfa_count_returns_per_tree" class="level3" data-number="6.5.8">
+<h3 data-number="6.5.8" class="anchored" data-anchor-id="lfa_count_returns_per_tree"><span class="header-section-number">6.5.8</span> <code>lfa_count_returns_per_tree</code></h3>
 <p>Count returns per tree for a given lidR catalog.</p>
 <section id="arguments-6" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-6">Arguments</h4>
@@ -4975,8 +5018,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_create_boxplot" class="level3" data-number="6.4.9">
-<h3 data-number="6.4.9" class="anchored" data-anchor-id="lfa_create_boxplot"><span class="header-section-number">6.4.9</span> <code>lfa_create_boxplot</code></h3>
+<section id="lfa_create_boxplot" class="level3" data-number="6.5.9">
+<h3 data-number="6.5.9" class="anchored" data-anchor-id="lfa_create_boxplot"><span class="header-section-number">6.5.9</span> <code>lfa_create_boxplot</code></h3>
 <p>Create a box plot from a data frame</p>
 <section id="arguments-7" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-7">Arguments</h4>
@@ -5047,8 +5090,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_create_density_plots" class="level3" data-number="6.4.10">
-<h3 data-number="6.4.10" class="anchored" data-anchor-id="lfa_create_density_plots"><span class="header-section-number">6.4.10</span> <code>lfa_create_density_plots</code></h3>
+<section id="lfa_create_density_plots" class="level3" data-number="6.5.10">
+<h3 data-number="6.5.10" class="anchored" data-anchor-id="lfa_create_density_plots"><span class="header-section-number">6.5.10</span> <code>lfa_create_density_plots</code></h3>
 <p>Create density plots for groups in a data frame</p>
 <section id="arguments-8" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-8">Arguments</h4>
@@ -5129,8 +5172,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_create_grouped_bar_plot" class="level3" data-number="6.4.11">
-<h3 data-number="6.4.11" class="anchored" data-anchor-id="lfa_create_grouped_bar_plot"><span class="header-section-number">6.4.11</span> <code>lfa_create_grouped_bar_plot</code></h3>
+<section id="lfa_create_grouped_bar_plot" class="level3" data-number="6.5.11">
+<h3 data-number="6.5.11" class="anchored" data-anchor-id="lfa_create_grouped_bar_plot"><span class="header-section-number">6.5.11</span> <code>lfa_create_grouped_bar_plot</code></h3>
 <p>Create a barplot using ggplot2</p>
 <section id="arguments-9" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-9">Arguments</h4>
@@ -5207,8 +5250,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_create_neighbor_mean_curves" class="level3" data-number="6.4.12">
-<h3 data-number="6.4.12" class="anchored" data-anchor-id="lfa_create_neighbor_mean_curves"><span class="header-section-number">6.4.12</span> <code>lfa_create_neighbor_mean_curves</code></h3>
+<section id="lfa_create_neighbor_mean_curves" class="level3" data-number="6.5.12">
+<h3 data-number="6.5.12" class="anchored" data-anchor-id="lfa_create_neighbor_mean_curves"><span class="header-section-number">6.5.12</span> <code>lfa_create_neighbor_mean_curves</code></h3>
 <p>Create neighbor mean curves for specified areas</p>
 <section id="arguments-10" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-10">Arguments</h4>
@@ -5258,8 +5301,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_create_plot_per_area" class="level3" data-number="6.4.13">
-<h3 data-number="6.4.13" class="anchored" data-anchor-id="lfa_create_plot_per_area"><span class="header-section-number">6.4.13</span> <code>lfa_create_plot_per_area</code></h3>
+<section id="lfa_create_plot_per_area" class="level3" data-number="6.5.13">
+<h3 data-number="6.5.13" class="anchored" data-anchor-id="lfa_create_plot_per_area"><span class="header-section-number">6.5.13</span> <code>lfa_create_plot_per_area</code></h3>
 <p>Create a line plot per area with one color per specie</p>
 <section id="arguments-11" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-11">Arguments</h4>
@@ -5309,8 +5352,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_create_ppp_from_area" class="level3" data-number="6.4.14">
-<h3 data-number="6.4.14" class="anchored" data-anchor-id="lfa_create_ppp_from_area"><span class="header-section-number">6.4.14</span> <code>lfa_create_ppp_from_area</code></h3>
+<section id="lfa_create_ppp_from_area" class="level3" data-number="6.5.14">
+<h3 data-number="6.5.14" class="anchored" data-anchor-id="lfa_create_ppp_from_area"><span class="header-section-number">6.5.14</span> <code>lfa_create_ppp_from_area</code></h3>
 <p>Create a point pattern from tree detections in a specified area for a given species.</p>
 <section id="arguments-12" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-12">Arguments</h4>
@@ -5369,8 +5412,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_create_stacked_distributions_plot" class="level3" data-number="6.4.15">
-<h3 data-number="6.4.15" class="anchored" data-anchor-id="lfa_create_stacked_distributions_plot"><span class="header-section-number">6.4.15</span> <code>lfa_create_stacked_distributions_plot</code></h3>
+<section id="lfa_create_stacked_distributions_plot" class="level3" data-number="6.5.15">
+<h3 data-number="6.5.15" class="anchored" data-anchor-id="lfa_create_stacked_distributions_plot"><span class="header-section-number">6.5.15</span> <code>lfa_create_stacked_distributions_plot</code></h3>
 <p>Create a stacked distribution plot for tree detections, visualizing the distribution of a specified variable on the x-axis, differentiated by another variable.</p>
 <section id="arguments-13" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-13">Arguments</h4>
@@ -5462,8 +5505,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_create_stacked_histogram" class="level3" data-number="6.4.16">
-<h3 data-number="6.4.16" class="anchored" data-anchor-id="lfa_create_stacked_histogram"><span class="header-section-number">6.4.16</span> <code>lfa_create_stacked_histogram</code></h3>
+<section id="lfa_create_stacked_histogram" class="level3" data-number="6.5.16">
+<h3 data-number="6.5.16" class="anchored" data-anchor-id="lfa_create_stacked_histogram"><span class="header-section-number">6.5.16</span> <code>lfa_create_stacked_histogram</code></h3>
 <p>Create a stacked histogram for tree detections, summing up the values for each species.</p>
 <section id="arguments-14" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-14">Arguments</h4>
@@ -5549,8 +5592,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_create_tile_location_objects" class="level3" data-number="6.4.17">
-<h3 data-number="6.4.17" class="anchored" data-anchor-id="lfa_create_tile_location_objects"><span class="header-section-number">6.4.17</span> <code>lfa_create_tile_location_objects</code></h3>
+<section id="lfa_create_tile_location_objects" class="level3" data-number="6.5.17">
+<h3 data-number="6.5.17" class="anchored" data-anchor-id="lfa_create_tile_location_objects"><span class="header-section-number">6.5.17</span> <code>lfa_create_tile_location_objects</code></h3>
 <p>Create tile location objects</p>
 <section id="author" class="level4">
 <h4 class="anchored" data-anchor-id="author">Author</h4>
@@ -5583,8 +5626,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_detection" class="level3" data-number="6.4.18">
-<h3 data-number="6.4.18" class="anchored" data-anchor-id="lfa_detection"><span class="header-section-number">6.4.18</span> <code>lfa_detection</code></h3>
+<section id="lfa_detection" class="level3" data-number="6.5.18">
+<h3 data-number="6.5.18" class="anchored" data-anchor-id="lfa_detection"><span class="header-section-number">6.5.18</span> <code>lfa_detection</code></h3>
 <p>Perform tree detection on a lidar catalog and optionally save the results to a file.</p>
 <section id="arguments-15" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-15">Arguments</h4>
@@ -5637,8 +5680,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_download_areas" class="level3" data-number="6.4.19">
-<h3 data-number="6.4.19" class="anchored" data-anchor-id="lfa_download_areas"><span class="header-section-number">6.4.19</span> <code>lfa_download_areas</code></h3>
+<section id="lfa_download_areas" class="level3" data-number="6.5.19">
+<h3 data-number="6.5.19" class="anchored" data-anchor-id="lfa_download_areas"><span class="header-section-number">6.5.19</span> <code>lfa_download_areas</code></h3>
 <p>Download areas based on spatial features</p>
 <section id="arguments-16" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-16">Arguments</h4>
@@ -5706,8 +5749,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_download" class="level3" data-number="6.4.20">
-<h3 data-number="6.4.20" class="anchored" data-anchor-id="lfa_download"><span class="header-section-number">6.4.20</span> <code>lfa_download</code></h3>
+<section id="lfa_download" class="level3" data-number="6.5.20">
+<h3 data-number="6.5.20" class="anchored" data-anchor-id="lfa_download"><span class="header-section-number">6.5.20</span> <code>lfa_download</code></h3>
 <p>Download an las file from the state NRW from a specific location</p>
 <section id="arguments-17" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-17">Arguments</h4>
@@ -5753,8 +5796,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_find_n_nearest_trees" class="level3" data-number="6.4.21">
-<h3 data-number="6.4.21" class="anchored" data-anchor-id="lfa_find_n_nearest_trees"><span class="header-section-number">6.4.21</span> <code>lfa_find_n_nearest_trees</code></h3>
+<section id="lfa_find_n_nearest_trees" class="level3" data-number="6.5.21">
+<h3 data-number="6.5.21" class="anchored" data-anchor-id="lfa_find_n_nearest_trees"><span class="header-section-number">6.5.21</span> <code>lfa_find_n_nearest_trees</code></h3>
 <p>Find n Nearest Trees</p>
 <section id="arguments-18" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-18">Arguments</h4>
@@ -5809,8 +5852,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_generate_result_table_tests" class="level3" data-number="6.4.22">
-<h3 data-number="6.4.22" class="anchored" data-anchor-id="lfa_generate_result_table_tests"><span class="header-section-number">6.4.22</span> <code>lfa_generate_result_table_tests</code></h3>
+<section id="lfa_generate_result_table_tests" class="level3" data-number="6.5.22">
+<h3 data-number="6.5.22" class="anchored" data-anchor-id="lfa_generate_result_table_tests"><span class="header-section-number">6.5.22</span> <code>lfa_generate_result_table_tests</code></h3>
 <p>Generate Result Table for Tests</p>
 <section id="arguments-19" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-19">Arguments</h4>
@@ -5861,8 +5904,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_get_all_areas" class="level3" data-number="6.4.23">
-<h3 data-number="6.4.23" class="anchored" data-anchor-id="lfa_get_all_areas"><span class="header-section-number">6.4.23</span> <code>lfa_get_all_areas</code></h3>
+<section id="lfa_get_all_areas" class="level3" data-number="6.5.23">
+<h3 data-number="6.5.23" class="anchored" data-anchor-id="lfa_get_all_areas"><span class="header-section-number">6.5.23</span> <code>lfa_get_all_areas</code></h3>
 <p>Retrieve a data frame containing all species and corresponding areas.</p>
 <section id="description-22" class="level4">
 <h4 class="anchored" data-anchor-id="description-22">Description</h4>
@@ -5894,8 +5937,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_get_detection_area" class="level3" data-number="6.4.24">
-<h3 data-number="6.4.24" class="anchored" data-anchor-id="lfa_get_detection_area"><span class="header-section-number">6.4.24</span> <code>lfa_get_detection_area</code></h3>
+<section id="lfa_get_detection_area" class="level3" data-number="6.5.24">
+<h3 data-number="6.5.24" class="anchored" data-anchor-id="lfa_get_detection_area"><span class="header-section-number">6.5.24</span> <code>lfa_get_detection_area</code></h3>
 <p>Get Detection for an area</p>
 <section id="arguments-20" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-20">Arguments</h4>
@@ -5966,8 +6009,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_get_detections_species" class="level3" data-number="6.4.25">
-<h3 data-number="6.4.25" class="anchored" data-anchor-id="lfa_get_detections_species"><span class="header-section-number">6.4.25</span> <code>lfa_get_detections_species</code></h3>
+<section id="lfa_get_detections_species" class="level3" data-number="6.5.25">
+<h3 data-number="6.5.25" class="anchored" data-anchor-id="lfa_get_detections_species"><span class="header-section-number">6.5.25</span> <code>lfa_get_detections_species</code></h3>
 <p>Retrieve detections for a specific species.</p>
 <section id="arguments-21" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-21">Arguments</h4>
@@ -6012,8 +6055,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_get_detections" class="level3" data-number="6.4.26">
-<h3 data-number="6.4.26" class="anchored" data-anchor-id="lfa_get_detections"><span class="header-section-number">6.4.26</span> <code>lfa_get_detections</code></h3>
+<section id="lfa_get_detections" class="level3" data-number="6.5.26">
+<h3 data-number="6.5.26" class="anchored" data-anchor-id="lfa_get_detections"><span class="header-section-number">6.5.26</span> <code>lfa_get_detections</code></h3>
 <p>Retrieve aggregated detection data for multiple species.</p>
 <section id="concept-1" class="level4">
 <h4 class="anchored" data-anchor-id="concept-1">Concept</h4>
@@ -6052,8 +6095,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_get_flag_path" class="level3" data-number="6.4.27">
-<h3 data-number="6.4.27" class="anchored" data-anchor-id="lfa_get_flag_path"><span class="header-section-number">6.4.27</span> <code>lfa_get_flag_path</code></h3>
+<section id="lfa_get_flag_path" class="level3" data-number="6.5.27">
+<h3 data-number="6.5.27" class="anchored" data-anchor-id="lfa_get_flag_path"><span class="header-section-number">6.5.27</span> <code>lfa_get_flag_path</code></h3>
 <p>Get the path to a flag file indicating the completion of a specific process.</p>
 <section id="arguments-22" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-22">Arguments</h4>
@@ -6098,8 +6141,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_get_neighbor_paths" class="level3" data-number="6.4.28">
-<h3 data-number="6.4.28" class="anchored" data-anchor-id="lfa_get_neighbor_paths"><span class="header-section-number">6.4.28</span> <code>lfa_get_neighbor_paths</code></h3>
+<section id="lfa_get_neighbor_paths" class="level3" data-number="6.5.28">
+<h3 data-number="6.5.28" class="anchored" data-anchor-id="lfa_get_neighbor_paths"><span class="header-section-number">6.5.28</span> <code>lfa_get_neighbor_paths</code></h3>
 <p>Get Paths to Neighbor GeoPackage Files</p>
 <section id="description-27" class="level4">
 <h4 class="anchored" data-anchor-id="description-27">Description</h4>
@@ -6126,8 +6169,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_get_species" class="level3" data-number="6.4.29">
-<h3 data-number="6.4.29" class="anchored" data-anchor-id="lfa_get_species"><span class="header-section-number">6.4.29</span> <code>lfa_get_species</code></h3>
+<section id="lfa_get_species" class="level3" data-number="6.5.29">
+<h3 data-number="6.5.29" class="anchored" data-anchor-id="lfa_get_species"><span class="header-section-number">6.5.29</span> <code>lfa_get_species</code></h3>
 <p>Get a list of species from the data directory.</p>
 <section id="concept-2" class="level4">
 <h4 class="anchored" data-anchor-id="concept-2">Concept</h4>
@@ -6168,8 +6211,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_ground_correction" class="level3" data-number="6.4.30">
-<h3 data-number="6.4.30" class="anchored" data-anchor-id="lfa_ground_correction"><span class="header-section-number">6.4.30</span> <code>lfa_ground_correction</code></h3>
+<section id="lfa_ground_correction" class="level3" data-number="6.5.30">
+<h3 data-number="6.5.30" class="anchored" data-anchor-id="lfa_ground_correction"><span class="header-section-number">6.5.30</span> <code>lfa_ground_correction</code></h3>
 <p>Correct the point clouds for correct ground imagery</p>
 <section id="arguments-23" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-23">Arguments</h4>
@@ -6215,8 +6258,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_init_data_structure" class="level3" data-number="6.4.31">
-<h3 data-number="6.4.31" class="anchored" data-anchor-id="lfa_init_data_structure"><span class="header-section-number">6.4.31</span> <code>lfa_init_data_structure</code></h3>
+<section id="lfa_init_data_structure" class="level3" data-number="6.5.31">
+<h3 data-number="6.5.31" class="anchored" data-anchor-id="lfa_init_data_structure"><span class="header-section-number">6.5.31</span> <code>lfa_init_data_structure</code></h3>
 <p>Initialize data structure for species and areas</p>
 <section id="arguments-24" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-24">Arguments</h4>
@@ -6285,8 +6328,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_init" class="level3" data-number="6.4.32">
-<h3 data-number="6.4.32" class="anchored" data-anchor-id="lfa_init"><span class="header-section-number">6.4.32</span> <code>lfa_init</code></h3>
+<section id="lfa_init" class="level3" data-number="6.5.32">
+<h3 data-number="6.5.32" class="anchored" data-anchor-id="lfa_init"><span class="header-section-number">6.5.32</span> <code>lfa_init</code></h3>
 <p>Initialize LFA (LiDAR forest analysis) data processing</p>
 <section id="arguments-25" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-25">Arguments</h4>
@@ -6350,8 +6393,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_intersect_areas" class="level3" data-number="6.4.33">
-<h3 data-number="6.4.33" class="anchored" data-anchor-id="lfa_intersect_areas"><span class="header-section-number">6.4.33</span> <code>lfa_intersect_areas</code></h3>
+<section id="lfa_intersect_areas" class="level3" data-number="6.5.33">
+<h3 data-number="6.5.33" class="anchored" data-anchor-id="lfa_intersect_areas"><span class="header-section-number">6.5.33</span> <code>lfa_intersect_areas</code></h3>
 <p>Intersect Lidar Catalog with Spatial Features</p>
 <section id="arguments-26" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-26">Arguments</h4>
@@ -6419,8 +6462,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_jsd_from_vec" class="level3" data-number="6.4.34">
-<h3 data-number="6.4.34" class="anchored" data-anchor-id="lfa_jsd_from_vec"><span class="header-section-number">6.4.34</span> <code>lfa_jsd_from_vec</code></h3>
+<section id="lfa_jsd_from_vec" class="level3" data-number="6.5.34">
+<h3 data-number="6.5.34" class="anchored" data-anchor-id="lfa_jsd_from_vec"><span class="header-section-number">6.5.34</span> <code>lfa_jsd_from_vec</code></h3>
 <p>Compute Jensen-Shannon Divergence from Vectors</p>
 <section id="arguments-27" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-27">Arguments</h4>
@@ -6466,8 +6509,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_jsd" class="level3" data-number="6.4.35">
-<h3 data-number="6.4.35" class="anchored" data-anchor-id="lfa_jsd"><span class="header-section-number">6.4.35</span> <code>lfa_jsd</code></h3>
+<section id="lfa_jsd" class="level3" data-number="6.5.35">
+<h3 data-number="6.5.35" class="anchored" data-anchor-id="lfa_jsd"><span class="header-section-number">6.5.35</span> <code>lfa_jsd</code></h3>
 <p>Jensen-Shannon Divergence Calculation</p>
 <section id="arguments-28" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-28">Arguments</h4>
@@ -6531,8 +6574,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_kld_from_vec" class="level3" data-number="6.4.36">
-<h3 data-number="6.4.36" class="anchored" data-anchor-id="lfa_kld_from_vec"><span class="header-section-number">6.4.36</span> <code>lfa_kld_from_vec</code></h3>
+<section id="lfa_kld_from_vec" class="level3" data-number="6.5.36">
+<h3 data-number="6.5.36" class="anchored" data-anchor-id="lfa_kld_from_vec"><span class="header-section-number">6.5.36</span> <code>lfa_kld_from_vec</code></h3>
 <p>Compute Kullback-Leibler Divergence from Vectors</p>
 <section id="arguments-29" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-29">Arguments</h4>
@@ -6578,8 +6621,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_kld" class="level3" data-number="6.4.37">
-<h3 data-number="6.4.37" class="anchored" data-anchor-id="lfa_kld"><span class="header-section-number">6.4.37</span> <code>lfa_kld</code></h3>
+<section id="lfa_kld" class="level3" data-number="6.5.37">
+<h3 data-number="6.5.37" class="anchored" data-anchor-id="lfa_kld"><span class="header-section-number">6.5.37</span> <code>lfa_kld</code></h3>
 <p>Kullback-Leibler Divergence Calculation</p>
 <section id="arguments-30" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-30">Arguments</h4>
@@ -6643,8 +6686,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_ks_test" class="level3" data-number="6.4.38">
-<h3 data-number="6.4.38" class="anchored" data-anchor-id="lfa_ks_test"><span class="header-section-number">6.4.38</span> <code>lfa_ks_test</code></h3>
+<section id="lfa_ks_test" class="level3" data-number="6.5.38">
+<h3 data-number="6.5.38" class="anchored" data-anchor-id="lfa_ks_test"><span class="header-section-number">6.5.38</span> <code>lfa_ks_test</code></h3>
 <p>Kolmogorov-Smirnov Test Wrapper Function</p>
 <section id="arguments-31" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-31">Arguments</h4>
@@ -6714,8 +6757,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_load_ctg_if_not_present" class="level3" data-number="6.4.39">
-<h3 data-number="6.4.39" class="anchored" data-anchor-id="lfa_load_ctg_if_not_present"><span class="header-section-number">6.4.39</span> <code>lfa_load_ctg_if_not_present</code></h3>
+<section id="lfa_load_ctg_if_not_present" class="level3" data-number="6.5.39">
+<h3 data-number="6.5.39" class="anchored" data-anchor-id="lfa_load_ctg_if_not_present"><span class="header-section-number">6.5.39</span> <code>lfa_load_ctg_if_not_present</code></h3>
 <p>Loading the catalog if it is not present</p>
 <section id="arguments-32" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-32">Arguments</h4>
@@ -6757,8 +6800,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_map_tile_locations" class="level3" data-number="6.4.40">
-<h3 data-number="6.4.40" class="anchored" data-anchor-id="lfa_map_tile_locations"><span class="header-section-number">6.4.40</span> <code>lfa_map_tile_locations</code></h3>
+<section id="lfa_map_tile_locations" class="level3" data-number="6.5.40">
+<h3 data-number="6.5.40" class="anchored" data-anchor-id="lfa_map_tile_locations"><span class="header-section-number">6.5.40</span> <code>lfa_map_tile_locations</code></h3>
 <p>Map Function Over Tile Locations</p>
 <section id="arguments-33" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-33">Arguments</h4>
@@ -6823,8 +6866,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_merge_and_save" class="level3" data-number="6.4.41">
-<h3 data-number="6.4.41" class="anchored" data-anchor-id="lfa_merge_and_save"><span class="header-section-number">6.4.41</span> <code>lfa_merge_and_save</code></h3>
+<section id="lfa_merge_and_save" class="level3" data-number="6.5.41">
+<h3 data-number="6.5.41" class="anchored" data-anchor-id="lfa_merge_and_save"><span class="header-section-number">6.5.41</span> <code>lfa_merge_and_save</code></h3>
 <p>Merge and Save Text Files in a Directory</p>
 <section id="arguments-34" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-34">Arguments</h4>
@@ -6884,8 +6927,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_plot_confusion_matrix" class="level3" data-number="6.4.42">
-<h3 data-number="6.4.42" class="anchored" data-anchor-id="lfa_plot_confusion_matrix"><span class="header-section-number">6.4.42</span> <code>lfa_plot_confusion_matrix</code></h3>
+<section id="lfa_plot_confusion_matrix" class="level3" data-number="6.5.42">
+<h3 data-number="6.5.42" class="anchored" data-anchor-id="lfa_plot_confusion_matrix"><span class="header-section-number">6.5.42</span> <code>lfa_plot_confusion_matrix</code></h3>
 <p>Plot Confusion Matrix</p>
 <section id="arguments-35" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-35">Arguments</h4>
@@ -6936,8 +6979,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_precision_per_class" class="level3" data-number="6.4.43">
-<h3 data-number="6.4.43" class="anchored" data-anchor-id="lfa_precision_per_class"><span class="header-section-number">6.4.43</span> <code>lfa_precision_per_class</code></h3>
+<section id="lfa_precision_per_class" class="level3" data-number="6.5.43">
+<h3 data-number="6.5.43" class="anchored" data-anchor-id="lfa_precision_per_class"><span class="header-section-number">6.5.43</span> <code>lfa_precision_per_class</code></h3>
 <p>Calculate Precision per Class from Confusion Matrix</p>
 <section id="arguments-36" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-36">Arguments</h4>
@@ -6992,8 +7035,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_random_forest" class="level3" data-number="6.4.44">
-<h3 data-number="6.4.44" class="anchored" data-anchor-id="lfa_random_forest"><span class="header-section-number">6.4.44</span> <code>lfa_random_forest</code></h3>
+<section id="lfa_random_forest" class="level3" data-number="6.5.44">
+<h3 data-number="6.5.44" class="anchored" data-anchor-id="lfa_random_forest"><span class="header-section-number">6.5.44</span> <code>lfa_random_forest</code></h3>
 <p>Random Forest Classifier with Leave-One-Out Cross-Validation</p>
 <section id="arguments-37" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-37">Arguments</h4>
@@ -7071,8 +7114,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_rasterize_chunk" class="level3" data-number="6.4.45">
-<h3 data-number="6.4.45" class="anchored" data-anchor-id="lfa_rasterize_chunk"><span class="header-section-number">6.4.45</span> <code>lfa_rasterize_chunk</code></h3>
+<section id="lfa_rasterize_chunk" class="level3" data-number="6.5.45">
+<h3 data-number="6.5.45" class="anchored" data-anchor-id="lfa_rasterize_chunk"><span class="header-section-number">6.5.45</span> <code>lfa_rasterize_chunk</code></h3>
 <p>Rasterize Lidar Chunk</p>
 <section id="arguments-38" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-38">Arguments</h4>
@@ -7127,8 +7170,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_rd_to_qmd" class="level3" data-number="6.4.46">
-<h3 data-number="6.4.46" class="anchored" data-anchor-id="lfa_rd_to_qmd"><span class="header-section-number">6.4.46</span> <code>lfa_rd_to_qmd</code></h3>
+<section id="lfa_rd_to_qmd" class="level3" data-number="6.5.46">
+<h3 data-number="6.5.46" class="anchored" data-anchor-id="lfa_rd_to_qmd"><span class="header-section-number">6.5.46</span> <code>lfa_rd_to_qmd</code></h3>
 <p>Convert Rd File to Markdown</p>
 <section id="arguments-39" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-39">Arguments</h4>
@@ -7205,8 +7248,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_rd_to_results" class="level3" data-number="6.4.47">
-<h3 data-number="6.4.47" class="anchored" data-anchor-id="lfa_rd_to_results"><span class="header-section-number">6.4.47</span> <code>lfa_rd_to_results</code></h3>
+<section id="lfa_rd_to_results" class="level3" data-number="6.5.47">
+<h3 data-number="6.5.47" class="anchored" data-anchor-id="lfa_rd_to_results"><span class="header-section-number">6.5.47</span> <code>lfa_rd_to_results</code></h3>
 <p>Convert Rd Files to Markdown and Merge Results</p>
 <section id="description-46" class="level4">
 <h4 class="anchored" data-anchor-id="description-46">Description</h4>
@@ -7246,8 +7289,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_read_area_as_catalog" class="level3" data-number="6.4.48">
-<h3 data-number="6.4.48" class="anchored" data-anchor-id="lfa_read_area_as_catalog"><span class="header-section-number">6.4.48</span> <code>lfa_read_area_as_catalog</code></h3>
+<section id="lfa_read_area_as_catalog" class="level3" data-number="6.5.48">
+<h3 data-number="6.5.48" class="anchored" data-anchor-id="lfa_read_area_as_catalog"><span class="header-section-number">6.5.48</span> <code>lfa_read_area_as_catalog</code></h3>
 <p>Read LiDAR data from a specified species and location as a catalog.</p>
 <section id="arguments-40" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-40">Arguments</h4>
@@ -7295,8 +7338,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_recall_per_class" class="level3" data-number="6.4.49">
-<h3 data-number="6.4.49" class="anchored" data-anchor-id="lfa_recall_per_class"><span class="header-section-number">6.4.49</span> <code>lfa_recall_per_class</code></h3>
+<section id="lfa_recall_per_class" class="level3" data-number="6.5.49">
+<h3 data-number="6.5.49" class="anchored" data-anchor-id="lfa_recall_per_class"><span class="header-section-number">6.5.49</span> <code>lfa_recall_per_class</code></h3>
 <p>Calculate Recall per Class from Confusion Matrix</p>
 <section id="arguments-41" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-41">Arguments</h4>
@@ -7351,8 +7394,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_run_test_asymmetric" class="level3" data-number="6.4.50">
-<h3 data-number="6.4.50" class="anchored" data-anchor-id="lfa_run_test_asymmetric"><span class="header-section-number">6.4.50</span> <code>lfa_run_test_asymmetric</code></h3>
+<section id="lfa_run_test_asymmetric" class="level3" data-number="6.5.50">
+<h3 data-number="6.5.50" class="anchored" data-anchor-id="lfa_run_test_asymmetric"><span class="header-section-number">6.5.50</span> <code>lfa_run_test_asymmetric</code></h3>
 <p>Asymmetric Pairwise Test for Categories</p>
 <section id="arguments-42" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-42">Arguments</h4>
@@ -7428,8 +7471,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_run_test_symmetric" class="level3" data-number="6.4.51">
-<h3 data-number="6.4.51" class="anchored" data-anchor-id="lfa_run_test_symmetric"><span class="header-section-number">6.4.51</span> <code>lfa_run_test_symmetric</code></h3>
+<section id="lfa_run_test_symmetric" class="level3" data-number="6.5.51">
+<h3 data-number="6.5.51" class="anchored" data-anchor-id="lfa_run_test_symmetric"><span class="header-section-number">6.5.51</span> <code>lfa_run_test_symmetric</code></h3>
 <p>Symmetric Pairwise Test for Categories</p>
 <section id="arguments-43" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-43">Arguments</h4>
@@ -7505,8 +7548,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_save_all_neighbours" class="level3" data-number="6.4.52">
-<h3 data-number="6.4.52" class="anchored" data-anchor-id="lfa_save_all_neighbours"><span class="header-section-number">6.4.52</span> <code>lfa_save_all_neighbours</code></h3>
+<section id="lfa_save_all_neighbours" class="level3" data-number="6.5.52">
+<h3 data-number="6.5.52" class="anchored" data-anchor-id="lfa_save_all_neighbours"><span class="header-section-number">6.5.52</span> <code>lfa_save_all_neighbours</code></h3>
 <p>Save Neighbors for All Areas</p>
 <section id="arguments-44" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-44">Arguments</h4>
@@ -7550,8 +7593,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_segmentation" class="level3" data-number="6.4.53">
-<h3 data-number="6.4.53" class="anchored" data-anchor-id="lfa_segmentation"><span class="header-section-number">6.4.53</span> <code>lfa_segmentation</code></h3>
+<section id="lfa_segmentation" class="level3" data-number="6.5.53">
+<h3 data-number="6.5.53" class="anchored" data-anchor-id="lfa_segmentation"><span class="header-section-number">6.5.53</span> <code>lfa_segmentation</code></h3>
 <p>Segment the elements of an point cloud by trees</p>
 <section id="arguments-45" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-45">Arguments</h4>
@@ -7597,8 +7640,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_set_flag" class="level3" data-number="6.4.54">
-<h3 data-number="6.4.54" class="anchored" data-anchor-id="lfa_set_flag"><span class="header-section-number">6.4.54</span> <code>lfa_set_flag</code></h3>
+<section id="lfa_set_flag" class="level3" data-number="6.5.54">
+<h3 data-number="6.5.54" class="anchored" data-anchor-id="lfa_set_flag"><span class="header-section-number">6.5.54</span> <code>lfa_set_flag</code></h3>
 <p>Set a flag to indicate the completion of a specific process.</p>
 <section id="arguments-46" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-46">Arguments</h4>
@@ -7643,8 +7686,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_visit_all_areas" class="level3" data-number="6.4.55">
-<h3 data-number="6.4.55" class="anchored" data-anchor-id="lfa_visit_all_areas"><span class="header-section-number">6.4.55</span> <code>lfa_visit_all_areas</code></h3>
+<section id="lfa_visit_all_areas" class="level3" data-number="6.5.55">
+<h3 data-number="6.5.55" class="anchored" data-anchor-id="lfa_visit_all_areas"><span class="header-section-number">6.5.55</span> <code>lfa_visit_all_areas</code></h3>
 <p>Visit All Areas and Apply Preprocessing Function</p>
 <section id="arguments-47" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-47">Arguments</h4>
@@ -7711,8 +7754,8 @@ Projected CRS: ETRS89 / UTM zone 32N</code></pre>
 </div>
 </section>
 </section>
-<section id="lfa_visualize_rf_metrics" class="level3" data-number="6.4.56">
-<h3 data-number="6.4.56" class="anchored" data-anchor-id="lfa_visualize_rf_metrics"><span class="header-section-number">6.4.56</span> <code>lfa_visualize_rf_metrics</code></h3>
+<section id="lfa_visualize_rf_metrics" class="level3" data-number="6.5.56">
+<h3 data-number="6.5.56" class="anchored" data-anchor-id="lfa_visualize_rf_metrics"><span class="header-section-number">6.5.56</span> <code>lfa_visualize_rf_metrics</code></h3>
 <p>Visualize Precision and Recall Metrics for Random Forest Classification</p>
 <section id="arguments-48" class="level4">
 <h4 class="anchored" data-anchor-id="arguments-48">Arguments</h4>
