@@ -18,79 +18,147 @@ author:
         city: Münster
         country: Germany
 bibliography: references.bib
-execute:
-  freeze: auto  # re-render only when source changes
-  cache: true
 prefer-html: true
 ---
 
-# Overview
-In this research investigation, our objective is to assess the utility of spatial Point Patterns in monocultural forest tree detection as a parameter for distinguishing between different species within monocultural forest areas. The study focuses on four prevalent species in the NRW, DE region, namely beech, oak, pine, and spruce, based on their common occurrence [@Blickensdoerfer2022]. Three areas exhibiting predominantly monocultural tree structures were selected for each species. Utilizing LiDAR data for the designated areas, a tree detection algorithm was applied through `lidR::locate_trees` with default settings, as outlined in [@lidRManual]. The resulting detection data (exemplified in [@fig-detections]) serve as the foundation for examining point patterns within these areas. Specifically, the investigation delves into the behavior of Ripley's reduced second moment function K(r) [@ripley1977modelling] and the distribution of `r` values beyond a significance threshold, determined through Monte Carlo simulations—a widely used technique in addressing spatial problems [@zhou2003spatial].
+# Introduction
+Forests, often hailed as the "world's air-conditioning system" or the "lungs of the planet," play a pivotal role in sustaining the global environment, a sentiment underscored by King Charles III. A deeper exploration into forests and their diverse tree species is indispensable for our understanding of both local ecosystems and the broader global ecosystem. The amalgamation of tree species significantly shapes the functionality and biodiversity of a forest, a concept emphasized by Mori et al. in their research on forest tree biodiversity [@mori2017]. Distinct threats faced by different tree species pose challenges to both the environment and human populations, exemplified by instances such as the Oak processionary moth, scrutinized by Sobczyk et al. in their study on its impact [@sobczyk2014eichenprozessionsspinner], and the bark beetle, discussed by Müller et al. in their work on bark beetle infestations [@muller2019kaferkampfe].
 
-For details on data acquisition and preprocessing, please refer to [@lfa].
+Forests are integral to climate regulation, acting as carbon sinks by absorbing carbon dioxide (CO$_2$) and providing habitats for a myriad of animal and plant species. A staggering 80% of all terrestrial species find refuge in forests, encompassing more than four-fifths of all known animal and plant species outside the oceans [@Naturefund]. Recognizing the significance of acquiring a comprehensive understanding of forests is imperative, particularly in unraveling the spatial distribution patterns of different tree species. Such insights are fundamental for informed conservation efforts, sustainable management practices, and addressing the diverse ecological challenges that forests encounter.
+
+While forest monitoring often relies on Sentinel data, offering valuable insights through applications like time series analysis of deforestation [@cremer2020potential], forest classification [@dostalova2021european], and detection of forest succession [@szostak2018using], challenges arise. Dependencies on cloud coverage and limited resolution, such as the $5\times5$m resolution on Sentinel-1 [@copernicusSentinel1Missions], can impede accurate identification of individual trees. To overcome these limitations, LiDAR data emerges as a promising alternative, providing higher resolutions and utilizing signal intensity as an indicator of forest structure [@dlrRaumfahrtagenturLidar]. 
+
+
+```{r eval=file.exists("assignment.RData")}
+load("assignment.RData")
+```
+
 
 ```{r}
-#| fig-cap: All tree detections with the corrosponding area of interest for an sample area in Bielefeld-Brackewede (with dominantn specie beech).
-#| label: fig-detections
+#| warning: false
+library(dplyr)
+library(sf)
 library(ggplot2)
-sf::sf_use_s2(FALSE)
+library(spatstat)
+library(igraph)
+library(ggraph)
+library(knitr)
+library(kableExtra)
+library(terra)
 
 areas <- sf::read_sf("research_areas.shp")
 detections <- sf::read_sf("detection.gpkg")
-
-sample_area <- areas[1,]
-sample_specie <- sample_area$species
-sample_name <- sample_area$name
-sample_detections <- detections |> dplyr::filter(specie == sample_specie & area == sample_name)
-
-ggplot() + geom_sf(data = sample_area) + geom_sf(data = sample_detections)
 ```
 
-# Data
+```{r}
+#| warning: false
+#| code-fold: true
+#| label: fig-patches-nrw
+#| fig-cap: Locations of the different patches with the dominant species for that patch. The patches centroids are displayed on a basemap describing the borders from NRW. 
+sf::sf_use_s2(FALSE)
+patches_map <-
+  sf::read_sf("research_areas.shp") |> sf::st_centroid()
 
-1. Detections of trees based on LiDAR in particular areas of interest: `detection.gpkg`
-2. Areas of interests where detection-algorithm was used: `research_areas.shp`
-3. Data frame mapping from area to specie: `patches.csv`
-
-
-# Research Question and Hypothesis
-
-
-Is the comparision of the probability that the curve of Ripleys K function is under or above a significance band created via Monte-Carlo simulation a valid method to distinguish between the point patterns of trees for forests with monoculteral vegetation for sample areas with the most common species of NRW?
-
-## Hypothesis
-
-1. Between species the probability that the `K(r)` value is over the Monte-Carlo band significantly differs.
-2. Between species the probability that the `K(r)` value is under the Monte-Carlo band significantly differs.
-3. Between samples of the same species the probability that the `K(r)` value is over the Monte-Carlo band is not significantly different.
-3. Between samples of the same species the probability that the `K(r)` value is under the Monte-Carlo band is not significantly different.
-
-# Methods
-
-## Workflow
-
-- Create Monte-Carlo simulations of each area.
-- Calculate if the values for different `r` are above (under) the envelope or not (boolean)
-- Use a McNemar-Test to understand if their is difference in the samples:
-    - $H_0$: The probability that a value is above/under or inside the envelope is for both samples the same: 
-    - $H_A$: The probability that a value is above/under or inside the envelope signifanctly differs from each other.
-- Calculate this test statistics pairwise between all samples from the same species, to see if the samples are representive for their species.
-- Calculate pairwise McNemar tests for each pair of species.
+de <-
+  sf::read_sf("de/Bundesländer_2017_mit_Einwohnerzahl.shp") # Source: https://hub.arcgis.com/datasets/esri-de-content::bundesl%C3%A4nder-2017-mit-einwohnerzahl/explore?location=51.099647%2C10.454033%2C7.43
+nrw <- de[5, ] |> sf::st_geometry()
 
 
-## Total Comparisions
-- Specie intern: 3 Lower, 3 Higher (4 comparisions total)
-- Specie extern: 9 Lower, 9 Higher (6 comparisions total)
+ggplot() + geom_sf(data = nrw) +
+  geom_sf(data = patches_map, mapping = aes(col = species)) +
+  ggtitle("Patch Locations in NRW")
+```
 
-
-# Example worklflow
-
-
-## Creating `spatstat::ppp` object from geoppackage with detections and AOI (with respect to reference systems)
+The dataset utilized in this study is derived from LiDAR data, encompassing 12 patches characterized by dominant tree species within forested areas. Specifically, we focused on patches associated with the predominant species Beech, Oak, Pine, and Spruce, chosen due to their prevalence in our sample area, North Rhine-Westphalia (NRW) [@Blickensdoerfer2022]. The distribution of these patches across NRW is illustrated in Figure [@fig-patches-nrw], revealing instances of spatial clustering, a phenomenon attributed to the inherent spatial clustering of the respective tree species. Within this dataset, the number of detected trees varies across patches, ranging from 513 trees in the Greffen patch to 5031 trees in the Mesum patch, as outlined in Table [@tbl-overview]. Additionally, the size of the patches exhibits considerable diversity, spanning from $49418.81m^2$ in the Greffen patch to $405072.85m^2$ in the Mesum patch, providing a wide range of ecological contexts for analysis and interpretation [@tbl-overview]. This dataset, with its variation in tree counts and patch sizes, serves as a robust foundation for exploring and understanding the ecological dynamics within distinct forested areas characterized by dominant tree species.
 
 
 ```{r}
-library(spatstat)
+#| warning: false
+#| label: tbl-overview
+#| tbl-cap: Summary of researched patches grouped by species, with their location, area and the amount of detected trees.
+shp <- sf::read_sf("research_areas.shp")
+table <- patches
+
+sf::sf_use_s2(FALSE)
+for (row in 1:nrow(table)) {
+  area <-
+    dplyr::filter(shp, shp$species == table[row, "specie"] &
+                    shp$name == table[row, "area"])
+  area_size <- area |> sf::st_area()
+  point <- area |> sf::st_centroid() |> sf::st_coordinates()
+  table[row, "point"] <-
+    paste0("(",
+           round(point[1], digits = 4),
+           ", ",
+           round(point[2], digits = 4),
+           ")")
+  
+  table[row, "area_size"] = round(area_size, digits = 2) #paste0(round(area_size,digits = 2), " m²")
+  
+  amount_det <- nrow(detections[detections$area == area$name, ])
+  table[row, "amount_detections"] = amount_det
+  
+  # table[row, "specie"] <- lfa::lfa_capitalize_first_char(table[row,"specie"])
+  table[row, "area"] <-
+    lfa::lfa_capitalize_first_char(table[row, "area"])
+}
+table$area <- gsub("_", " ", table$area)
+table$area <- gsub("ue", "ü", table$area)
+table = table[, !names(table) %in% c("specie")]
+table$X = NULL
+knitr::kable(
+  table,
+  "html",
+  col.names = c(
+    "Patch Name",
+    "Location",
+    "Area size (m²)",
+    "Amount tree detections"
+  ),
+  caption = NULL,
+  digits = 2,
+  escape = TRUE
+) |>
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hold_position", "bordered", "responsive"),
+    stripe_index = c(1:3, 7:9),
+    full_width = FALSE
+  ) |>
+  kableExtra::pack_rows("Beech", 1, 3) |>
+  kableExtra::pack_rows("Oak", 4, 6) |>
+  kableExtra::pack_rows("Pine", 7, 9) |>
+  kableExtra::pack_rows("Spruce", 10, 12) |>
+  kableExtra::column_spec(1, bold = TRUE)
+```
+
+Based on the motivation and dataset we try to answer the following research question:
+
+How distinguishable are the point patterns of trees in monocultural vegetation forests with the most common species of NRW?
+
+To address the research question we formulate the following hypotheses:
+
+1. **Hypothesis 1 (H1):** The probability that the $K(r)$ of two patches with different dominant species is higher than the $K(r)$ of random point patterns is equal.
+
+2. **Hypothesis 2 (H2):** The probability that the $K(r)$ of two patches with different dominant species is lower than the $K(r)$ of random point patterns is equal.
+
+3. **Hypothesis 3 (H3):** The probability that the $K(r)$ of two patches with the same dominant species is higher than the $K(r)$ of random point patterns is not equal.
+
+4. **Hypothesis 4 (H4):** The probability that the $K(r)$ of two patches with the same dominant species is lower than the $K(r)$ of random point patterns is not equal.
+
+5. **Hypothesis 5 (H5):** A graph weighted by the McNemar $\chi^2$ values, comparing the $K(r)$ to random point patterns at maximum $K(r)$, shows spatial clustering of all patches with the same dominant species.
+
+6. **Hypothesis 6 (H6):** A graph weighted by the McNemar $\chi^2$ values, comparing the $K(r)$ to random point patterns at minimum $K(r)$, shows spatial clustering of all patches with the same dominant species.
+
+# Methods
+
+The initial step involves deriving point patterns from LiDAR data through a detection process. This process encompasses normalizing the dataset by considering ground height. The LiDAR detection algorithm, specifically `li2012(dt1 = 2, dt2 = 3, R = 2, Zu = 10, hmin = 5, speed_up = 12)` [@li2012], is executed with default parameters as provided by the author. A higher `hmin` value is chosen to disregard small local maximas, preventing noise in the data. Following this, Monte-Carlo simulations are generated for each area with a sample size of $n=100$. The objective is to compare the ground-truth distribution of trees with randomly distributed trees of the among the same shape. The significance of the chosen sample size is to balance obtaining a substantial sample while considering computational efficiency. Subsequently, the values for different $K(r)$ are calculated to determine if they are above or below the envelope, utilizing Ripley's reduced second moment function $K(r)$ [@ripley1977modelling]. This function serves to indicate clustering or dispersion, portraying values in relation to the real-world distance $r$ from a given location. The specific values of $r$ are chosen from the set $S = \{ x \mid x = \frac{i}{10}, \text{ where } i = 0, 1, 2, \ldots, 1000 \}$ for reasons related to influence, sample size considerations, and the need for comparability across all patches. To assess differences in samples, a McNemar-Test is employed . The null hypothesis ($H_0$) posits that the probability of a value being above/under is the same for both samples, while the alternative hypothesis ($H_A$) asserts a significant difference in this probability ($\alpha =.01$). The McNemar-Test is chosen due to its applicability in comparing two distributions with a $2\times2$ contingency table, providing a statistically significant result. This test statistic is calculated pairwise between all samples of the same species to determine if the samples are representative for their species. Additionally, pairwise McNemar tests are performed for each pair of species, investigating differences between species, variations within species, and potential distinctions among patches of each species.
+
+In terms of visualization, the results between each pair of graphs are displayed as a weighted graph. Therefore the patches are visaulized as nodes and the normalized $\chi^2$  of the McNemar test between two nodes were used as weight. This visualization aids in easily identifying connections between species and discerning spatial distribution clustering among patches. To further comprehend the functions, the average $K(r)$ is computed for each species. Two approaches are considered: one involves computing the deltas of all pairwise combinations of this information and plotting the delta curves, while the second entails computing the deltas between each patch and the corresponding average, followed by plotting the results.
+
+The workflow extensively relies on several key R packages to facilitate various tasks. The **spatstat** [@spatsat] package plays a pivotal role in conducting point pattern analysis, offering essential tools for working with spatial data. It includes the implementation of Ripley's K function, crucial for assessing spatial patterns, as well as providing the capability to compute envelopes, enhancing the statistical analysis of point patterns. For effective visualization of data, the **ggplot2** [@ggplot2] package is employed. This package excels in creating clear and insightful graphical representations, contributing to a more comprehensive understanding of the analyzed data. The construction of weighted graphs to showcase McNemar test results is achieved through the combined use of the **ggraph** [@ggraph] and **igraph** [@igraph] packages. These packages complement each other, with **ggraph** providing a framework for graph visualization and **igraph** offering a rich set of tools for network analysis. The **dplyr** [@dplyr] package is instrumental in efficiently manipulating data within the workflow. It streamlines various data manipulation tasks, contributing to the overall efficiency and coherence of the analysis.
+
+
+```{r}
 detections <- sf::st_read("detection.gpkg")
 
 
@@ -121,59 +189,64 @@ for (i in 1:nrow(patches)) {
   pps[[i]] <- create_ppp(specie, area, detections)
 }
 
+rng <- seq(0, 100, by = .1)
+```
+
+
+```{r computeEnvelope, eval=!exists("envs")}
+# Fixed r values for all Kest functions calculated
+envs <- list()
+for(i in 1:length(pps)){
+ print(i)
+ envs[[i]] <- envelope(pps[[i]],Kest, r = rng) 
+}
 ```
 
 
 
-
-## Select to samples and look if their upper the Monte-Carlo band or not.
-
-
-
-
 ```{r}
-# Fixed r values for all Kest functions calculated
-
-rng <- seq(0, 100, by = .1)
-
 is_upper <- function(envelope) {
   return(envelope$hi < envelope$obs)
 }
 
-env <- envelope(pps[[1]], Kest, r = rng)
-upper <- is_upper(env)
+is_lower <- function(envelope) {
+  return(envelope$lo > envelope$obs)
+}
+boundaries <- list()
+for (i in 1:length(envs)) {
+  boundaries[[i]] <- list()
+  boundaries[[i]]$is_upper <- is_upper(envs[[i]])
+  boundaries[[i]]$is_lower <- is_lower(envs[[i]])
+}
+# Get all pairwise combinations in one species
+get_combinations <- function(species) {
+  subset_data <- patches[patches$specie == species,]
+  combinations <- combn(subset_data$X, 2)
+  return(t(combinations))
+}
 
-env2 <- envelope(pps[[4]], Kest, r = rng)
-upper2 <- is_upper(env2)
-```
+# Get all combinations across all species
+get_cross_species_combinations <- function() {
+  combinations <- combn(unique(patches$specie), 2)
+  
+  result <- data.frame()
+  
+  for (i in 1:ncol(combinations)) {
+    species_1 <- combinations[1, i]
+    species_2 <- combinations[2, i]
+    
+    subset_species_1 <- patches[patches$specie == species_1,]
+    subset_species_2 <- patches[patches$specie == species_2,]
+    
+    cartesian_product <-
+      expand.grid(X_species_1 = subset_species_1$X, X_species_2 = subset_species_2$X)
+    result <-
+      dplyr::bind_rows(result, as.data.frame(as.matrix(cartesian_product)))
+  }
+  
+  return(result)
+}
 
-
-
-
-## Plot the samples bands
-
-
-
-```{r}
-#| fig-cap: Monte-Carlo Simulation arround the `K(r)` function of the point pattern in Bielefeld Brackwede (Beech)
-plot(env)
-```
-
-
-
-
-```{r}
-#| fig-cap: Monte-Carlo Simulation arround the `K(r)` function of the point pattern in Hamm (Oak)
-plot(env2)
-```
-
-
-
-## Calculate the MC Nemar test for both bands
-
-
-
-```{r}
 calculate_mcnemar_test <- function(vector1, vector2) {
   # Check if vectors have the same length
   if (length(vector1) != length(vector2)) {
@@ -186,12 +259,443 @@ calculate_mcnemar_test <- function(vector1, vector2) {
   }
   
   tbl <- table(vector1, vector2)
-  print(tbl)
-  # Perform McNemar test
+  # Check if the table is not 2x2
+  if (nrow(tbl) != 2 || ncol(tbl) != 2) {
+    # Create a 2x2 table with zeros
+    tbl <-
+      matrix(
+        c(0, 0, 0, 0),
+        nrow = 2,
+        ncol = 2,
+        dimnames = list(c(FALSE, TRUE), c(FALSE, TRUE))
+      )
+    
+    # Fill in the actual counts
+    tbl[rownames(tbl) %in% vector1, colnames(tbl) %in% vector2] <-
+      table(vector1, vector2)
+  }
   result <- mcnemar.test(tbl)
   return(result)
 }
 
-calculate_mcnemar_test(upper, upper2)
+# Function to validate if the environment variables are not null
+validate_environment <- function(env_species_1, env_species_2) {
+  !is.null(env_species_1) && !is.null(env_species_2)
+}
+
+# Function to run McNemar tests
+run_mcnemar_tests <- function(indices, boundaries) {
+  results <- data.frame()
+  
+  for (i in 1:nrow(indices)) {
+    index_combination <- indices[i, ]
+    species_1 <- index_combination[1] |> as.numeric()
+    species_2 <- index_combination[2] |> as.numeric()
+    
+    env_species_1_lower <- boundaries[[species_1]]$is_lower
+    env_species_2_lower <- boundaries[[species_2]]$is_lower
+    
+    env_species_1_upper <- boundaries[[species_1]]$is_upper
+    env_species_2_upper <- boundaries[[species_2]]$is_upper
+    
+    if (validate_environment(env_species_1_lower, env_species_2_lower)) {
+      mcnemar_result_lower <-
+        calculate_mcnemar_test(env_species_1_lower, env_species_2_lower)
+      
+      # Create a data frame row with the results for is_lower
+      result_df_lower <- data.frame(
+        Species_1 = species_1,
+        Species_2 = species_2,
+        Variable = "is_lower",
+        Statistic = mcnemar_result_lower$statistic,
+        P_Value = mcnemar_result_lower$p.value
+      )
+      
+      results <- rbind(results, result_df_lower)
+    }
+    
+    if (validate_environment(env_species_1_upper, env_species_2_upper)) {
+      mcnemar_result_upper <-
+        calculate_mcnemar_test(env_species_1_upper, env_species_2_upper)
+      
+      # Create a data frame row with the results for is_upper
+      result_df_upper <- data.frame(
+        Species_1 = species_1,
+        Species_2 = species_2,
+        Variable = "is_upper",
+        Statistic = mcnemar_result_upper$statistic,
+        P_Value = mcnemar_result_upper$p.value
+      )
+      
+      results <- rbind(results, result_df_upper)
+    }
+  }
+  
+  return(results)
+}
+
+# Example usage
+indices <- get_cross_species_combinations()
+indices_oak <- get_combinations("oak")
+
+mcnemar_results_cross <- run_mcnemar_tests(indices, boundaries)
+mcnemar_results_beech <-
+  run_mcnemar_tests(get_combinations("beech"), boundaries)
+mcnemar_results_oak <-
+  run_mcnemar_tests(get_combinations("oak"), boundaries)
+mcnemar_results_pine <-
+  run_mcnemar_tests(get_combinations("pine"), boundaries)
+mcnemar_results_spruce <-
+  run_mcnemar_tests(get_combinations("spruce"), boundaries)
+
+mcnemar_results <-
+  bind_rows(
+    mcnemar_results_cross,
+    mcnemar_results_beech,
+    mcnemar_results_oak,
+    mcnemar_results_pine,
+    mcnemar_results_spruce
+  )
+
+match_specie <- function(df, patches) {
+  df$species = ""
+  for (i in 1:nrow(df)) {
+    df[i, "species"] <- patches[df[i, "area"] == patches[, "area"]]
+  }
+  return(df)
+}
+
+format_results <- function(results, patches, threshold = .01) {
+  patches$area = c(
+    "Bielefeld Brackwede (Beech)",
+    "Billerbeck (Beech)",
+    "Wülfenrath (Beech)",
+    "Hamm (Oak)",
+    "Münster (Oak)",
+    "Rinkerode (Oak)",
+    "Greffen (Pine)",
+    "Mesum (Pine)",
+    "Telgte (Pine)",
+    "Brilon (Spruce)",
+    "Oberhundem (Spruce)",
+    "Osterwald (Spruce)"
+  )
+  copy <- results
+  results <- filter(results, Variable == "is_upper")
+  lower <- filter(copy, Variable == "is_lower")
+  results$statistic_upper <- results$Statistic
+  results$p_upper <- results$P_Value
+  results$statistic_lower <- lower$Statistic
+  results$p_lower <- lower$P_Value
+  results$Variable = NULL
+  results$P_Value = NULL
+  results$Statistic = NULL
+  for (i in 1:nrow(results)) {
+    results[i, "Species_1"] <- patches[results[i, "Species_1"], "area"]
+    results[i, "Species_2"] <- patches[results[i, "Species_2"], "area"]
+  }
+  # Create a new column to mark rows based on the threshold
+  marked <-
+    ifelse(
+      !is.na(results$p_lower) &
+        (
+          results$p_lower > threshold |
+            !is.na(results$p_upper) &
+            results$p_upper > threshold
+        ),
+      TRUE,
+      FALSE
+    ) |> which()
+  # Apply different color to marked rows
+  color_func <- function(x) {
+    ifelse(x, "background-color: #FFD700;", "")
+  }
+  
+  # Use kableExtra's kable function with row_spec to apply colors
+  formatted_res <-
+    kable(
+      results,
+      row.names = FALSE,
+      col.names = c(
+        "Patch 1",
+        "Patch 2",
+        "Test-Statistic Upper",
+        "p-value Upper",
+        "Test-Statistic Lower",
+        "p-value Lower"
+      )
+    ) |>
+    row_spec(row = marked,
+             extra_css = "background-color: #FFD700;") |>
+    column_spec(3, border_left = TRUE) |>
+    column_spec(5, border_left = TRUE)
+  return(formatted_res)
+}
+
 ```
+
+
+```{r}
+#| label: tbl-mcn-cross
+#| tbl-cap: Mc Nemar Test (is lower/upper the envelope) result for two patches with a different dominant species. 
+format_results(mcnemar_results_cross,patches)
+```
+
+```{r}
+#| label: tbl-mcn-beech
+#| tbl-cap: Mc Nemar Test (is lower/upper the envelope) result for two patches with a different dominant species. 
+format_results(mcnemar_results_beech,patches)
+```
+
+```{r}
+#| label: tbl-mcn-oak
+#| tbl-cap: Mc Nemar Test (is lower/upper the envelope) result for two patches with a different dominant species. 
+format_results(mcnemar_results_oak,patches)
+```
+
+```{r}
+#| label: tbl-mcn-pine
+#| tbl-cap: Mc Nemar Test (is lower/upper the envelope) result for two patches with a different dominant species. 
+format_results(mcnemar_results_pine,patches)
+```
+
+```{r}
+#| label: tbl-mcn-spruce
+#| tbl-cap: Mc Nemar Test (is lower/upper the envelope) result for two patches with a different dominant species.
+format_results(mcnemar_results_spruce,patches)
+```
+
+# Results
+The McNemar test yields consistently significant differences between two patches in the cross-species comparisons, as indicated in tables [@tbl-mcn-cross], [@tbl-mcn-beech], [@tbl-mcn-oak], [@tbl-mcn-pine], and [@tbl-mcn-spruce]. The subsequent paragraphs will provide a comprehensive exploration of the detailed results for cross-species comparisons. Following that, an in-depth analysis of comparisons involving patches with the same dominant species will be presented. Finally, the discussion will extend to an examination of the unique characteristics exhibited by each $K(r)$ curve, along with a comparative assessment of the means of $K(r)$ values within each species. 
+Initially, our investigation delves into pairs of patches characterized by distinct dominant species, anticipating noteworthy dissimilarities between such patches. This expectation holds true in the majority of cases, with the exception of Bielefeld Brackwede. Bielefeld Brackwede exhibits no significant differences compared to patches Münster ($\chi^2 = 2.25, p=.133$) and Rinkerode ($\chi^2 = 2.25, p=.133$), both dominated by Oak, as well as Greffen ($\chi^2 = 2.25, p=.133$) and Telgte ($\chi^2 = 2.25, p=.133$), both characterized by Pine, and Oberhundem ($\chi^2 = 2.25, p=.133$), when assessing whether the $K(r)$ values surpass the Monte-Carlo envelope. Additionally, Bielefeld Brackwede demonstrates no significant distinctions from Greffen ($\chi^2 = 1.125, p=.288$), where Pine is the dominant species, in the comparison of $K(r)$ along the lower boundary of the envelope. Furthermore, Wülfenrath (Beech) and Brilon (Spruce) exhibit no significant differences in the $K(r)$ results along the upper boundary of the envelope ($\chi^2 = 3.125, p=.077$).
+
+In the context of patches with the same dominant species, our initial expectation is that the test results will reveal no significant differences between the patches. Surprisingly, within the beech species, all pairwise comparisons exhibit significant differences, except for the patches Bielefeld Brackwede and Wülfenrath, where the $K(r)$ values on the upper boundary of the envelope yield a non-significant result ($\chi^2 = 2.25, p=.133$). Conversely, within the Oak, Pine, and Spruce species, the pairwise comparisons of $K(r)$ values with random point patterns, both on the upper and lower boundaries, consistently reveal significant differences between patches associated with the specified dominant species.
+
+
+```{r}
+mcnemar_results_cross_dummy <- mcnemar_results_cross
+mcnemar_results_cross_dummy$Statistic <-
+  runif(54, min = 100, max = 1000)
+mcnemar_results_cross_dummy$P_Value <-
+  runif(54, min = 0, max = 0.01)
+
+mcnemar_results_beech_dummy <- mcnemar_results_beech
+mcnemar_results_beech_dummy$Statistic <- runif(3, min = 0, max = 1)
+mcnemar_results_beech_dummy$P_Value <- runif(3, min = 0.01, max = 1)
+
+# Create dummy data for oak
+mcnemar_results_oak_dummy <- mcnemar_results_oak
+mcnemar_results_oak_dummy$Statistic <- runif(3, min = 0, max = 1)
+mcnemar_results_oak_dummy$P_Value <- runif(3, min = 0.01, max = 1)
+
+# Create dummy data for pine
+mcnemar_results_pine_dummy <- mcnemar_results_pine
+mcnemar_results_pine_dummy$Statistic <- runif(3, min = 0, max = 1)
+mcnemar_results_pine_dummy$P_Value <- runif(3, min = 0.01, max = 1)
+
+# Create dummy data for spruce
+mcnemar_results_spruce_dummy <- mcnemar_results_spruce
+mcnemar_results_spruce_dummy$Statistic <- runif(3, min = 0, max = 1)
+mcnemar_results_spruce_dummy$P_Value <-
+  runif(3, min = 0.01, max = 1)
+
+mcnemar_results_dummy <- bind_rows(
+  mcnemar_results_cross_dummy,
+  mcnemar_results_beech_dummy,
+  mcnemar_results_oak_dummy,
+  mcnemar_results_pine_dummy,
+  mcnemar_results_spruce_dummy
+)
+
+plot_graph <- function(results, patches) {
+  weights <-
+    replace(results$Statistic, is.nan(results$Statistic), 1e15)
+  weights <-  1 / weights
+  weights <- weights / max(weights)
+  nodes <-
+    data.frame(
+      id = 1:12,
+      description = patches$area,
+      category = patches$specie
+    )
+  edges <- data.frame(
+    from = results$Species_1,
+    to = results$Species_2,
+    weight = weights
+  )
+  
+  graph <-
+    graph_from_data_frame(edges, directed = FALSE, vertices = nodes)
+  layout_weights <- layout_nicely(graph)
+  graph <- ggraph(graph, layout = layout_weights) +
+    geom_edge_link(aes(edge_alpha = weight),
+                   edge_colour = "grey",
+                   edge_linetype = 1) +
+    geom_node_point(aes(fill = category), size = 5, shape = 21) +
+    geom_node_text(
+      aes(label = description),
+      nudge_x = 0.1,
+      nudge_y = 0.1,
+      size = 3
+    ) +
+    scale_fill_manual(
+      values = c(
+        "beech" = "#a6cee3",
+        "oak" = "#1f78b4",
+        "pine" = "#b2df8a",
+        "spruce" = "#33a02c"
+      )
+    ) +
+    theme_void() +
+    ggtitle("Weighted Graph of McNemar Test Results")
+  
+  return(graph)
+}
+```
+
+```{r}
+#| label: fig-wg-dummy
+plot_graph(mcnemar_results_dummy,patches)
+```
+
+
+```{r}
+#| label: fig-wg-upper
+plot_graph(mcnemar_results |> filter(Variable == "is_upper"),patches)
+```
+
+
+```{r}
+#| label: fig-wg-lower
+plot_graph(mcnemar_results |> filter(Variable == "is_lower"),patches)
+```
+
+
+Upon delving into the intricacies of the weighted graphs, our exploration took us through both expected and received data scenarios. In the realm of dummy data, crafted to embody anticipated outcomes for the McNemar test, a visual representation showcased significant differences across species and an absence of significant differences within species. This served as a conceptual validation, highlighting the efficacy of a visual approach in comprehending the interconnections between species. Remarkably, each species formed distinct clusters, and the graph strategically maximized distances between these clusters, as portrayed in Figure [@fig-wg-dummy]. However, when transitioning to the received data, a more nuanced narrative unfolded. In the upper graph, a conspicuous clustering emerged around the Bielefeld Brackwede Patch, where patches without significant differences found an ordered arrangement. Intriguingly, the remaining patches displayed a seemingly random order, lacking a clear clustering pattern for patches with the same dominant species (see Figure [@fig-wg-upper]). Further investigation into the lower graph revealed a different story altogether. Patches were distributed seemingly at random along the graph, with no discernible clustering of patches sharing the same dominant species (see Figure [@fig-wg-lower]). 
+
+```{r}
+observations = NULL
+for (i in 1:length(envs)) {
+  tmp <- NULL
+  tmp$r = envs[[i]]$r |> as.data.frame()
+  tmp$obs = envs[[i]]$obs |> as.data.frame()
+  tmp <- tmp |> as.data.frame()
+  tmp$specie = patches$specie[i]
+  tmp$area = patches$area[i]
+  if (is.null(observations)) {
+    observations <- tmp
+  } else{
+    observations <- dplyr::bind_rows(observations, tmp)
+  }
+}
+names(observations) <- c("r", "obs", "specie", "area")
+
+# Calculate averages per specie
+avgs = NULL
+species <- observations$specie |> unique()
+for (specie in species) {
+  observations_sub <- observations[observations$specie == specie,]
+  for (r in rng) {
+    observations_sub_r <- observations_sub[observations_sub$r == r,]
+    obs <- NULL
+    obs$obs = mean(observations_sub_r$obs)
+    obs$r = r
+    obs$specie = specie
+    obs <- obs |> as.data.frame()
+    if (is.null(avgs)) {
+      avgs <- obs
+    } else {
+      avgs <- bind_rows(avgs, obs)
+    }
+  }
+}
+```
+
+```{r}
+#| label: fig-avg-one
+plot_obs_vs_r <- function(data) {
+  ggplot(data, aes(x = r, y = obs, color = specie)) +
+    geom_line() +
+    labs(x = "r", y = "obs", title = "Obs vs r for each Specie") +
+    theme_minimal()
+}
+
+plot_obs_vs_r(avgs)
+```
+
+```{r}
+avgs_summed = NULL
+for (specie in species) {
+  subset <- NULL
+  subset <- avgs[avgs$specie == specie, c("r", "obs")]
+  names(subset) <- c("r", specie)
+  if (is.null(avgs_summed)) {
+    avgs_summed = subset
+  } else{
+    avgs_summed <- left_join(avgs_summed, subset)
+  }
+}
+```
+
+
+```{r}
+#| label: fig-avg-delta
+ggplot(avgs_summed, aes(x = r)) +
+  geom_line(aes(y = beech - oak, color = "beech - oak")) +
+  geom_line(aes(y = beech - pine, color = "beech - pine")) +
+  geom_line(aes(y = beech - spruce, color = "beech - spruce")) +
+  geom_line(aes(y = oak - pine, color = "oak - pine")) +
+  geom_line(aes(y = oak - spruce, color = "oak - spruce")) +
+  geom_line(aes(y = pine - spruce, color = "pine - spruce")) +
+  labs(title = "Pairwise Comparison of Species",
+       x = "r",
+       y = "Delta") +
+  scale_color_manual(
+    name = "Comparison",
+    values = c(
+      "beech - oak" = "red",
+      "beech - pine" = "blue",
+      "beech - spruce" = "green",
+      "oak - pine" = "purple",
+      "oak - spruce" = "orange",
+      "pine - spruce" = "pink"
+    )
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: fig-avg-patches
+observations$diff <- NA
+for (i in 1:nrow(observations)) {
+  avg <-
+    avgs[avgs$r == observations[i, "r"] &
+           avgs$specie == observations[i, "specie"], "obs"]
+  observations[i, "diff"] <- observations$obs[i] - avg
+}
+plot_line_through_values(observations, "r", "diff")
+```
+
+The graphical analysis of $K(r)$ values unveils compelling insights into the spatial characteristics across different dominant species. Notably, the average $K(r)$ curves for Beech, Oak, and Pine exhibit strikingly similar patterns, indicating a high degree of similarity in the spatial distribution of points within these species. In contrast, Spruce stands out with consistently higher values for $K(r)$, as illustrated in Figure [@fig-avg-one]. As we shift our focus to the deltas, the magnitude of differences between the curves becomes more pronounced for higher $r$ values, with the delta extending to a notable $-1000$ for each comparison to the respective other curves (see Figure [@fig-avg-delta]). Interestingly, the deltas between the other dominant species are considerably smaller. Specifically, Beech displays higher $K(r)$ values than Oak, and Oak, in turn, exhibits higher values than Pine. The subsequent comparison of individual patches' $K(r)$ values with the average $K(r)$ for their respective species provides additional granularity. In the Beech species, patches show a small variance from the mean, with Wülfenrath slightly above, and Bielefeld Brackwede and Billerbeck slightly below the average. Within the Oak species, Münster closely aligns with the mean, while Hamm displays higher values, and Rinkerode lower values within a relatively confined domain. The Pine species exhibits a similar trend, with Telgte closely resembling the mean, Mesum showcasing higher values, and Greffen lower values within a comparable range as observed within the Oak species. In the case of Spruce, Osterwald stands out as exceptionally different from the other two patches, displaying significantly higher $K(r)$ values. Meanwhile, both Brilon and Oberhundem fall below the mean for Spruce, potentially influenced by the considerable impact of Osterwald on the overall mean (see Figure [@fig-avg-patches]). This comprehensive analysis sheds light on the nuanced variations in spatial configurations and $K(r)$ values, contributing to a deeper understanding of the differences between the point patterns of different dominant species.
+
+
+# Discussion
+To discuss the findings of the presented approach, the hypothesis firstly getting discussed. 
+H1 is supported by the consistent findings of significant differences in the McNemar test in cross-species comparisons. The $K(r)$ values between patches with different dominant species indeed tend to have an different probability to be higher than those in random point patterns. This aligns with the expectation of distinguishability between different species in terms of their point patterns. Similar to H1, H2 is supported by the observed significant differences in the McNemar test. The $K(r)$ values of patches with different dominant species consistently show differences in the probability to be under the results of random point patterns. H3 is not supported by the results, as the McNemar test reveals significant differences in pairwise comparisons of $K(r)$ values within the same dominant species. Contrary to the expectation of non-significant differences, there are variations in the spatial configurations within patches of the same species. Similar to H3, H4 is not supported. The McNemar test indicates significant differences in pairwise comparisons of $K(r)$ values within the same dominant species, challenging the expected non-significant differences. H5 encounters some deviation from the expected outcome. While clustering is observed, an unexpected pattern around Bielefeld Brackwede challenges the anticipated spatial clustering of all patches with the same dominant species. Also a majority of all patches is aligned randomly. H6 is not  supported, as the lower graph, weighted by McNemar $\chi^2$ values, does not exhibit clear spatial clustering of patches with the same dominant species, contradicting the expected outcome.
+
+
+```{r}
+#| label: fig-osterwald-chm
+chm <- rast("osterwald.tif")
+plot(chm)
+```
+
+The scrutiny of the McNemar test highlights its sensitivity to subtle changes in point patterns, revealing significant differences in $K(r)$ values despite visual similarities in the corresponding curves. This discrepancy prompts a reevaluation of the test's appropriateness, suggesting that its responsiveness to nuanced variations might introduce challenges in accurately discerning similarities or differences in point patterns. An aspect worthy of further exploration is the impact of the number of researched random point patterns on the results. The potential influence of this parameter underscores the need for a more comprehensive understanding of how variations in the quantity of random patterns may affect the outcomes. Investigating this aspect could enhance the robustness and reliability of the analytical approach. The case of the Osterwald patch introduces a unique dynamic, where a specific area within the patch hosts relatively young trees, as indicated in [@fig-osterwald-chm]. Notably, the detection of these trees is incomplete, leading to areas devoid of detected trees. This incomplete detection contributes to significantly higher $K(r)$ values for Osterwald. Further research focusing on quantifying the influence of the Osterwald patch on the overall results could provide valuable insights into the disproportionate impact of specific patches with distinct characteristics.
+
+While the overall approach did not achieve anticipated success, especially given the observed significant differences within the same species, the findings serve as a foundational exploration into the point patterns of LiDAR-detected trees in monocultural forests. Despite the setbacks, the insights gleaned from this study offer valuable starting points for refining methodologies and directing future research endeavors in the complex realm of forest ecology. The nuanced challenges encountered pave the way for continued refinement and advancement in understanding the spatial arrangements of trees within monocultural ecosystems using LiDAR technology.
+
+```{r}
+save(list = ls(), file = "assignment.RData")
+```
+
 
